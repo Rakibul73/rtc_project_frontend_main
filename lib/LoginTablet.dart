@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:web_smooth_scroll/web_smooth_scroll.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+const storage = FlutterSecureStorage(); // Define the storage variable
 
 class LoginTablet extends StatefulWidget {
   const LoginTablet({Key? key}) : super(key: key);
@@ -32,12 +35,20 @@ class LoginTabletState extends State<LoginTablet> {
 
       print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
       print(response);
+      print("=========================================");
+
 
       if (response['statuscode'] == 200) {
         // User logged in successfully
         print('User logged in successfully');
-        final token = response['access_token'];
         // Store token securely (e.g., SharedPreferences)
+        await storage.write(key: 'jwt_token', value: (response['access_token']).toString());
+        // store user_id in secure storage
+        await storage.write(key: 'user_id', value: (response['user_id']).toString());
+        // store statuscode in secure storage
+        await storage.write(key: 'statuscode', value: response['statuscode'].toString());
+        // Redirect to home page or perform any other necessary actions
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
         // Handle login failure
         print('Login failed: ${response['message']}');
