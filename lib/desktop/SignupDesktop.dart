@@ -5,7 +5,6 @@ import 'package:rtc_project_fronend/api_service.dart';
 import 'package:web_smooth_scroll/web_smooth_scroll.dart';
 import 'dart:async';
 
-
 class SignupDesktop extends StatefulWidget {
   const SignupDesktop({Key? key}) : super(key: key);
 
@@ -45,8 +44,7 @@ class SignupDesktopState extends State<SignupDesktop> {
       if (response['statuscode'] == 201) {
         // User registered successfully
         print('User registered successfully');
-      }
-      else if (response['statuscode'] == 409) {
+      } else if (response['statuscode'] == 409) {
         // User or email already exists
         print('User or email already exists');
       } else {
@@ -277,21 +275,14 @@ class SignupDesktopState extends State<SignupDesktop> {
     );
   }
 
-  _forgotPassword(context) {
-    return TextButton(
-      onPressed: () {},
-      child: const Text(
-        "Forgot password?",
-        style: TextStyle(color: Color.fromARGB(255, 3, 123, 236), fontSize: 16),
-      ),
-    );
-  }
-
   _login(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Already have an account? "),
+        const Text("Already have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
         TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/login');

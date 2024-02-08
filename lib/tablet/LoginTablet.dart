@@ -37,7 +37,6 @@ class LoginTabletState extends State<LoginTablet> {
       print(response);
       print("=========================================");
 
-
       if (response['statuscode'] == 200) {
         // User logged in successfully
         print('User logged in successfully');
@@ -233,7 +232,9 @@ class LoginTabletState extends State<LoginTablet> {
 
   _forgotPassword(context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/forgotpassword');
+      },
       child: const Text(
         "Forgot password?",
         style: TextStyle(color: Color.fromARGB(255, 3, 123, 236), fontSize: 16),
@@ -245,12 +246,16 @@ class LoginTabletState extends State<LoginTablet> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Dont have an account? "),
-        TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/signup');
-            },
-            child: const Text("Sign Up", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236))))
+        const Text("Dont have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
+        Expanded(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/signup');
+                },
+                child: const Text("Sign Up", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236)))))
       ],
     );
   }

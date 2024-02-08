@@ -37,7 +37,6 @@ class LoginDesktopState extends State<LoginDesktop> {
       print(response);
       print("=========================================");
 
-
       if (response['statuscode'] == 200) {
         // User logged in successfully
         print('User logged in successfully');
@@ -248,7 +247,10 @@ class LoginDesktopState extends State<LoginDesktop> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Dont have an account? "),
+        const Text("Dont have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
         TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/signup');

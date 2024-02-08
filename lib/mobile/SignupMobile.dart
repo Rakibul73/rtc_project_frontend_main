@@ -43,8 +43,7 @@ class SignupMobileState extends State<SignupMobile> {
       if (response['statuscode'] == 201) {
         // User registered successfully
         print('User registered successfully');
-      }
-      else if (response['statuscode'] == 409) {
+      } else if (response['statuscode'] == 409) {
         // User or email already exists
         print('User or email already exists');
       } else {
@@ -250,21 +249,14 @@ class SignupMobileState extends State<SignupMobile> {
     );
   }
 
-  _forgotPassword(context) {
-    return TextButton(
-      onPressed: () {},
-      child: const Text(
-        "Forgot password?",
-        style: TextStyle(color: Color.fromARGB(255, 3, 123, 236), fontSize: 16),
-      ),
-    );
-  }
-
   _login(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Already have an account? "),
+        const Text("Already have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
         TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/login');

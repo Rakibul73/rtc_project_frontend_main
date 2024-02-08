@@ -36,7 +36,6 @@ class LoginMobileState extends State<LoginMobile> {
       print(response);
       print("=========================================");
 
-
       if (response['statuscode'] == 200) {
         // User logged in successfully
         print('User logged in successfully');
@@ -212,7 +211,9 @@ class LoginMobileState extends State<LoginMobile> {
 
   _forgotPassword(context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/forgotpassword');
+      },
       child: const Text(
         "Forgot password?",
         style: TextStyle(color: Color.fromARGB(255, 3, 123, 236), fontSize: 16),
@@ -224,7 +225,10 @@ class LoginMobileState extends State<LoginMobile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Dont have an account? "),
+        const Text("Dont have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
         TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/signup');

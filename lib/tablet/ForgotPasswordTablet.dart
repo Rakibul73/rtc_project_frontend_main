@@ -1,19 +1,23 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:web_smooth_scroll/web_smooth_scroll.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class ForgotPasswordDesktop extends StatefulWidget {
-  const ForgotPasswordDesktop({Key? key}) : super(key: key);
+const storage = FlutterSecureStorage(); // Define the storage variable
+
+class ForgotPasswordTablet extends StatefulWidget {
+  const ForgotPasswordTablet({Key? key}) : super(key: key);
 
   @override
-  ForgotPasswordDesktopState createState() => ForgotPasswordDesktopState();
+  ForgotPasswordTabletState createState() => ForgotPasswordTabletState();
 }
 
-class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
+class ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
   final TextEditingController _emailController = TextEditingController();
   bool _isLoadingResetPassword = false;
   bool _isLoadingSendPasswordToEmail = false;
-
   // Method to send password to email
   Future<void> _sendPasswordToEmail() async {
     setState(() {
@@ -98,11 +102,10 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
           )),
           Expanded(
             //<-- Expanded widget
-            // scroll controller
             child: WebSmoothScroll(
               controller: _scrollController,
               scrollOffset: 100,
-              animationDuration: 1000,
+              animationDuration: 600,
               curve: Curves.easeInOutCirc,
               child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
@@ -119,7 +122,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
                       _inputField(context),
                       const SizedBox(height: 25),
                       _login(context),
-                      const SizedBox(height: 220),
+                      const SizedBox(height: 200),
                     ],
                   ),
                 ),
@@ -131,7 +134,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
     );
   }
 
-  Widget _header(context) {
+  _header(context) {
     return const Column(
       children: [
         Text(
@@ -155,20 +158,18 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
     );
   }
 
-  Widget _inputField(context) {
+  _inputField(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 20),
         TextField(
           controller: _emailController,
           decoration: InputDecoration(
-            hintText: "email@gmail.com",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
-            fillColor: const Color.fromARGB(255, 3, 123, 236).withOpacity(0.3),
-            filled: true,
-            prefixIcon: const Icon(Icons.password_outlined),
-          ),
+              hintText: "email@gmail.com",
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
+              fillColor: const Color.fromARGB(255, 3, 123, 236).withOpacity(0.3),
+              filled: true,
+              prefixIcon: const Icon(Icons.account_circle)),
         ),
         const SizedBox(height: 20),
         ElevatedButton(
@@ -181,7 +182,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
           child: _isLoadingResetPassword
               ? const CircularProgressIndicator()
               : const Text(
-                  'Reset Password',
+                  "Reset Password",
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
         ),
@@ -196,7 +197,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
           child: _isLoadingSendPasswordToEmail
               ? const CircularProgressIndicator()
               : const Text(
-                  'Send Password to Email',
+                  "Send Password to Email",
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
         )
@@ -212,11 +213,12 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
             style: TextStyle(
               fontWeight: FontWeight.w700,
             )),
-        TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236)))),
+        Expanded(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236)))))
       ],
     );
   }

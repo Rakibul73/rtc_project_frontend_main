@@ -1,19 +1,20 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
-import 'package:web_smooth_scroll/web_smooth_scroll.dart';
+import 'dart:async';
 
-class ForgotPasswordDesktop extends StatefulWidget {
-  const ForgotPasswordDesktop({Key? key}) : super(key: key);
+class ForgotPasswordMobile extends StatefulWidget {
+  const ForgotPasswordMobile({Key? key}) : super(key: key);
 
   @override
-  ForgotPasswordDesktopState createState() => ForgotPasswordDesktopState();
+  ForgotPasswordMobileState createState() => ForgotPasswordMobileState();
 }
 
-class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
+class ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
   final TextEditingController _emailController = TextEditingController();
   bool _isLoadingResetPassword = false;
   bool _isLoadingSendPasswordToEmail = false;
-
   // Method to send password to email
   Future<void> _sendPasswordToEmail() async {
     setState(() {
@@ -73,14 +74,8 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
     }
   }
 
-  // Controllers
-  late ScrollController _scrollController;
-
   @override
   void initState() {
-    // initialize scroll controllers
-    _scrollController = ScrollController();
-
     super.initState();
   }
 
@@ -88,50 +83,34 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
   Widget build(BuildContext context) {
     return Container(
       color: const Color.fromARGB(255, 59, 66, 72),
-      child: Row(
-        children: [
-          Expanded(
-              //<-- Expanded widget
-              child: Image.asset(
-            'assets/image.jpg',
-            fit: BoxFit.cover,
-          )),
-          Expanded(
-            //<-- Expanded widget
-            // scroll controller
-            child: WebSmoothScroll(
-              controller: _scrollController,
-              scrollOffset: 100,
-              animationDuration: 1000,
-              curve: Curves.easeInOutCirc,
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _scrollController,
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 21),
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 50),
-                      _header(context),
-                      _inputField(context),
-                      const SizedBox(height: 25),
-                      _login(context),
-                      const SizedBox(height: 220),
-                    ],
-                  ),
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: Center(
+              child: SizedBox(
+                width: 300,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 50),
+                    _header(context),
+                    _inputField(context),
+                    const SizedBox(height: 30),
+                    _login(context),
+                    const SizedBox(height: 30),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _header(context) {
+  _header(context) {
     return const Column(
       children: [
         Text(
@@ -155,20 +134,18 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
     );
   }
 
-  Widget _inputField(context) {
+  _inputField(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 20),
         TextField(
           controller: _emailController,
           decoration: InputDecoration(
-            hintText: "email@gmail.com",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
-            fillColor: const Color.fromARGB(255, 3, 123, 236).withOpacity(0.3),
-            filled: true,
-            prefixIcon: const Icon(Icons.password_outlined),
-          ),
+              hintText: "email@gmail.com",
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
+              fillColor: const Color.fromARGB(255, 3, 123, 236).withOpacity(0.3),
+              filled: true,
+              prefixIcon: const Icon(Icons.account_circle)),
         ),
         const SizedBox(height: 20),
         ElevatedButton(
@@ -181,7 +158,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
           child: _isLoadingResetPassword
               ? const CircularProgressIndicator()
               : const Text(
-                  'Reset Password',
+                  "Reset Password",
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
         ),
@@ -196,7 +173,7 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
           child: _isLoadingSendPasswordToEmail
               ? const CircularProgressIndicator()
               : const Text(
-                  'Send Password to Email',
+                  "Send Password to Email",
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
         )
@@ -208,15 +185,12 @@ class ForgotPasswordDesktopState extends State<ForgotPasswordDesktop> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Remember your password? ",
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-            )),
+        const Text("Remember your password? ", style: TextStyle(fontWeight: FontWeight.w700, color: Color.fromARGB(255, 26, 22, 20))),
         TextButton(
             onPressed: () {
               Navigator.pushNamed(context, '/login');
             },
-            child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236)))),
+            child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236))))
       ],
     );
   }

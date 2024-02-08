@@ -4,7 +4,9 @@ import 'package:rtc_project_fronend/desktop/ForgotPasswordDesktop.dart';
 import 'package:rtc_project_fronend/desktop/HomeDesktop.dart';
 import 'package:rtc_project_fronend/desktop/IndividualUserScreenDesktop.dart';
 import 'package:rtc_project_fronend/desktop/LoginDesktop.dart';
+import 'package:rtc_project_fronend/mobile/ForgotPasswordMobile.dart';
 import 'package:rtc_project_fronend/mobile/LoginMobile.dart';
+import 'package:rtc_project_fronend/tablet/ForgotPasswordTablet.dart';
 import 'package:rtc_project_fronend/tablet/LoginTablet.dart';
 import 'package:rtc_project_fronend/desktop/ResetPasswordScreenDesktop.dart';
 import 'package:rtc_project_fronend/desktop/SignupDesktop.dart';
@@ -161,14 +163,13 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return const ForgotPasswordDesktop();
-          // if (constraints.maxWidth < 600) {
-          //   return const HomeMobile();
-          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
-          //   return const HomeTablet();
-          // } else {
-          //   return const HomeDesktop();
-          // }
+          if (constraints.maxWidth < 600) {
+            return const ForgotPasswordMobile();
+          } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+            return const ForgotPasswordTablet();
+          } else {
+            return const ForgotPasswordDesktop();
+          }
         },
       ),
     );

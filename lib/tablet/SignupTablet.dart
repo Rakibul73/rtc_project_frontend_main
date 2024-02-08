@@ -284,12 +284,16 @@ class SignupTabletState extends State<SignupTablet> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Already have an account? "),
-        TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236))))
+        const Text("Already have an account? ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+            )),
+        Expanded(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: const Text("Login", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 3, 123, 236)))))
       ],
     );
   }
