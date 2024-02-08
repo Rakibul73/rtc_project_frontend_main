@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:rtc_project_fronend/DeleteUserScreen.dart';
-import 'package:rtc_project_fronend/ForgotPasswordScreen.dart';
-import 'package:rtc_project_fronend/HomeDesktop.dart';
-import 'package:rtc_project_fronend/IndividualUserScreen.dart';
-import 'package:rtc_project_fronend/LoginDesktop.dart';
-import 'package:rtc_project_fronend/LoginMobile.dart';
-import 'package:rtc_project_fronend/LoginTablet.dart';
-import 'package:rtc_project_fronend/ResetPasswordRequest.dart';
-import 'package:rtc_project_fronend/SignupDesktop.dart';
-import 'package:rtc_project_fronend/SignupMobile.dart';
-import 'package:rtc_project_fronend/SignupTablet.dart';
+import 'package:rtc_project_fronend/desktop/DeleteUserScreenDesktop.dart';
+import 'package:rtc_project_fronend/desktop/ForgotPasswordDesktop.dart';
+import 'package:rtc_project_fronend/desktop/HomeDesktop.dart';
+import 'package:rtc_project_fronend/desktop/IndividualUserScreenDesktop.dart';
+import 'package:rtc_project_fronend/desktop/LoginDesktop.dart';
+import 'package:rtc_project_fronend/mobile/LoginMobile.dart';
+import 'package:rtc_project_fronend/tablet/LoginTablet.dart';
+import 'package:rtc_project_fronend/desktop/ResetPasswordScreenDesktop.dart';
+import 'package:rtc_project_fronend/desktop/SignupDesktop.dart';
+import 'package:rtc_project_fronend/mobile/SignupMobile.dart';
+import 'package:rtc_project_fronend/tablet/SignupTablet.dart';
 import 'dart:io';
 
-import 'package:rtc_project_fronend/UserScreen.dart';
+import 'package:rtc_project_fronend/desktop/UserScreenDesktop.dart';
 
 class PostHttpOverrides extends HttpOverrides{
   @override
@@ -48,12 +48,92 @@ class MyApp extends StatelessWidget {
         '/individualuser': (context) => const IndividualUserScreen(), // view individual user
         '/deleteuser': (context) => const DeleteUserScreen(), // delete user
         '/forgotpassword': (context) => const ForgotPasswordScreen(),
-        '/ResetPasswordScreen': (context) => const ResetPasswordScreen(token: '',),
+        '/ResetPasswordScreen': (context) => const ResetPasswordScreen(),
       },
     );
   }
 }
 
+class ResetPasswordScreen extends StatelessWidget {
+  const ResetPasswordScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return const ResetPasswordScreenDesktop(token: '',);
+          // if (constraints.maxWidth < 600) {
+          //   return const HomeMobile();
+          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+          //   return const HomeTablet();
+          // } else {
+          //   return const HomeDesktop();
+          // }
+        },
+      ),
+    );
+  }
+}
+class DeleteUserScreen extends StatelessWidget {
+  const DeleteUserScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return const DeleteUserScreenDesktop();
+          // if (constraints.maxWidth < 600) {
+          //   return const HomeMobile();
+          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+          //   return const HomeTablet();
+          // } else {
+          //   return const HomeDesktop();
+          // }
+        },
+      ),
+    );
+  }
+}
+class IndividualUserScreen extends StatelessWidget {
+  const IndividualUserScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return const IndividualUserScreenDesktop();
+          // if (constraints.maxWidth < 600) {
+          //   return const HomeMobile();
+          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+          //   return const HomeTablet();
+          // } else {
+          //   return const HomeDesktop();
+          // }
+        },
+      ),
+    );
+  }
+}
+class UserScreen extends StatelessWidget {
+  const UserScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return const UserScreenDesktop();
+          // if (constraints.maxWidth < 600) {
+          //   return const HomeMobile();
+          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+          //   return const HomeTablet();
+          // } else {
+          //   return const HomeDesktop();
+          // }
+        },
+      ),
+    );
+  }
+}
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override

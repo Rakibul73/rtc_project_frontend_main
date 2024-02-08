@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 
-class UserScreen extends StatefulWidget {
-  const UserScreen({Key? key}) : super(key: key);
+class UserScreenDesktop extends StatefulWidget {
+  const UserScreenDesktop({Key? key}) : super(key: key);
 
   @override
-  UserScreenState createState() => UserScreenState();
+  UserScreenDesktopState createState() => UserScreenDesktopState();
 }
 
-class UserScreenState extends State<UserScreen> {
+class UserScreenDesktopState extends State<UserScreenDesktop> {
   late Future<List<Map<String, dynamic>>> _futureUsers;
 
   @override

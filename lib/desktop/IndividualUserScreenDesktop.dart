@@ -3,14 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 
-class IndividualUserScreen extends StatefulWidget {
-  const IndividualUserScreen({Key? key}) : super(key: key);
+class IndividualUserScreenDesktop extends StatefulWidget {
+  const IndividualUserScreenDesktop({Key? key}) : super(key: key);
 
   @override
-  IndividualUserScreenState createState() => IndividualUserScreenState();
+  IndividualUserScreenDesktopState createState() => IndividualUserScreenDesktopState();
 }
 
-class IndividualUserScreenState extends State<IndividualUserScreen> {
+class IndividualUserScreenDesktopState extends State<IndividualUserScreenDesktop> {
   final TextEditingController _userIdController = TextEditingController();
   Future<Map<String, dynamic>>? _futureUser;
 

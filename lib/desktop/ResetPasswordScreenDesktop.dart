@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreenDesktop extends StatefulWidget {
   final String token;
 
-  const ResetPasswordScreen({Key? key, required this.token}) : super(key: key);
+  const ResetPasswordScreenDesktop({Key? key, required this.token}) : super(key: key);
 
   @override
-  ResetPasswordScreenState createState() => ResetPasswordScreenState();
+  ResetPasswordScreenDesktopState createState() => ResetPasswordScreenDesktopState();
 }
 
-class ResetPasswordScreenState extends State<ResetPasswordScreen> {
+class ResetPasswordScreenDesktopState extends State<ResetPasswordScreenDesktop> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isLoading = false;

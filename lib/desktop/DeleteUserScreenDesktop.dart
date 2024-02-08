@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 
-class DeleteUserScreen extends StatefulWidget {
-  const DeleteUserScreen({Key? key}) : super(key: key);
+class DeleteUserScreenDesktop extends StatefulWidget {
+  const DeleteUserScreenDesktop({Key? key}) : super(key: key);
 
   @override
-  _DeleteUserScreenState createState() => _DeleteUserScreenState();
+  _DeleteUserScreenDesktopState createState() => _DeleteUserScreenDesktopState();
 }
 
-class _DeleteUserScreenState extends State<DeleteUserScreen> {
+class _DeleteUserScreenDesktopState extends State<DeleteUserScreenDesktop> {
   final TextEditingController _userIdController = TextEditingController();
   late Future<Map<String, dynamic>> _futureDeleteUser;
   
