@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/DeleteUserScreen.dart';
+import 'package:rtc_project_fronend/ForgotPasswordScreen.dart';
 import 'package:rtc_project_fronend/HomeDesktop.dart';
 import 'package:rtc_project_fronend/IndividualUserScreen.dart';
 import 'package:rtc_project_fronend/LoginDesktop.dart';
 import 'package:rtc_project_fronend/LoginMobile.dart';
 import 'package:rtc_project_fronend/LoginTablet.dart';
+import 'package:rtc_project_fronend/ResetPasswordRequest.dart';
 import 'package:rtc_project_fronend/SignupDesktop.dart';
 import 'package:rtc_project_fronend/SignupMobile.dart';
 import 'package:rtc_project_fronend/SignupTablet.dart';
@@ -45,6 +47,8 @@ class MyApp extends StatelessWidget {
         '/users': (context) => const UserScreen(), // view all users
         '/individualuser': (context) => const IndividualUserScreen(), // view individual user
         '/deleteuser': (context) => const DeleteUserScreen(), // delete user
+        '/forgotpassword': (context) => const ForgotPasswordScreen(),
+        '/ResetPasswordScreen': (context) => const ResetPasswordScreen(token: '',),
       },
     );
   }
@@ -70,6 +74,27 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return const ForgotPasswordDesktop();
+          // if (constraints.maxWidth < 600) {
+          //   return const HomeMobile();
+          // } else if (constraints.maxWidth > 600 && constraints.maxWidth < 900) {
+          //   return const HomeTablet();
+          // } else {
+          //   return const HomeDesktop();
+          // }
+        },
+      ),
+    );
+  }
+}
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
