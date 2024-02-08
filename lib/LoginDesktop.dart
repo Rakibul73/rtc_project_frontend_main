@@ -234,7 +234,9 @@ class LoginDesktopState extends State<LoginDesktop> {
 
   _forgotPassword(context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/forgotpassword');
+      },
       child: const Text(
         "Forgot password?",
         style: TextStyle(color: Color.fromARGB(255, 3, 123, 236), fontSize: 16),
