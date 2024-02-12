@@ -10,7 +10,76 @@ const storage = FlutterSecureStorage();
 
 class ApiService {
   static Future<String?> getAccessToken() async {
+    print("getAccessToken called");
     return await storage.read(key: 'jwt_token');
+    // await userDataProvider.loadAsync();
+  }
+
+  static Future<Map<String, dynamic>> getTotalNumberOfAllDashboard() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_total_number_of_all_dashboard');
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        print("getTotalNumberOfAllDashboard = responseBody: $responseBody");
+        return responseBody;
+      } else if (response.statusCode == 401) {
+        print("getTotalNumberOfAllDashboard = Token expired");
+        return {'statuscode': 401}; // Return status code as a map
+      } else {
+        return {'statuscode': response.statusCode}; // Return status code as a map
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch total number of users: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUserDetails(int userId, Map<String, dynamic> userData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_user/$userId');
+    print("apiservice url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(userData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update user: ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
   }
 
   static Future<void> sendPasswordToEmail(String email) async {
@@ -41,7 +110,7 @@ class ApiService {
     }
   }
 
-  static Future<void> resetPassword(String token, String newPassword) async {
+  static Future<int> resetPassword(String token, String newPassword) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/reset_password/$token'),
@@ -55,15 +124,22 @@ class ApiService {
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         print('Password reset successfully: $responseBody for email ${responseBody['email']}');
-      } else {
-        throw Exception('Failed to reset password: ${response.body}');
+        return 200;
+      } else if (response.statusCode == 400) {
+        return 400;
+      }
+      else if (response.statusCode == 404) {
+        return 404;
+      }
+      else {
+        return response.statusCode;
       }
     } catch (e) {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
 
-  static Future<void> resetPasswordRequest(String email) async {
+  static Future<int> resetPasswordRequest(String email) async {
     final Uri url = Uri.parse('$baseUrl/reset_password_request');
     print("apiservice url: $url");
 
@@ -86,14 +162,18 @@ class ApiService {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      // final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
         // Password reset link sent successfully
         print('Password reset link sent to $email successfully');
-      } else {
+        return 200;
+      } else if (response.statusCode == 404) {
         // Handle failure
-        throw Exception('Failed to reset password: ${responseBody['message']}');
+        return 404;
+      }
+      else {
+        return response.statusCode;
       }
     } catch (e) {
       // Rethrow the exception to propagate it up the call stack.
@@ -134,6 +214,11 @@ class ApiService {
       },
     );
 
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      throw Exception('token expired , Again login');
+    }
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       return data;
