@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rtc_project_fronend/app_router.dart';
-import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/sidebar.dart';
 
@@ -34,6 +33,16 @@ final sidebarMenuConfigs = [
         uri: RouteUri.projecttracking,
         icon: Icons.circle_outlined,
         title: (context) => "Project Tracking",
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.projectprogressreport,
+        icon: Icons.circle_outlined,
+        title: (context) => "Project Progress Report",
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.billinformation,
+        icon: Icons.circle_outlined,
+        title: (context) => "Bill Information",
       ),
     ],
   ),

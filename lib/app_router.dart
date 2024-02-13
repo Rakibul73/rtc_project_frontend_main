@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
+import 'package:rtc_project_fronend/views/screens/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
@@ -28,6 +30,8 @@ class RouteUri {
   static const String searchproject = '/searchproject';
   static const String projecttracking = '/projecttracking';
   static const String projectdashboard = '/projectdashboard';
+  static const String billinformation = '/billinformation';
+  static const String projectprogressreport = '/projectprogressreport';
   static const String changepassword = '/changepassword';
 }
 
@@ -84,6 +88,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const SearchProjectScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectprogressreport,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectProgressReportScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.billinformation,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const BillInformationScreen(),
         ),
       ),
       GoRoute(
