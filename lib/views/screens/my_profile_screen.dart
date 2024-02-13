@@ -79,6 +79,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print(userDetails);
       print("=============*************================");
 
+      if (userDetails['statuscode'] == 401) {
+        // Handle token expiration
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {},
+        );
+        dialog.show();
+      }
+
       _formData.userProfileImageUrl = 'https://picsum.photos/id/1005/300/300';
       // _formData.userProfileImageUrl = 'http://127.0.0.1:8080/dashboard/zzz.png';
       _formData.username = userDetails['user']['Username'] ?? '';
@@ -106,7 +119,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return true;
   }
 
-  Future<void> _doSave(BuildContext context , UserDataProvider userDataProvider) async {
+  Future<void> _doSave(BuildContext context, UserDataProvider userDataProvider) async {
     AppFocusHelper.instance.requestUnfocus();
 
     print('do save start');
@@ -120,9 +133,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print('do save start if');
 
       await userDataProvider.setUserDataAsync(
-            firstname: _formData.firstName,
-            lastname: _formData.lastName,
-          );
+        firstname: _formData.firstName,
+        lastname: _formData.lastName,
+      );
 
       try {
         final updatedUserData = {
@@ -601,7 +614,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               height: 40.0,
               child: ElevatedButton(
                 style: themeData.extension<AppButtonTheme>()!.successElevated,
-                onPressed: () => _doSave(context , context.read<UserDataProvider>()),
+                onPressed: () => _doSave(context, context.read<UserDataProvider>()),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,

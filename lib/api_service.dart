@@ -217,7 +217,7 @@ class ApiService {
     print(response.statusCode);
     if (response.statusCode == 401) {
       print("token expired");
-      throw Exception('token expired , Again login');
+      return {'statuscode': 401};
     }
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
