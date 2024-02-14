@@ -50,6 +50,8 @@ dependencies:
   flutter_secure_storage: ^8.1.0
   http: ^0.13.6
 
+  date_utils: ^0.2.0
+
 dependency_overrides:
   # All these dependencies are for form_builder_asset_picker.
   # Can remove all overrides if not using form_builder_asset_picker package.
