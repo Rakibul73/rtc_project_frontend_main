@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -13,6 +14,31 @@ class ApiService {
     print("getAccessToken called");
     return await storage.read(key: 'jwt_token');
     // await userDataProvider.loadAsync();
+  }
+
+  static Future<Map<String, dynamic>> uploadFile(String endpoint, File file) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/$endpoint');
+    final request = http.MultipartRequest('POST', url)
+      ..headers['Authorization'] = 'Bearer $accessToken'
+      ..files.add(await http.MultipartFile.fromPath('file', file.path));
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 
   static Future<Map<String, dynamic>> getTotalNumberOfAllDashboard() async {

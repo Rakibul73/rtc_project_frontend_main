@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously, deprecated_member_use
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +104,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.experienceInResearch = userDetails['user']['ExperienceInResearch'] ?? 0;
       _formData.highestAcademicQualificationCountry = userDetails['user']['HighestAcademicQualificationCountry'] ?? '';
       _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+      _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
       _formData.highestAcademicQualificationYear = userDetails['user']['HighestAcademicQualificationYear'] ?? 0;
       _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
       _formData.teaching = userDetails['user']['Teaching'] ?? 0;
@@ -147,6 +148,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           'ExperienceInResearch': _formData.experienceInResearch,
           'HighestAcademicQualificationCountry': _formData.highestAcademicQualificationCountry,
           'HighestAcademicQualificationUniversity': _formData.highestAcademicQualificationUniversity,
+          'HighestAcademicQualification': _formData.highestAcademicQualification,
           'HighestAcademicQualificationYear': _formData.highestAcademicQualificationYear,
           'Phone': _formData.phone,
           'ProfilePicLocation': _formData.profilePicLocation,
@@ -210,7 +212,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         final dialog = AwesomeDialog(
           context: context,
           dialogType: DialogType.error,
-          title: "Error updating user: ${e}",
+          title: "Error updating user: $e",
           width: kDialogWidth,
           btnOkText: 'OK',
           btnOkOnPress: () {},
@@ -444,16 +446,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'highestAcademicQualificationCountry',
+              name: 'highestAcademicQualification',
               decoration: const InputDecoration(
-                labelText: 'highestAcademicQualificationCountry',
-                hintText: 'highestAcademicQualificationCountry',
+                labelText: 'highestAcademicQualification',
+                hintText: 'highestAcademicQualification',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.highestAcademicQualificationCountry,
+              initialValue: _formData.highestAcademicQualification,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.highestAcademicQualificationCountry = value ?? ''),
+              onSaved: (value) => (_formData.highestAcademicQualification = value ?? ''),
             ),
           ),
           Padding(
@@ -471,6 +473,22 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.highestAcademicQualificationUniversity = value ?? ''),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'highestAcademicQualificationCountry',
+              decoration: const InputDecoration(
+                labelText: 'highestAcademicQualificationCountry',
+                hintText: 'highestAcademicQualificationCountry',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.highestAcademicQualificationCountry,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.highestAcademicQualificationCountry = value ?? ''),
+            ),
+          ),
+          
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
@@ -649,6 +667,7 @@ class FormData {
   int experienceInResearch = 0;
   String highestAcademicQualificationCountry = '';
   String highestAcademicQualificationUniversity = '';
+  String highestAcademicQualification = '';
   int highestAcademicQualificationYear = 0;
   String phone = '';
   String profilePicLocation = '';
