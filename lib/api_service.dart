@@ -16,21 +16,29 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
-  static Future<Map<String, dynamic>> uploadFile(String endpoint, File file) async {
+  static Future<Map<String, dynamic>> uploadFile(String endpoint, file, fileBytes, fileName) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
     }
 
+    print("uploadFile accessToken: $accessToken");
+
     final Uri url = Uri.parse('$baseUrl/$endpoint');
     final request = http.MultipartRequest('POST', url)
       ..headers['Authorization'] = 'Bearer $accessToken'
-      ..files.add(await http.MultipartFile.fromPath('file', file.path));
+      ..files.add(http.MultipartFile.fromBytes(
+        'file',
+        fileBytes,
+        filename: fileName,
+      ));
+
+      print("uploadFile request: $request");
 
     try {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      
+
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -153,11 +161,9 @@ class ApiService {
         return 200;
       } else if (response.statusCode == 400) {
         return 400;
-      }
-      else if (response.statusCode == 404) {
+      } else if (response.statusCode == 404) {
         return 404;
-      }
-      else {
+      } else {
         return response.statusCode;
       }
     } catch (e) {
@@ -197,8 +203,7 @@ class ApiService {
       } else if (response.statusCode == 404) {
         // Handle failure
         return 404;
-      }
-      else {
+      } else {
         return response.statusCode;
       }
     } catch (e) {

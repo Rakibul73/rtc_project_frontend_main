@@ -49,8 +49,8 @@ dependencies:
   cupertino_icons: ^1.0.5
   flutter_secure_storage: ^8.1.0
   http: ^0.13.6
-
   date_utils: ^0.2.0
+  form_builder_file_picker: ^2.3.0
 
 dependency_overrides:
   # All these dependencies are for form_builder_asset_picker.

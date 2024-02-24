@@ -2,11 +2,13 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:html' as html;
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_asset_picker/form_builder_asset_picker.dart';
+import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
@@ -43,22 +45,39 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     });
 
     // Call _uploadSealFiles() to upload the selected files
-    _uploadSealFiles();
+    _uploadMethodologyFiles();
+  }
+
+  Future<void> _uploadMethodologyFiles() async {
+    if (_sealFiles != null && _sealFiles!.isNotEmpty) {
+      // try {
+        for (var file in _sealFiles!) {
+          final fileBytes = file.bytes!;
+          final fileName = file.name;
+          print(fileName);
+          final responseBody = await ApiService.uploadFile('methodology/upload', file , fileBytes, fileName);
+          print('File uploaded successfully');
+          // Handle success
+        }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No seal files selected');
+    }
   }
 
   // // Function to upload seal files to the server
-  // Future<void> _uploadSealFiles() async {
+  // Future<void> _uploadMethodologyFiles() async {
   //   if (_sealFiles != null) {
   //     // Iterate over each selected file and upload individually
   //     for (var platformFile in _sealFiles!) {
   //       try {
-  //         // Check if platformFile.bytes is not null
-  //         if (platformFile.bytes != null) {
-  //           // Convert bytes to File
-  //           Uint8List bytes = platformFile.bytes!;
-  //           final blob = html.Blob([bytes]);
-  //           final file = html.File([blob], platformFile.name);
-
+  //         // Check if platformFile.path is not null
+  //         if (platformFile.path != null) {
+  //           // Convert PlatformFile to File
+  //           File file = File(platformFile.path!);
   //           // Upload the file
   //           final responseBody = await ApiService.uploadFile('methodology/upload', file);
 
@@ -79,7 +98,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   //             final dialog = AwesomeDialog(
   //               context: context,
   //               dialogType: DialogType.error,
-  //               desc: "Failed to upload file: ${responseBody['message']}",
+  //               desc: "Failed to upload file: $responseBody",
   //               width: kDialogWidth,
   //               btnOkText: 'OK',
   //               btnOkOnPress: () {},
@@ -87,66 +106,16 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   //             dialog.show();
   //           }
   //         } else {
-  //           print('File bytes are null');
+  //           print('File path is null');
   //         }
   //       } catch (e) {
-  //         print('Failed to upload seal file: $e');
+  //         print('Failed to upload methodology file: $e');
   //       }
   //     }
   //   } else {
-  //     print('No seal file selected');
+  //     print('No methodology file selected');
   //   }
   // }
-
-  // Function to upload seal files to the server
-  Future<void> _uploadSealFiles() async {
-    if (_sealFiles != null) {
-      // Iterate over each selected file and upload individually
-      for (var platformFile in _sealFiles!) {
-        try {
-          // Check if platformFile.path is not null
-          if (platformFile.path != null) {
-            // Convert PlatformFile to File
-            File file = File(platformFile.path!);
-
-            // Upload the file
-            final responseBody = await ApiService.uploadFile('methodology/upload', file);
-
-            if (responseBody['statuscode'] == 200) {
-              print('File uploaded successfully');
-              // Handle success
-              final dialog = AwesomeDialog(
-                context: context,
-                dialogType: DialogType.success,
-                desc: "methodology File uploaded successfully",
-                width: kDialogWidth,
-                btnOkText: 'OK',
-                btnOkOnPress: () {},
-              );
-              dialog.show();
-            } else {
-              print('Failed to upload file: ${responseBody['message']}');
-              final dialog = AwesomeDialog(
-                context: context,
-                dialogType: DialogType.error,
-                desc: "Failed to upload file: $responseBody",
-                width: kDialogWidth,
-                btnOkText: 'OK',
-                btnOkOnPress: () {},
-              );
-              dialog.show();
-            }
-          } else {
-            print('File path is null');
-          }
-        } catch (e) {
-          print('Failed to upload seal file: $e');
-        }
-      }
-    } else {
-      print('No seal file selected');
-    }
-  }
 
   void _doSave() {
     AppFocusHelper.instance.requestUnfocus();
@@ -805,12 +774,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                     const SizedBox(width: kDefaultPadding),
                                     SizedBox(
                                       width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                                      child: FormBuilderAssetPicker(
+                                      child: FormBuilderFilePicker(
                                         name: 'methodology_file',
-                                        allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+                                        // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
                                         allowMultiple: true,
                                         maxFiles: 5,
-                                        type: FileType.custom,
+                                        type: FileType.any,
+                                        previewImages: true,
                                         decoration: const InputDecoration(
                                           labelText: 'Methodology File',
                                           border: OutlineInputBorder(),
@@ -821,6 +791,19 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             Text('Upload Methodology Flowchart / Diagram'),
                                           ],
                                         ),
+
+                                        // typeSelectors: [
+                                        //   TypeSelector(
+                                        //     type: FileType.custom,
+                                        //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+                                        //     selector: Row(
+                                        //       children: [
+                                        //         Icon(Icons.file_upload),
+                                        //         Text('Upload'),
+                                        //       ],
+                                        //     ),
+                                        //   ),
+                                        // ],
                                         onChanged: _onSealFileSelected,
                                       ),
                                     ),
