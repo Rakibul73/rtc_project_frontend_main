@@ -35,30 +35,114 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final List<Widget> budgetsummaryfields = [];
   Future<bool>? _future;
 
-  List<PlatformFile>? _sealFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _methodologyFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _creatorUserSignatureFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _creatorUserSealFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _chairmanOfDepartmentSealFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _chairmanOfDepartmentSignatureFiles; // Change to List<PlatformFile>?
+  String methodologyFileLocation = '';
+  String creatorUserSignatureFileLocation = '';
+  String creatorUserSealFileLocation = '';
+  String chairmanOfDepartmentSealFileLocation = '';
+  String chairmanOfDepartmentSignatureFileLocation = '';
 
-  // Function to handle seal file selection
-  void _onSealFileSelected(List<PlatformFile>? files) {
+  // Function to handle methodology file selection
+  void _onMethodologyFileSelected(List<PlatformFile>? files) {
     // Change parameter type to List<PlatformFile>?
     setState(() {
-      _sealFiles = files; // Update to assign the list of files
+      _methodologyFiles = files; // Update to assign the list of files
     });
 
-    // Call _uploadSealFiles() to upload the selected files
-    _uploadMethodologyFiles();
+    // Call _uploadSealFiles() to upload the selected files imidiately after selection
+    // _uploadMethodologyFiles();
+  }
+  // Function to handle creatorUserSignature file selection
+  void _onCreatorUserSignatureFileSelected(List<PlatformFile>? files) {
+    // Change parameter type to List<PlatformFile>?
+    setState(() {
+      _creatorUserSignatureFiles = files; // Update to assign the list of files
+    });
+  }
+  // Function to handle seal file selection
+  void _onCreatorUserSealFileSelected(List<PlatformFile>? files) {
+    // Change parameter type to List<PlatformFile>?
+    setState(() {
+      _creatorUserSealFiles = files; // Update to assign the list of files
+    });
+  }
+  // Function to handle seal file selection
+  void _onChairmanOfDepartmentSealFileSelected(List<PlatformFile>? files) {
+    // Change parameter type to List<PlatformFile>?
+    setState(() {
+      _chairmanOfDepartmentSealFiles = files; // Update to assign the list of files
+    });
+  }
+  // Function to handle seal file selection
+  void _onChairmanOfDepartmentSignatureFileSelected(List<PlatformFile>? files) {
+    // Change parameter type to List<PlatformFile>?
+    setState(() {
+      _chairmanOfDepartmentSignatureFiles = files; // Update to assign the list of files
+    });
   }
 
   Future<void> _uploadMethodologyFiles() async {
-    if (_sealFiles != null && _sealFiles!.isNotEmpty) {
+    if (_methodologyFiles != null && _methodologyFiles!.isNotEmpty) {
       // try {
-        for (var file in _sealFiles!) {
-          final fileBytes = file.bytes!;
-          final fileName = file.name;
-          print(fileName);
-          final responseBody = await ApiService.uploadFile('methodology/upload', file , fileBytes, fileName);
+      for (var file in _methodologyFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        methodologyFileLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('methodology/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
           print('File uploaded successfully');
-          // Handle success
         }
+        // Handle success
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No methodology files selected');
+    }
+  }
+
+  Future<void> _uploadCreatorUserSignatureFiles() async {
+    if (_creatorUserSignatureFiles != null && _creatorUserSignatureFiles!.isNotEmpty) {
+      // try {
+      for (var file in _creatorUserSignatureFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        creatorUserSignatureFileLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No signature files selected');
+    }
+  }
+
+  Future<void> _uploadCreatorUserSealFiles() async {
+    if (_creatorUserSealFiles != null && _creatorUserSealFiles!.isNotEmpty) {
+      // try {
+      for (var file in _creatorUserSealFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        creatorUserSealFileLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('File uploaded successfully');
+        }
+      }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
@@ -68,56 +152,51 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     }
   }
 
-  // // Function to upload seal files to the server
-  // Future<void> _uploadMethodologyFiles() async {
-  //   if (_sealFiles != null) {
-  //     // Iterate over each selected file and upload individually
-  //     for (var platformFile in _sealFiles!) {
-  //       try {
-  //         // Check if platformFile.path is not null
-  //         if (platformFile.path != null) {
-  //           // Convert PlatformFile to File
-  //           File file = File(platformFile.path!);
-  //           // Upload the file
-  //           final responseBody = await ApiService.uploadFile('methodology/upload', file);
+  Future<void> _uploadchairmanOfDepartmentSealFiles() async {
+    if (_chairmanOfDepartmentSealFiles != null && _chairmanOfDepartmentSealFiles!.isNotEmpty) {
+      // try {
+      for (var file in _chairmanOfDepartmentSealFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        chairmanOfDepartmentSealFileLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No seal files selected');
+    }
+  }
 
-  //           if (responseBody['statuscode'] == 200) {
-  //             print('File uploaded successfully');
-  //             // Handle success
-  //             final dialog = AwesomeDialog(
-  //               context: context,
-  //               dialogType: DialogType.success,
-  //               desc: "methodology File uploaded successfully",
-  //               width: kDialogWidth,
-  //               btnOkText: 'OK',
-  //               btnOkOnPress: () {},
-  //             );
-  //             dialog.show();
-  //           } else {
-  //             print('Failed to upload file: ${responseBody['message']}');
-  //             final dialog = AwesomeDialog(
-  //               context: context,
-  //               dialogType: DialogType.error,
-  //               desc: "Failed to upload file: $responseBody",
-  //               width: kDialogWidth,
-  //               btnOkText: 'OK',
-  //               btnOkOnPress: () {},
-  //             );
-  //             dialog.show();
-  //           }
-  //         } else {
-  //           print('File path is null');
-  //         }
-  //       } catch (e) {
-  //         print('Failed to upload methodology file: $e');
-  //       }
-  //     }
-  //   } else {
-  //     print('No methodology file selected');
-  //   }
-  // }
+  Future<void> _uploadchairmanOfDepartmentSignatureFiles() async {
+    if (_chairmanOfDepartmentSignatureFiles != null && _chairmanOfDepartmentSignatureFiles!.isNotEmpty) {
+      // try {
+      for (var file in _chairmanOfDepartmentSignatureFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        chairmanOfDepartmentSignatureFileLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No signature files selected');
+    }
+  }
 
-  void _doSave() {
+  Future<void> _doSave() async {
     AppFocusHelper.instance.requestUnfocus();
 
     print('do save start');
@@ -128,16 +207,99 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     if (_formKey_1.currentState!.validate()) {
       _formKey_1.currentState!.save();
 
-      print('do save');
-      final dialog = AwesomeDialog(
-        context: context,
-        dialogType: DialogType.success,
-        title: "Project created successfully.",
-        width: kDialogWidth,
-        btnOkText: 'OK',
-        btnOkOnPress: () {},
-      );
-      dialog.show();
+      // Call _uploadSealFiles() to upload the selected files
+      _uploadMethodologyFiles();
+      _uploadCreatorUserSignatureFiles();
+      _uploadCreatorUserSealFiles();
+      _uploadchairmanOfDepartmentSealFiles();
+      _uploadchairmanOfDepartmentSignatureFiles();
+
+      // read user id
+      final userId = await storage.read(key: 'user_id');
+      int userid = int.parse(userId!);
+
+      final createProjectData = {
+        'CodeByRTC': _formData.rtcCode,
+        'DateRecieved': _formData.dateOfReceived,
+        // Part I: Research Proposal Identification Data
+        'ProjectTitle': _formData.projectTitle,
+        'NatureOfResearchProposal': _formData.natureOfTheResearchProposal,
+        'NameOfCollaboratingDepartments': _formData.nameOfCollaboratingDepartmentInstitute,
+        'AddressOfCollaboratingDepartments': _formData.addressOfCollaboratingDepartmentInstitute,
+
+        /// extra field NameOfCollaboratingInstitutes AddressOfCollaboratingInstitutes
+        'NameOfCollaboratingInstitutes': _formData.nameOfCollaboratingDepartmentInstitute,
+        'AddressOfCollaboratingInstitutes': _formData.addressOfCollaboratingDepartmentInstitute,
+        'LocationOfFieldActivities': _formData.locationOfFieldActivities,
+        'DurationOfResearchProjectAnnual': _formData.annualDurationOfResearchProject,
+        'DurationOfResearchProjectLongTerm': _formData.longTermDurationOfResearchProject,
+        'TotalBudgetOfResearchProposalTK': _formData.totalBudgetOfResearchProposal,
+        'ExternalAgencyFundingSource': _formData.hasThisProposalBeenSubmittedToAnyOtherAgency,
+        'ExternalAgencyFundingSourcesName': _formData.nameOfTheAgency,
+        'ExternalAgencyFundingSourcesSubmissionDate': _formData.dateOfSubmission,
+        'CommitmentOtherResearchProject': _formData.isThereAnyCommitmentToOtherResearchProjectAsPiTeamLeader,
+        'CommitmentOtherResearchProjectName': _formData.nameOfTheProject,
+        // Part II: Outline of The Research Proposal
+        'ProjectDescription': _formData.introductionResearchProposal,
+        'MethodologyFileLocation': methodologyFileLocation,
+        'ProjectObjective': _formData.specificObjectivesProposal,
+        'PstuNationalGoal': _formData.relevanceStrategicDevelopmentGoals,
+        'PriorResearchOverview': _formData.briefReviewAlreadyPerformedReferences,
+        'Methodology': _formData.methodology,
+        'ExpectedOutput': _formData.expectedOutputs,
+        'SuccessIndicators': _formData.successIndicators,
+        'Beneficiaries': _formData.beneficiaries,
+        // Inputs
+        'ManPowerExisting': _formData.manPowerExisting,
+        'ManPowerRequired': _formData.manPowerRequired,
+        'SmallEquipmentExisting': _formData.smallEquipmentExisting,
+        'SmallEquipmentRequired': _formData.smallEquipmentRequired,
+        'ResearchMaterialsExisting': _formData.researchMaterialsExisting,
+        'ResearchMaterialsRequired': _formData.researchMaterialsRequired,
+        'OtherExisting': _formData.othersExisting,
+        'OtherRequired': _formData.othersRequired,
+        // Signature
+        'CreatorUserID': userid,
+        'CoPiUserID': userid,
+        'StudentUserID': userid,
+
+        'CreatorUserSealLocation': creatorUserSealFileLocation,
+        'CreatorUserSignatureLocation': creatorUserSignatureFileLocation,
+        'CreatorUserSignatureDate': _formData.dateOfPi,
+
+        'ChairmanOfDepartmentComment': _formData.commentsOfTheChairmanOfTheDepartment,
+        'ChairmanOfDepartmentSealLocation': chairmanOfDepartmentSealFileLocation,
+        'ChairmanOfDepartmentSignatureLocation': chairmanOfDepartmentSignatureFileLocation,
+        'ChairmanOfDepartmentSignatureDate': _formData.dateOfChairmanOfTheDepartment,
+      };
+
+      // here should make a pi request to create project with the createProjectData
+      final responseBody = await ApiService.createProject(createProjectData);
+
+      print('createproject.dart ----- responseBody: $responseBody');
+
+      if (responseBody['statuscode'] == 201) {
+        print('do save');
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          title: "Project created successfully.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {},
+        );
+        dialog.show();
+      } else {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          title: "Error creating project {responseBody['message']}: ${responseBody['message']} , {responseBody['error']}: ${responseBody['error']}.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {},
+        );
+        dialog.show();
+      }
     } else {
       final dialog = AwesomeDialog(
         context: context,
@@ -804,7 +966,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         //     ),
                                         //   ),
                                         // ],
-                                        onChanged: _onSealFileSelected,
+                                        onChanged: _onMethodologyFileSelected,
+                                        // onSaved: _onMethodologyFileSelected,
                                       ),
                                     ),
                                   ],
@@ -1578,6 +1741,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         Text('Upload'),
                                       ],
                                     ),
+                                    onChanged: _onCreatorUserSignatureFileSelected,
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
@@ -1633,6 +1797,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         Text('Upload'),
                                       ],
                                     ),
+                                    onChanged: _onCreatorUserSealFileSelected,
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
@@ -1687,6 +1852,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         Text('Upload'),
                                       ],
                                     ),
+                                    onChanged: _onChairmanOfDepartmentSignatureFileSelected,
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
@@ -1742,6 +1908,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         Text('Upload'),
                                       ],
                                     ),
+                                    onChanged: _onChairmanOfDepartmentSealFileSelected,
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),

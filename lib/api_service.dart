@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +13,44 @@ class ApiService {
     print("getAccessToken called");
     return await storage.read(key: 'jwt_token');
     // await userDataProvider.loadAsync();
+  }
+
+  static Future<Map<String, dynamic>> createProject(Map<String, dynamic> projectData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_projects');
+    print("createProject url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(projectData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Project created successfully
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to create project: ${responseBody['error']}');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
   }
 
   static Future<Map<String, dynamic>> uploadFile(String endpoint, file, fileBytes, fileName) async {
@@ -33,7 +70,7 @@ class ApiService {
         filename: fileName,
       ));
 
-      print("uploadFile request: $request");
+    print("uploadFile request: $request");
 
     try {
       final streamedResponse = await request.send();
