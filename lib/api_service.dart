@@ -15,6 +15,69 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<List<User>> getOnlyStudentUser() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_only_student_users');
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        List<User> users = [];
+        for (var item in jsonData['users']) {
+          users.add(User.fromJson(item));
+        }
+        return users;
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch total number of users: $e');
+    }
+  }
+  static Future<List<User>> getAllUsersExceptStudents() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_users_except_students');
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        List<User> users = [];
+        for (var item in jsonData['users']) {
+          users.add(User.fromJson(item));
+        }
+        return users;
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch total number of users: $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> createProject(Map<String, dynamic> projectData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -70,7 +133,7 @@ class ApiService {
         filename: fileName,
       ));
 
-    print("uploadFile request: $request");
+    // print("uploadFile request: $request");
 
     try {
       final streamedResponse = await request.send();
@@ -398,4 +461,40 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
+}
+
+class User {
+  final int userId;
+  final String username;
+  final String firstName;
+  final String lastName;
+
+  User({
+    required this.userId,
+    required this.username,
+    required this.firstName,
+    required this.lastName,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      userId: json['Userid'],
+      username: json['Username'],
+      firstName: json['FirstName'],
+      lastName: json['LastName'],
+    );
+  }
+
+  String getDisplayName() {
+    return '$firstName $lastName -- Username: $username';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is User && other.userId == userId;
+  }
+
+  @override
+  int get hashCode => userId.hashCode;
 }
