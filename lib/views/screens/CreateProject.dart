@@ -1,25 +1,19 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-import 'dart:convert';
-import 'dart:io';
-import 'dart:html' as html;
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_asset_picker/form_builder_asset_picker.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
-import 'package:rtc_project_fronend/views/widgets/url_new_tab_launcher.dart';
 
 class CreateProjectScreen extends StatefulWidget {
   const CreateProjectScreen({Key? key}) : super(key: key);
@@ -33,7 +27,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final _formData = FormData();
   final List<Widget> ganttfields = [];
   final List<Widget> budgetsummaryfields = [];
-  Future<bool>? _future;
 
   List<PlatformFile>? _methodologyFiles; // Change to List<PlatformFile>?
   List<PlatformFile>? _creatorUserSignatureFiles; // Change to List<PlatformFile>?
@@ -215,10 +208,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       await _uploadCreatorUserSealFiles();
       await _uploadchairmanOfDepartmentSealFiles();
       await _uploadchairmanOfDepartmentSignatureFiles();
-
-      // read user id
-      final userId = await storage.read(key: 'user_id');
-      int userid = int.parse(userId!);
 
       final createProjectData = {
         'CodeByRTC': _formData.rtcCode,
