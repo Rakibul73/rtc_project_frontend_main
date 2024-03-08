@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
@@ -99,21 +100,40 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.lastName = userDetails['user']['LastName'] ?? '';
       _formData.email = userDetails['user']['Email'] ?? '';
       _formData.phone = userDetails['user']['Phone'] ?? '';
-      _formData.address = userDetails['user']['Address'] ?? '';
+      _formData.dateOfBirth = userDetails['user']['Dateofbirth'] ?? '';
+      _formData.presentAddress = userDetails['user']['PresentAddress'] ?? '';
+      _formData.permanentAddress = userDetails['user']['PermanentAddress'] ?? '';
+      _formData.fullNameBangla = userDetails['user']['FullNameBangla'] ?? '';
+      _formData.positionEnglish = userDetails['user']['PositionEnglish'] ?? '';
+      _formData.positionBangla = userDetails['user']['PositionBangla'] ?? '';
+      _formData.positionHeldSince = userDetails['user']['PositionHeldSince'] ?? '';
+      _formData.gender = userDetails['user']['Gender'] ?? '';
+      _formData.nid = userDetails['user']['Nid'] ?? '';
+      _formData.nidLocation = userDetails['user']['NidLocation'] ?? '';
+      _formData.instituteName = userDetails['user']['InstituteName'] ?? '';
+      _formData.instituteLocation = userDetails['user']['InstituteLocation'] ?? '';
+      _formData.instituteEmail = userDetails['user']['InstituteEmail'] ?? '';
+      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? '';
+      _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? '';
+      _formData.sealLocation = userDetails['user']['SealLocation'] ?? '';
+      _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
+      _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
+      _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+      _formData.highestAcademicQualificationCountry = userDetails['user']['HighestAcademicQualificationCountry'] ?? '';
+      _formData.highestAcademicQualificationYear = userDetails['user']['HighestAcademicQualificationYear'] ?? 0;
       _formData.areaOfExpertise = userDetails['user']['AreaOfExpertise'] ?? '';
       _formData.experienceInResearch = userDetails['user']['ExperienceInResearch'] ?? 0;
-      _formData.highestAcademicQualificationCountry = userDetails['user']['HighestAcademicQualificationCountry'] ?? '';
-      _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
-      _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
-      _formData.highestAcademicQualificationYear = userDetails['user']['HighestAcademicQualificationYear'] ?? 0;
-      _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
       _formData.teaching = userDetails['user']['Teaching'] ?? 0;
       _formData.totalNumberOfCompleteProjects = userDetails['user']['TotalNumberOfCompleteProjects'] ?? 0;
       _formData.totalNumberOfCompletePublications = userDetails['user']['TotalNumberOfCompletePublications'] ?? 0;
       _formData.ongoingProjects = userDetails['user']['OngoingProjects'] ?? 0;
+      _formData.studentID = userDetails['user']['StudentID'] ?? '';
+      _formData.studentRegNo = userDetails['user']['StudentRegNo'] ?? '';
+      _formData.firstEnrollmentSemester = userDetails['user']['FirstEnrollmentSemester'] ?? '';
+      _formData.undergraduateCGPALevel = userDetails['user']['UndergraduateCGPALevel'] ?? '';
+
       _formData.userId = userDetails['user']['UserID'] ?? 0;
       _formData.rolename = getRoleName(userDetails['user']['RoleID']);
-      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? '';
       print("/////////////////////////////");
     });
 
@@ -140,24 +160,44 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       try {
         final updatedUserData = {
-          'username': _formData.username,
+          'Username': _formData.username,
           'FirstName': _formData.firstName,
           'LastName': _formData.lastName,
-          'Address': _formData.address,
+          'FullNameBangla': _formData.fullNameBangla,
+          'PositionEnglish': _formData.positionEnglish,
+          'PositionBangla': _formData.positionBangla,
+          'PositionHeldSince': _formData.positionHeldSince,
+          'Gender': _formData.gender,
+          // IF dob is '' empty string hen set it to NUll
+          'Dateofbirth': _formData.dateOfBirth == '' ? null : _formData.dateOfBirth,
+          'Phone': _formData.phone,
+          'Email': _formData.email,
+          'Nid': _formData.nid,
+          'NidLocation': _formData.nidLocation,
+          'InstituteName': _formData.instituteName,
+          'InstituteLocation': _formData.instituteLocation,
+          'InstituteEmail': _formData.instituteEmail,
+          'PresentAddress': _formData.presentAddress,
+          'PermanentAddress': _formData.permanentAddress,
+          'ProfilePicLocation': _formData.profilePicLocation,
+          'SignatureLocation': _formData.signatureLocation,
+          'SealLocation': _formData.sealLocation,
+          'SalaryScale': _formData.salaryScale,
+          'HighestAcademicQualification': _formData.highestAcademicQualification,
+          'HighestAcademicQualificationUniversity': _formData.highestAcademicQualificationUniversity,
+          'HighestAcademicQualificationCountry': _formData.highestAcademicQualificationCountry,
+          'HighestAcademicQualificationYear': _formData.highestAcademicQualificationYear,
           'AreaOfExpertise': _formData.areaOfExpertise,
           'ExperienceInResearch': _formData.experienceInResearch,
-          'HighestAcademicQualificationCountry': _formData.highestAcademicQualificationCountry,
-          'HighestAcademicQualificationUniversity': _formData.highestAcademicQualificationUniversity,
-          'HighestAcademicQualification': _formData.highestAcademicQualification,
-          'HighestAcademicQualificationYear': _formData.highestAcademicQualificationYear,
-          'Phone': _formData.phone,
-          'ProfilePicLocation': _formData.profilePicLocation,
-          'RoleID': getRoleId(_formData.rolename),
-          'SalaryScale': _formData.salaryScale,
           'Teaching': _formData.teaching,
           'TotalNumberOfCompleteProjects': _formData.totalNumberOfCompleteProjects,
           'TotalNumberOfCompletePublications': _formData.totalNumberOfCompletePublications,
           'OngoingProjects': _formData.ongoingProjects,
+          'StudentID': _formData.studentID,
+          'StudentRegNo': _formData.studentRegNo,
+          'FirstEnrollmentSemester': _formData.firstEnrollmentSemester,
+          'UndergraduateCGPALevel': _formData.undergraduateCGPALevel,
+          'RoleID': getRoleId(_formData.rolename),
         };
 
         final userId = _formData.userId;
@@ -295,10 +335,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _content(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
+    DateTime? initialDate = _formData.dateOfBirth != null && _formData.dateOfBirth!.isNotEmpty ? DateTime.parse(_formData.dateOfBirth) : null;
 
     return FormBuilder(
       key: _formKey,
-      autovalidateMode: AutovalidateMode.disabled,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -355,6 +396,149 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
+              name: 'firstName',
+              decoration: const InputDecoration(
+                labelText: 'First Name',
+                hintText: 'firstName',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.firstName,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.firstName = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'lastName',
+              decoration: const InputDecoration(
+                labelText: 'Last Name',
+                hintText: 'lastName',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.lastName,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.lastName = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'fullNameBangla',
+              decoration: const InputDecoration(
+                labelText: 'Full Name Bangla',
+                hintText: 'fullNameBangla',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.fullNameBangla,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.fullNameBangla = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'positionEnglish',
+              decoration: const InputDecoration(
+                labelText: 'Position English',
+                hintText: 'positionEnglish',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.positionEnglish,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.positionEnglish = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'positionBangla',
+              decoration: const InputDecoration(
+                labelText: 'Position Bangla',
+                hintText: 'positionBangla',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.positionBangla,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.positionBangla = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'positionHeldSince',
+              decoration: const InputDecoration(
+                labelText: 'Position Held Since',
+                hintText: 'positionHeldSince',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.positionHeldSince,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.positionHeldSince = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'gender',
+              decoration: const InputDecoration(
+                labelText: 'Gender',
+                hintText: 'gender',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.gender,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.gender = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderDateTimePicker(
+              name: 'dateOfBirth',
+              inputType: InputType.date,
+              decoration: const InputDecoration(
+                labelText: 'Date of birth',
+                hintText: 'dateOfBirth',
+                border: OutlineInputBorder(),
+              ),
+              initialValue: initialDate,
+              textAlign: TextAlign.center,
+              format: DateFormat("MMMM d, yyyy"),
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) {
+                if (value != null) {
+                  _formData.dateOfBirth = value.toString();
+                } else {
+                  _formData.dateOfBirth = '';
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'phone',
+              decoration: const InputDecoration(
+                labelText: 'Phone',
+                hintText: 'phone',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.phone,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.phone = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
               name: 'email',
               decoration: const InputDecoration(
                 labelText: 'Email',
@@ -371,76 +555,165 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'firstName',
+              name: 'nid',
               decoration: const InputDecoration(
-                labelText: 'firstName',
-                hintText: 'firstName',
+                labelText: 'Nid',
+                hintText: 'nid',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.firstName,
+              initialValue: _formData.nid,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.firstName = value ?? ''),
+              onSaved: (value) => (_formData.nid = value ?? ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'lastName',
+              name: 'nidphoto',
               decoration: const InputDecoration(
-                labelText: 'lastName',
-                hintText: 'lastName',
+                labelText: 'Nid Photo',
+                hintText: 'nidphoto',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.lastName,
+              initialValue: _formData.nidLocation,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.lastName = value ?? ''),
+              onSaved: (value) => (_formData.nidLocation = value ?? ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'address',
+              name: 'instituteName',
               decoration: const InputDecoration(
-                labelText: 'address',
-                hintText: 'address',
+                labelText: 'Institute Name',
+                hintText: 'instituteName',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.address,
+              initialValue: _formData.instituteName,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.address = value ?? ''),
+              onSaved: (value) => (_formData.instituteName = value ?? ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'areaOfExpertise',
+              name: 'instituteLocation',
               decoration: const InputDecoration(
-                labelText: 'areaOfExpertise',
-                hintText: 'areaOfExpertise',
+                labelText: 'Institute Location',
+                hintText: 'instituteLocation',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.areaOfExpertise,
+              initialValue: _formData.instituteLocation,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.areaOfExpertise = value ?? ''),
+              onSaved: (value) => (_formData.instituteLocation = value ?? ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'experienceInResearch',
+              name: 'instituteEmail',
               decoration: const InputDecoration(
-                labelText: 'experienceInResearch',
-                hintText: 'experienceInResearch',
+                labelText: 'Institute Email',
+                hintText: 'instituteEmail',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.experienceInResearch.toString(),
+              initialValue: _formData.instituteEmail,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.experienceInResearch = int.parse(value ?? '0')),
+              onSaved: (value) => (_formData.instituteEmail = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'presentAddress',
+              decoration: const InputDecoration(
+                labelText: 'Present Address',
+                hintText: 'presentAddress',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.presentAddress,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.presentAddress = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'permanentAddress',
+              decoration: const InputDecoration(
+                labelText: 'Permanent Address',
+                hintText: 'permanentAddress',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.permanentAddress,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.permanentAddress = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'profilePicLocation',
+              decoration: const InputDecoration(
+                labelText: 'Profile Pic Location',
+                hintText: 'profilePicLocation',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.profilePicLocation,
+              // validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.profilePicLocation = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'signatureLocation',
+              decoration: const InputDecoration(
+                labelText: 'Signature Location',
+                hintText: 'signatureLocation',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.signatureLocation,
+              onSaved: (value) => (_formData.signatureLocation = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'sealLocation',
+              decoration: const InputDecoration(
+                labelText: 'Seal Location',
+                hintText: 'sealLocation',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.sealLocation,
+              // validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.sealLocation = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'salaryScale',
+              decoration: const InputDecoration(
+                labelText: 'Salary Scale',
+                hintText: 'salaryScale',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.salaryScale.toString(),
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.salaryScale = int.parse(value ?? '0')),
             ),
           ),
           Padding(
@@ -448,7 +721,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'highestAcademicQualification',
               decoration: const InputDecoration(
-                labelText: 'highestAcademicQualification',
+                labelText: 'Highest Academic Qualification',
                 hintText: 'highestAcademicQualification',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -463,7 +736,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'highestAcademicQualificationUniversity',
               decoration: const InputDecoration(
-                labelText: 'highestAcademicQualificationUniversity',
+                labelText: 'Highest Academic Qualification University',
                 hintText: 'highestAcademicQualificationUniversity',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -478,7 +751,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'highestAcademicQualificationCountry',
               decoration: const InputDecoration(
-                labelText: 'highestAcademicQualificationCountry',
+                labelText: 'Highest Academic Qualification Country',
                 hintText: 'highestAcademicQualificationCountry',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -488,13 +761,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.highestAcademicQualificationCountry = value ?? ''),
             ),
           ),
-          
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
               name: 'highestAcademicQualificationYear',
               decoration: const InputDecoration(
-                labelText: 'highestAcademicQualificationYear',
+                labelText: 'Highest Academic Qualification Year',
                 hintText: 'highestAcademicQualificationYear',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -507,63 +779,31 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'phone',
+              name: 'areaOfExpertise',
               decoration: const InputDecoration(
-                labelText: 'phone',
-                hintText: 'phone',
+                labelText: 'Area Of Expertise',
+                hintText: 'areaOfExpertise',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.phone,
+              initialValue: _formData.areaOfExpertise,
               validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.phone = value ?? ''),
+              onSaved: (value) => (_formData.areaOfExpertise = value ?? ''),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
-              name: 'profilePicLocation',
+              name: 'experienceInResearch',
               decoration: const InputDecoration(
-                labelText: 'profilePicLocation',
-                hintText: 'profilePicLocation',
+                labelText: 'Experience In Research',
+                hintText: '(Years)',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
-              initialValue: _formData.profilePicLocation,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.profilePicLocation = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderDropdown(
-              name: 'roleId',
-              decoration: const InputDecoration(
-                labelText: 'roleId',
-                hintText: 'roleId',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              hint: const Text('Select'),
-              initialValue: _formData.rolename,
+              initialValue: _formData.experienceInResearch.toString(),
               validator: FormBuilderValidators.required(),
-              items: ['Admin', 'Researcher', 'Reviewer', 'Teacher', 'Student'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onSaved: (value) => (_formData.rolename = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'salaryScale',
-              decoration: const InputDecoration(
-                labelText: 'salaryScale',
-                hintText: 'salaryScale',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.salaryScale.toString(),
-              validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.salaryScale = int.parse(value ?? '0')),
+              onSaved: (value) => (_formData.experienceInResearch = int.parse(value ?? '0')),
             ),
           ),
           Padding(
@@ -571,8 +811,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'teaching',
               decoration: const InputDecoration(
-                labelText: 'teaching',
-                hintText: 'teaching',
+                labelText: 'Teaching Experience',
+                hintText: '(Years)',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
@@ -581,12 +821,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.teaching = int.parse(value ?? '0')),
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
               name: 'totalNumberOfCompleteProjects',
               decoration: const InputDecoration(
-                labelText: 'totalNumberOfCompleteProjects',
+                labelText: 'Total Number Of Complete Projects',
                 hintText: 'totalNumberOfCompleteProjects',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -601,7 +842,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'totalNumberOfCompletePublications',
               decoration: const InputDecoration(
-                labelText: 'totalNumberOfCompletePublications',
+                labelText: 'Total Number Of Complete Publications',
                 hintText: 'totalNumberOfCompletePublications',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -616,7 +857,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: FormBuilderTextField(
               name: 'ongoingProjects',
               decoration: const InputDecoration(
-                labelText: 'ongoingProjects',
+                labelText: 'Ongoing Projects',
                 hintText: 'ongoingProjects',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -624,6 +865,83 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               initialValue: _formData.ongoingProjects.toString(),
               validator: FormBuilderValidators.required(),
               onSaved: (value) => (_formData.ongoingProjects = int.parse(value ?? '0')),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'studentID',
+              decoration: const InputDecoration(
+                labelText: 'Student ID',
+                hintText: 'studentID',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.studentID.toString(),
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.studentID = int.parse(value ?? '0')),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'studentRegNo',
+              decoration: const InputDecoration(
+                labelText: 'Student Reg. No.',
+                hintText: 'studentRegNo',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.studentRegNo,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.studentRegNo = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'firstEnrollmentSemester',
+              decoration: const InputDecoration(
+                labelText: 'First Enrollment Semester',
+                hintText: 'firstEnrollmentSemester',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.firstEnrollmentSemester,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.firstEnrollmentSemester = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'undergraduateCGPALevel',
+              decoration: const InputDecoration(
+                labelText: 'Undergraduate CGPA Level',
+                hintText: 'undergraduateCGPALevel',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.undergraduateCGPALevel,
+              validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.undergraduateCGPALevel = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderDropdown(
+              name: 'roleId',
+              decoration: const InputDecoration(
+                labelText: 'Role',
+                hintText: 'roleId',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              hint: const Text('Select'),
+              initialValue: _formData.rolename,
+              validator: FormBuilderValidators.required(),
+              items: ['Admin', 'Researcher', 'Reviewer', 'Teacher', 'Student'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onSaved: (value) => (_formData.rolename = value ?? ''),
             ),
           ),
           Align(
@@ -659,23 +977,42 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 class FormData {
   String userProfileImageUrl = '';
   String username = '';
-  String email = '';
   String firstName = '';
   String lastName = '';
-  String address = '';
+  String fullNameBangla = '';
+  String positionEnglish = '';
+  String positionBangla = '';
+  String positionHeldSince = '';
+  String gender = '';
+  String dateOfBirth = '';
+  String phone = '';
+  String email = '';
+  String nid = '';
+  String nidLocation = '';
+  String instituteName = '';
+  String instituteLocation = '';
+  String instituteEmail = '';
+  String presentAddress = '';
+  String permanentAddress = '';
+  String profilePicLocation = '';
+  String signatureLocation = '';
+  String sealLocation = '';
+  int salaryScale = 0;
+  String highestAcademicQualification = '';
+  String highestAcademicQualificationUniversity = '';
+  String highestAcademicQualificationCountry = '';
+  int highestAcademicQualificationYear = 0;
   String areaOfExpertise = '';
   int experienceInResearch = 0;
-  String highestAcademicQualificationCountry = '';
-  String highestAcademicQualificationUniversity = '';
-  String highestAcademicQualification = '';
-  int highestAcademicQualificationYear = 0;
-  String phone = '';
-  String profilePicLocation = '';
-  String rolename = '';
-  int salaryScale = 0;
   int teaching = 0;
   int totalNumberOfCompleteProjects = 0;
   int totalNumberOfCompletePublications = 0;
   int ongoingProjects = 0;
+  int studentID = 0;
+  String studentRegNo = '';
+  String firstEnrollmentSemester = '';
+  String undergraduateCGPALevel = '';
+
+  String rolename = '';
   int userId = 0;
 }
