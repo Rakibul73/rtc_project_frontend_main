@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -1971,62 +1970,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                 ),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: kDefaultPadding),
-            //   child: Card(
-            //     clipBehavior: Clip.antiAlias,
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         const CardHeader(
-            //             title: "PART III: A. Brief Information of The Principal Investigator (PI)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
-            //         CardBody(
-            //           // here add dropdown list of pi
-            //           child: FutureBuilder<List<User>>(
-            //             future: ApiService.getAllUsersExceptStudents(),
-            //             builder: (context, snapshot) {
-            //               if (snapshot.connectionState == ConnectionState.waiting) {
-            //                 return const CircularProgressIndicator(); // Show loading indicator while fetching data
-            //               } else if (snapshot.hasError) {
-            //                 return Text('Error: ${snapshot.error}');
-            //               } else {
-            //                 return FormBuilderDropdown<User>(
-            //                   name: 'pi_name',
-            //                   decoration: const InputDecoration(
-            //                     labelText: 'PI Name',
-            //                     hintText: 'Select PI Name',
-            //                     border: OutlineInputBorder(),
-            //                     floatingLabelBehavior: FloatingLabelBehavior.always,
-            //                   ),
-            //                   validator: FormBuilderValidators.required(),
-            //                   items: snapshot.data!
-            //                       .map((user) => DropdownMenuItem<User>(
-            //                             value: user,
-            //                             child: Text(user.getDisplayName()),
-            //                           ))
-            //                       .toList(),
-            //                   onChanged: (User? user) {
-            //                     if (user != null) {
-            //                       setState(() {
-            //                         _formData.piUserID = user.userId;
-            //                       });
-            //                     }
-            //                   },
-            //                 );
-            //               }
-            //             },
-            //           ),
-            //         )
-
-            //         // CardBody(
-            //         //   child:
-            //         // ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            //
-
             Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding),
               child: LayoutBuilder(
@@ -2074,7 +2017,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                               onChanged: (User? user) {
                                                 if (user != null) {
                                                   setState(() {
-                                                    _formData.coPiUserID = user.userId;
+                                                    _formData.piUserID = user.userId;
                                                   });
                                                 }
                                               },
