@@ -82,10 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
           final firstName = userDetails['user']['FirstName'];
           final lastname = userDetails['user']['LastName'];
           final username = userDetails['user']['Username'];
+          final profilePicLocation = userDetails['user']['ProfilePicLocation'];
           await userDataProvider.setUserDataAsync(
             username: username,
             firstname: firstName,
             lastname: lastname,
+            profilePicLocation : profilePicLocation,
             userProfileImageUrl: 'https://picsum.photos/id/1005/300/300',
           );
           

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/master_layout_config.dart';
@@ -324,13 +327,36 @@ class SidebarHeader extends StatelessWidget {
       children: [
         Row(
           children: [
+            // Selector<UserDataProvider, String>(
+            //   selector: (context, provider) => provider.profilePicLocation,
+            //   builder: (context, value, child) {
+            //     return FutureBuilder<String>(
+            //       future: ApiService.fetchProfilePic(value),
+            //       builder: (context, snapshot) {
+            //         if (snapshot.connectionState == ConnectionState.waiting) {
+            //           return const CircularProgressIndicator();
+            //         } else if (snapshot.hasError) {
+            //           return Text('Error: ${snapshot.error}');
+            //         } else {
+            //           return CircleAvatar(
+            //             backgroundColor: Colors.white,
+            //             backgroundImage: MemoryImage(base64Decode(snapshot.data!)), // Convert base64 string to image bytes
+            //             radius: 20.0,
+            //           );
+            //         }
+            //       },
+            //     );
+            //   },
+            // ),
             Selector<UserDataProvider, String>(
-              selector: (context, provider) => provider.userProfileImageUrl,
+              selector: (context, provider) => provider.profilePicLocation,
               builder: (context, value, child) {
-                return CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: NetworkImage(value),
-                  radius: 20.0,
+                return Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: sidebarTheme.headerUsernameFontSize,
+                    color: sidebarTheme.foregroundColor,
+                  ),
                 );
               },
             ),

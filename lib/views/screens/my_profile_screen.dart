@@ -1,8 +1,11 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, deprecated_member_use
 
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +65,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         return 'Student';
       default:
         return 'Unknown';
+    }
+  }
+
+  List<PlatformFile>? _profilePicFiles; // Change to List<PlatformFile>?
+  void _onProfilePicFileSelected(List<PlatformFile>? files) {
+    setState(() {
+      _profilePicFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+    });
+  }
+
+  Future<void> _uploadProfilePicFiles() async {
+    if (_profilePicFiles != null && _profilePicFiles!.isNotEmpty) {
+      // try {
+      for (var file in _profilePicFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        _formData.profilePicLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('profile-pic/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('Profile Pic File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No profile pic files selected');
     }
   }
 
@@ -137,6 +169,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print("/////////////////////////////");
     });
 
+    // final profilePic = await ApiService.fetchProfilePic(_formData.profilePicLocation);
+    // print('profilePic: $profilePic');
+
     return true;
   }
 
@@ -150,6 +185,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      // Call _uploadProfilePicFiles() to upload the profile picture files
+      _uploadProfilePicFiles();
 
       print('do save start if');
 
@@ -344,40 +382,62 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // // Profile image
-          // Container(
-          //   alignment: Alignment.center,
-          //   padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-          //   child: Stack(
-          //     children: [
-          //       CircleAvatar(
-          //         backgroundColor: Colors.white,
-          //         backgroundImage: NetworkImage(_formData.userProfileImageUrl),
-          //         // backgroundImage: NetworkImage(_formData.userProfileImageUrl),
-          //         radius: 60.0,
-          //       ),
-          //       Positioned(
-          //         top: 0.0,
-          //         right: 0.0,
-          //         child: SizedBox(
-          //           height: 40.0,
-          //           width: 40.0,
-          //           child: ElevatedButton(
-          //             // image edit picker button
-          //             onPressed: () {},
-          //             style: themeData.extension<AppButtonTheme>()!.secondaryElevated.copyWith(
-          //                   shape: MaterialStateProperty.all(const CircleBorder()),
-          //                   padding: MaterialStateProperty.all(EdgeInsets.zero),
-          //                 ),
-          //             child: const Icon(
-          //               Icons.edit_rounded,
-          //               size: 20.0,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+            child: Stack(
+              children: [
+                FutureBuilder<String>(
+                  future: ApiService.fetchProfilePic(_formData.profilePicLocation),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: MemoryImage(base64Decode(snapshot.data!)), // Convert base64 string to image bytes
+                        radius: 60.0,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          FormBuilderFilePicker(
+            name: 'profile_pic',
+            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+            allowMultiple: false,
+            maxFiles: 1,
+            type: FileType.any,
+            previewImages: true,
+            decoration: const InputDecoration(
+              labelText: 'Select Profile Pic',
+              border: OutlineInputBorder(),
+            ),
+            selector: const Row(
+              children: [
+                Icon(Icons.file_upload_rounded),
+                Text('Upload'),
+              ],
+            ),
+            // typeSelectors: [
+            //   TypeSelector(
+            //     type: FileType.custom,
+            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+            //     selector: Row(
+            //       children: [
+            //         Icon(Icons.file_upload),
+            //         Text('Upload'),
+            //       ],
+            //     ),
+            //   ),
+            // ],
+            onChanged: _onProfilePicFileSelected,
+          ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
             child: FormBuilderTextField(
@@ -701,6 +761,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.sealLocation = value ?? ''),
             ),
           ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(

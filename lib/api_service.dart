@@ -15,6 +15,37 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<String> fetchProfilePic(String filename) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/profile-pic/download/$filename');
+    print("fetchProfilePic url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+      print("fetchProfilePic = response: $response");
+
+      if (response.statusCode == 200) {
+        return base64Encode(response.bodyBytes); // Convert image bytes to base64 string
+      } else {
+        print("fetchProfilePic = Failed to fetch profile picture");
+        throw Exception('Failed to fetch profile picture');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch profile picture');
+    }
+  }
+
   static Future<Map<String, dynamic>> getProjectDashboard() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -78,6 +109,7 @@ class ApiService {
       throw Exception('Failed to fetch total number of users: $e');
     }
   }
+
   static Future<List<User>> getAllUsersExceptStudents() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

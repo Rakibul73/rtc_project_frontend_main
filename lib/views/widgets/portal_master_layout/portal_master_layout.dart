@@ -215,7 +215,6 @@ class ResponsiveAppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lang = Lang.of(context);
     final mediaQueryData = MediaQuery.of(context);
 
     return MouseRegion(
