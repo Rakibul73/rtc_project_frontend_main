@@ -327,39 +327,39 @@ class SidebarHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            // Selector<UserDataProvider, String>(
-            //   selector: (context, provider) => provider.profilePicLocation,
-            //   builder: (context, value, child) {
-            //     return FutureBuilder<String>(
-            //       future: ApiService.fetchProfilePic(value),
-            //       builder: (context, snapshot) {
-            //         if (snapshot.connectionState == ConnectionState.waiting) {
-            //           return const CircularProgressIndicator();
-            //         } else if (snapshot.hasError) {
-            //           return Text('Error: ${snapshot.error}');
-            //         } else {
-            //           return CircleAvatar(
-            //             backgroundColor: Colors.white,
-            //             backgroundImage: MemoryImage(base64Decode(snapshot.data!)), // Convert base64 string to image bytes
-            //             radius: 20.0,
-            //           );
-            //         }
-            //       },
-            //     );
-            //   },
-            // ),
             Selector<UserDataProvider, String>(
               selector: (context, provider) => provider.profilePicLocation,
               builder: (context, value, child) {
-                return Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: sidebarTheme.headerUsernameFontSize,
-                    color: sidebarTheme.foregroundColor,
-                  ),
+                return FutureBuilder<String>(
+                  future: ApiService.fetchProfilePic(value),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: MemoryImage(base64Decode(snapshot.data!)), // Convert base64 string to image bytes
+                        radius: 20.0,
+                      );
+                    }
+                  },
                 );
               },
             ),
+            // Selector<UserDataProvider, String>(
+            //   selector: (context, provider) => provider.profilePicLocation,
+            //   builder: (context, value, child) {
+            //     return Text(
+            //       value,
+            //       style: TextStyle(
+            //         fontSize: sidebarTheme.headerUsernameFontSize,
+            //         color: sidebarTheme.foregroundColor,
+            //       ),
+            //     );
+            //   },
+            // ),
             const SizedBox(width: kDefaultPadding * 0.5),
             Selector<UserDataProvider, String>(
               selector: (context, provider) => provider.firstname,

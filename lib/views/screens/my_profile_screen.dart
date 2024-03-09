@@ -125,6 +125,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         dialog.show();
       }
 
+      print(userDetails['user']['PresentAddress']);
+
       _formData.userProfileImageUrl = 'https://picsum.photos/id/1005/300/300';
       // _formData.userProfileImageUrl = 'http://127.0.0.1:8080/dashboard/zzz.png';
       _formData.username = userDetails['user']['Username'] ?? '';
@@ -145,32 +147,44 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.instituteName = userDetails['user']['InstituteName'] ?? '';
       _formData.instituteLocation = userDetails['user']['InstituteLocation'] ?? '';
       _formData.instituteEmail = userDetails['user']['InstituteEmail'] ?? '';
-      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? '';
+      print(" Institute Email: ${_formData.instituteEmail}");
+
+      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'zzzz.png';
+      print(" presentAddress: ${_formData.presentAddress}");
       _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? '';
+      print(" Signature Location: ${_formData.signatureLocation}");
       _formData.sealLocation = userDetails['user']['SealLocation'] ?? '';
       _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
       _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
       _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+
       _formData.highestAcademicQualificationCountry = userDetails['user']['HighestAcademicQualificationCountry'] ?? '';
       _formData.highestAcademicQualificationYear = userDetails['user']['HighestAcademicQualificationYear'] ?? 0;
       _formData.areaOfExpertise = userDetails['user']['AreaOfExpertise'] ?? '';
       _formData.experienceInResearch = userDetails['user']['ExperienceInResearch'] ?? 0;
       _formData.teaching = userDetails['user']['Teaching'] ?? 0;
+
       _formData.totalNumberOfCompleteProjects = userDetails['user']['TotalNumberOfCompleteProjects'] ?? 0;
       _formData.totalNumberOfCompletePublications = userDetails['user']['TotalNumberOfCompletePublications'] ?? 0;
       _formData.ongoingProjects = userDetails['user']['OngoingProjects'] ?? 0;
-      _formData.studentID = userDetails['user']['StudentID'] ?? '';
-      _formData.studentRegNo = userDetails['user']['StudentRegNo'] ?? '';
-      _formData.firstEnrollmentSemester = userDetails['user']['FirstEnrollmentSemester'] ?? '';
-      _formData.undergraduateCGPALevel = userDetails['user']['UndergraduateCGPALevel'] ?? '';
-
       _formData.userId = userDetails['user']['UserID'] ?? 0;
       _formData.rolename = getRoleName(userDetails['user']['RoleID']);
+      print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+      _formData.studentID = userDetails['user']['StudentID'] ?? 0;
+      print("xxxxxxxx                               xxxxxxxxxxxxx");
+
+      _formData.studentRegNo = userDetails['user']['StudentRegNo'] ?? '';
+
+      _formData.firstEnrollmentSemester = userDetails['user']['FirstEnrollmentSemester'] ?? '';
+
+      _formData.undergraduateCGPALevel = userDetails['user']['UndergraduateCGPALevel'] ?? '';
+
       print("/////////////////////////////");
     });
 
     // final profilePic = await ApiService.fetchProfilePic(_formData.profilePicLocation);
-    // print('profilePic: $profilePic');
+    print("Student ID: ${_formData.studentID}");
 
     return true;
   }
@@ -388,7 +402,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Stack(
               children: [
                 FutureBuilder<String>(
-                  future: ApiService.fetchProfilePic(_formData.profilePicLocation),
+                  future: _formData.profilePicLocation.isNotEmpty ? ApiService.fetchProfilePic(_formData.profilePicLocation) : Future.value(""), // Check if value is not empty before making the API call
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();

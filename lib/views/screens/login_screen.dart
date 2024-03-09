@@ -78,19 +78,28 @@ class _LoginScreenState extends State<LoginScreen> {
           await storage.write(key: 'user_id', value: (response['user_id']).toString());
           await storage.write(key: 'statuscode', value: response['statuscode'].toString());
 
-          final userDetails = await ApiService.getSpecificUser(response['user_id'], );
+          final userDetails = await ApiService.getSpecificUser(
+            response['user_id'],
+          );
           final firstName = userDetails['user']['FirstName'];
           final lastname = userDetails['user']['LastName'];
           final username = userDetails['user']['Username'];
-          final profilePicLocation = userDetails['user']['ProfilePicLocation'];
+          // String ss;
+          // if(userDetails['user']['ProfilePicLocation'] == null){
+          //   ss = 'zzzz.png';
+          // }
+          // else{
+          //   ss = userDetails['user']['ProfilePicLocation'];
+          // }
+          // final profilePicLocation = ss;
+          final profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'zzzz.png';
           await userDataProvider.setUserDataAsync(
             username: username,
             firstname: firstName,
             lastname: lastname,
-            profilePicLocation : profilePicLocation,
+            profilePicLocation: profilePicLocation,
             userProfileImageUrl: 'https://picsum.photos/id/1005/300/300',
           );
-          
 
           onSuccess.call();
           print("ssssssssssssssssssssssssssssss");
@@ -149,7 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       "PSTU Research & Training Center",
                       style: themeData.textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 22.0,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 22.0,
                       ),
                     ),
                     const SizedBox(height: 5),

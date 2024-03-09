@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/generated/l10n.dart';
-import 'package:rtc_project_fronend/master_layout_config.dart';
-import 'package:rtc_project_fronend/providers/app_preferences_provider.dart';
-import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
 
 class PublicMasterLayout extends StatelessWidget {
   final Widget body;
