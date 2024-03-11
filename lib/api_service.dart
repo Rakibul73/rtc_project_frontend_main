@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const String baseUrl = 'http://localhost:5000';
+const String baseUrl = 'http://192.168.1.188:5000';
+// const String baseUrl = 'http://localhost:5000';
 const storage = FlutterSecureStorage();
 
 class ApiService {
@@ -15,14 +16,14 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
-  static Future<String> fetchProfilePic(String filename) async {
+  static Future<String> fetchPicFile(String endpoint , String filename) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
     }
 
-    final Uri url = Uri.parse('$baseUrl/profile-pic/download/$filename');
-    print("fetchProfilePic url: $url");
+    final Uri url = Uri.parse('$baseUrl/$endpoint/$filename');
+    print("fetchPicFile url: $url");
 
     try {
       final http.Response response = await http.get(
@@ -33,16 +34,15 @@ class ApiService {
           'Content-Type': 'application/json',
         },
       );
-      print("fetchProfilePic = response: $response");
 
       if (response.statusCode == 200) {
         return base64Encode(response.bodyBytes); // Convert image bytes to base64 string
       } else {
-        print("fetchProfilePic = Failed to fetch profile picture");
-        throw Exception('Failed to fetch profile picture');
+        print("fetchPicFile = Failed to fetch $endpoint: ${response.statusCode} $filename");
+        throw Exception('Failed to fetch $endpoint: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to fetch profile picture');
+      throw Exception('Failed to fetch $endpoint: $e');
     }
   }
 
