@@ -3,10 +3,12 @@ import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/screens/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
+import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/error_screen.dart';
 import 'package:rtc_project_fronend/views/screens/forgot_pass.dart';
@@ -32,6 +34,8 @@ class RouteUri {
   static const String projectdashboard = '/projectdashboard';
   static const String billinformation = '/billinformation';
   static const String projectprogressreport = '/projectprogressreport';
+  static const String viewallusers = '/viewallusers';
+  static const String deleteuser = '/deleteuser';
   static const String changepassword = '/changepassword';
 }
 
@@ -116,6 +120,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectTrackingScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.deleteuser,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const DeleteUserScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.viewallusers,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ViewAllUsersScreen(),
         ),
       ),
       GoRoute(
