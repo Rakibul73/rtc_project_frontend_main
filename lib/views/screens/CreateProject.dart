@@ -1719,86 +1719,106 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           builder: (context, constraints) {
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              
-                              children:  [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                    child: Stack(
-                                      children: [
-                                        FutureBuilder<String>(
-                                          future: _formData.piSignatureLocation.isNotEmpty
-                                              ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                                              : Future.value(""), // Check if value is not empty before making the API call
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const CircularProgressIndicator();
-                                            } else if (snapshot.hasError) {
-                                              return Text('Error: ${snapshot.error}');
-                                            } else {
-                                              return Image.memory(
-                                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                // width: 120, // Adjust width as needed
-                                                height: 50, // Adjust height as needed
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
+                              children: [
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('PI Signature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                      child: Stack(
+                                        children: [
+                                          FutureBuilder<String>(
+                                            future: _formData.piSignatureLocation.isNotEmpty
+                                                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
+                                                : Future.value(""), // Check if value is not empty before making the API call
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text('Error: ${snapshot.error}');
+                                              } else {
+                                                return Image.memory(
+                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                  // width: 120, // Adjust width as needed
+                                                  height: 50, // Adjust height as needed
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ]),
                                 const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderDateTimePicker(
-                                    name: 'pi_signature_date',
-                                    inputType: InputType.date,
-                                    decoration: const InputDecoration(
-                                      labelText: 'PI Signature Date',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                    initialValue: DateTime.now(),
-                                    textAlign: TextAlign.center,
-                                    format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-                                    onChanged: (value) => (_formData.piSignatureDate = value.toString()),
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('PI Signature Date', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
-                                ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: FormBuilderDateTimePicker(
+                                      name: 'pi_signature_date',
+                                      inputType: InputType.date,
+                                      decoration: const InputDecoration(
+                                        labelText: 'PI Signature Date',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      initialTime: const TimeOfDay(hour: 8, minute: 0),
+                                      initialValue: DateTime.now(),
+                                      textAlign: TextAlign.center,
+                                      format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
+                                      onChanged: (value) => (_formData.piSignatureDate = value.toString()),
+                                    ),
+                                  ),
+                                ]),
                                 const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                    child: Stack(
-                                      children: [
-                                        FutureBuilder<String>(
-                                          future: _formData.piSealLocation.isNotEmpty
-                                              ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                                              : Future.value(""), // Check if value is not empty before making the API call
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return const CircularProgressIndicator();
-                                            } else if (snapshot.hasError) {
-                                              return Text('Error: ${snapshot.error}');
-                                            } else {
-                                              return Image.memory(
-                                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                // width: 120, // Adjust width as needed
-                                                height: 50, // Adjust height as needed
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('PI Seal', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                      child: Stack(
+                                        children: [
+                                          FutureBuilder<String>(
+                                            future: _formData.piSealLocation.isNotEmpty
+                                                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
+                                                : Future.value(""), // Check if value is not empty before making the API call
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return const CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text('Error: ${snapshot.error}');
+                                              } else {
+                                                return Image.memory(
+                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                  // width: 120, // Adjust width as needed
+                                                  height: 50, // Adjust height as needed
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ])
                               ],
                             );
                           },
@@ -1828,113 +1848,175 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                                  child: FormBuilderFilePicker(
-                                    name: 'signature_of_the_chairman_of_the_department',
-                                    // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-                                    allowMultiple: false,
-                                    maxFiles: 1,
-                                    type: FileType.any,
-                                    previewImages: true,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Signature of the Chairman of the Department',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    selector: const Row(
-                                      children: [
-                                        Icon(Icons.file_upload_rounded),
-                                        Text('Upload'),
-                                      ],
-                                    ),
-                                    // typeSelectors: [
-                                    //   TypeSelector(
-                                    //     type: FileType.custom,
-                                    //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
-                                    //     selector: Row(
-                                    //       children: [
-                                    //         Icon(Icons.file_upload),
-                                    //         Text('Upload'),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ],
-                                    onChanged: _onChairmanOfDepartmentSignatureFileSelected,
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('Chairman of the Department Signature', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                                  child: const Text('Show Signature of the Chairman of the Department'),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderDateTimePicker(
-                                    name: 'date_of_chairman_of_the_department',
-                                    inputType: InputType.date,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Date',
-                                      border: OutlineInputBorder(),
+                                  const SizedBox(height: kDefaultPadding),
+                                  // SizedBox(
+                                  //   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                  //   child: Container(
+                                  //     alignment: Alignment.center,
+                                  //     padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                  //     child: Stack(
+                                  //       children: [
+                                  //         FutureBuilder<String>(
+                                  //           future: chairmanOfDepartmentSignatureFileLocation.isNotEmpty
+                                  //               ? ApiService.fetchPicFile('signature/download', chairmanOfDepartmentSignatureFileLocation)
+                                  //               : Future.value(""), // Check if value is not empty before making the API call
+                                  //           builder: (context, snapshot) {
+                                  //             if (snapshot.connectionState == ConnectionState.waiting) {
+                                  //               return const CircularProgressIndicator();
+                                  //             } else if (snapshot.hasError) {
+                                  //               return Text('Error: ${snapshot.error}');
+                                  //             } else {
+                                  //               return Image.memory(
+                                  //                 base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                  //                 fit: BoxFit.cover, // Adjust image to cover the entire space
+                                  //                 // width: 120, // Adjust width as needed
+                                  //                 height: 50, // Adjust height as needed
+                                  //               );
+                                  //             }
+                                  //           },
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: FormBuilderFilePicker(
+                                      name: 'signature_of_the_chairman_of_the_department',
+                                      // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+                                      allowMultiple: false,
+                                      maxFiles: 1,
+                                      type: FileType.any,
+                                      previewImages: true,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Chairman of the Department Signature',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      selector: const Row(
+                                        children: [
+                                          Icon(Icons.file_upload_rounded),
+                                          Text('Upload'),
+                                        ],
+                                      ),
+                                      // typeSelectors: [
+                                      //   TypeSelector(
+                                      //     type: FileType.custom,
+                                      //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+                                      //     selector: Row(
+                                      //       children: [
+                                      //         Icon(Icons.file_upload),
+                                      //         Text('Upload'),
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ],
+                                      onChanged: _onChairmanOfDepartmentSignatureFileSelected,
                                     ),
-                                    initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                    initialValue: DateTime.now(),
-                                    textAlign: TextAlign.center,
-                                    format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-                                    onChanged: (value) => (_formData.dateOfChairmanOfTheDepartment = value.toString()),
                                   ),
-                                ),
+                                ]),
                                 const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderFilePicker(
-                                    name: 'seal_of_the_chairman_of_the_department',
-                                    // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-                                    allowMultiple: false,
-                                    maxFiles: 1,
-                                    type: FileType.any,
-                                    previewImages: true,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Seal of the Chairman of the Department',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    selector: const Row(
-                                      children: [
-                                        Icon(Icons.file_upload_rounded),
-                                        Text('Upload'),
-                                      ],
-                                    ),
-                                    // typeSelectors: [
-                                    //   TypeSelector(
-                                    //     type: FileType.custom,
-                                    //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
-                                    //     selector: Row(
-                                    //       children: [
-                                    //         Icon(Icons.file_upload),
-                                    //         Text('Upload'),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ],
-                                    onChanged: _onChairmanOfDepartmentSealFileSelected,
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('Chairman Signature Date', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
-                                ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: FormBuilderDateTimePicker(
+                                      name: 'date_of_chairman_of_the_department',
+                                      inputType: InputType.date,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Chairman Signature Date',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      initialTime: const TimeOfDay(hour: 8, minute: 0),
+                                      initialValue: DateTime.now(),
+                                      textAlign: TextAlign.center,
+                                      format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
+                                      onChanged: (value) => (_formData.dateOfChairmanOfTheDepartment = value.toString()),
+                                    ),
+                                  ),
+                                ]),
                                 const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: const Text('Show Seal of the Chairman of the Department'),
-                                ),
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: const Text('Chairman of the Department Seal', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  // SizedBox(
+                                  //   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                  //   child: Container(
+                                  //     alignment: Alignment.center,
+                                  //     padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                  //     child: Stack(
+                                  //       children: [
+                                  //         FutureBuilder<String>(
+                                  //           future: chairmanOfDepartmentSealFileLocation.isNotEmpty
+                                  //               ? ApiService.fetchPicFile('seal/download', chairmanOfDepartmentSealFileLocation)
+                                  //               : Future.value(""), // Check if value is not empty before making the API call
+                                  //           builder: (context, snapshot) {
+                                  //             if (snapshot.connectionState == ConnectionState.waiting) {
+                                  //               return const CircularProgressIndicator();
+                                  //             } else if (snapshot.hasError) {
+                                  //               return Text('Error: ${snapshot.error}');
+                                  //             } else {
+                                  //               return Image.memory(
+                                  //                 base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                  //                 fit: BoxFit.cover, // Adjust image to cover the entire space
+                                  //                 // width: 120, // Adjust width as needed
+                                  //                 height: 50, // Adjust height as needed
+                                  //               );
+                                  //             }
+                                  //           },
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: FormBuilderFilePicker(
+                                      name: 'seal_of_the_chairman_of_the_department',
+                                      // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+                                      allowMultiple: false,
+                                      maxFiles: 1,
+                                      type: FileType.any,
+                                      previewImages: true,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Chairman of the Department Seal',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      selector: const Row(
+                                        children: [
+                                          Icon(Icons.file_upload_rounded),
+                                          Text('Upload'),
+                                        ],
+                                      ),
+                                      // typeSelectors: [
+                                      //   TypeSelector(
+                                      //     type: FileType.custom,
+                                      //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+                                      //     selector: Row(
+                                      //       children: [
+                                      //         Icon(Icons.file_upload),
+                                      //         Text('Upload'),
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ],
+                                      onChanged: _onChairmanOfDepartmentSealFileSelected,
+                                    ),
+                                  ),
+                                ]),
                               ],
                             );
                           },
