@@ -4,11 +4,13 @@ import 'package:rtc_project_fronend/views/screens/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/MyProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/error_screen.dart';
 import 'package:rtc_project_fronend/views/screens/forgot_pass.dart';
@@ -30,6 +32,8 @@ class RouteUri {
   static const String resetpassscreen = '/resetpassscreen';
   static const String createproject = '/createproject';
   static const String searchproject = '/searchproject';
+  static const String myprojects = '/myprojects';
+  static const String viewproject = '/viewproject';
   static const String projecttracking = '/projecttracking';
   static const String projectdashboard = '/projectdashboard';
   static const String billinformation = '/billinformation';
@@ -92,6 +96,21 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const SearchProjectScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.myprojects,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MyProjectScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.viewproject,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ViewProjectScreen(),
+          // child: const ViewProjectScreen(id: state.queryParameters['ProjectID'] ?? ''),
         ),
       ),
       GoRoute(
