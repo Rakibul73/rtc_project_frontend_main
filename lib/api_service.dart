@@ -16,7 +16,39 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
-  static Future<String> fetchPicFile(String endpoint , String filename) async {
+  static Future<List<dynamic>> fetchAllProjects() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/projects');
+    print("fetchAllProjects url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // print(data['projects']);
+        return data['projects'];
+      } else {
+        print("fetchAllProjects = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
+  static Future<String> fetchPicFile(String endpoint, String filename) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');

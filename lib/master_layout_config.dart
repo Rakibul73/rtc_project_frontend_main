@@ -25,9 +25,9 @@ final sidebarMenuConfigs = [
         title: (context) => "Create Project",
       ),
       SidebarChildMenuConfig(
-        uri: RouteUri.searchproject,
+        uri: RouteUri.myprojects,
         icon: Icons.circle_outlined,
-        title: (context) => "Search Project",
+        title: (context) => "My Projects",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projecttracking,
@@ -43,6 +43,11 @@ final sidebarMenuConfigs = [
         uri: RouteUri.billinformation,
         icon: Icons.circle_outlined,
         title: (context) => "Bill Information",
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.searchproject,
+        icon: Icons.circle_outlined,
+        title: (context) => "Search All Project",
       ),
     ],
   ),
