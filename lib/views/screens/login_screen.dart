@@ -86,13 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
           final username = userDetails['user']['Username'];
           // String ss;
           // if(userDetails['user']['ProfilePicLocation'] == null){
-          //   ss = 'zzzz.png';
+          //   ss = 'defaultprofilepic.png';
           // }
           // else{
           //   ss = userDetails['user']['ProfilePicLocation'];
           // }
           // final profilePicLocation = ss;
-          final profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'zzzz.png';
+          final profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'defaultprofilepic.png';
           await userDataProvider.setUserDataAsync(
             username: username,
             firstname: firstName,

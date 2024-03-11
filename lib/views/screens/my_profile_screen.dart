@@ -68,10 +68,31 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
-  List<PlatformFile>? _profilePicFiles; // Change to List<PlatformFile>?
+  List<PlatformFile>? _profilePicFiles;
+  List<PlatformFile>? _signatureFiles;
+  List<PlatformFile>? _sealFiles;
+  List<PlatformFile>? _nidFiles;
   void _onProfilePicFileSelected(List<PlatformFile>? files) {
     setState(() {
       _profilePicFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+    });
+  }
+
+  void _onSignatureFileSelected(List<PlatformFile>? files) {
+    setState(() {
+      _signatureFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+    });
+  }
+
+  void _onSealFileSelected(List<PlatformFile>? files) {
+    setState(() {
+      _sealFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+    });
+  }
+
+  void _onNidFileSelected(List<PlatformFile>? files) {
+    setState(() {
+      _nidFiles = files != null ? List.from(files) : null; // Update to assign the list of files
     });
   }
 
@@ -94,6 +115,72 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // }
     } else {
       print('No profile pic files selected');
+    }
+  }
+
+  Future<void> _uploadSignatureFiles() async {
+    if (_signatureFiles != null && _signatureFiles!.isNotEmpty) {
+      // try {
+      for (var file in _signatureFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        _formData.signatureLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('Signature File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No Signature files selected');
+    }
+  }
+
+  Future<void> _uploadSealFiles() async {
+    if (_sealFiles != null && _sealFiles!.isNotEmpty) {
+      // try {
+      for (var file in _sealFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        _formData.sealLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('Seal File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload seal files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No Seal files selected');
+    }
+  }
+
+  Future<void> _uploadNidFiles() async {
+    if (_nidFiles != null && _nidFiles!.isNotEmpty) {
+      // try {
+      for (var file in _nidFiles!) {
+        final fileBytes = file.bytes!;
+        final fileName = file.name;
+        _formData.nidLocation = fileName;
+        print(fileName);
+        final responseBody = await ApiService.uploadFile('nid/upload', file, fileBytes, fileName);
+        if (responseBody['statuscode'] == 200) {
+          print('Nid File uploaded successfully');
+        }
+      }
+      // } catch (e) {
+      //   print('Failed to upload Nid files: $e');
+      //   // Handle error
+      // }
+    } else {
+      print('No Nid files selected');
     }
   }
 
@@ -149,7 +236,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.instituteEmail = userDetails['user']['InstituteEmail'] ?? '';
       print(" Institute Email: ${_formData.instituteEmail}");
 
-      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'zzzz.png';
+      _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'defaultprofilepic.png';
       print(" presentAddress: ${_formData.presentAddress}");
       _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? '';
       print(" Signature Location: ${_formData.signatureLocation}");
@@ -183,7 +270,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print("/////////////////////////////");
     });
 
-    // final profilePic = await ApiService.fetchProfilePic(_formData.profilePicLocation);
+    // final profilePic = await ApiService.fetchPicFile(_formData.profilePicLocation);
     print("Student ID: ${_formData.studentID}");
 
     return true;
@@ -202,6 +289,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       // Call _uploadProfilePicFiles() to upload the profile picture files
       _uploadProfilePicFiles();
+      _uploadSignatureFiles();
+      _uploadSealFiles();
+      _uploadNidFiles();
 
       print('do save start if');
 
@@ -402,7 +492,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Stack(
               children: [
                 FutureBuilder<String>(
-                  future: _formData.profilePicLocation.isNotEmpty ? ApiService.fetchProfilePic(_formData.profilePicLocation) : Future.value(""), // Check if value is not empty before making the API call
+                  future: _formData.profilePicLocation.isNotEmpty
+                      ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation)
+                      : Future.value(""), // Check if value is not empty before making the API call
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -421,7 +513,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
           ),
           FormBuilderFilePicker(
-            name: 'profile_pic',
+            name: 'profilePicLocation',
             // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
             allowMultiple: false,
             maxFiles: 1,
@@ -429,6 +521,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             previewImages: true,
             decoration: const InputDecoration(
               labelText: 'Select Profile Pic',
+              hintText: 'profilePicLocation',
               border: OutlineInputBorder(),
             ),
             selector: const Row(
@@ -451,7 +544,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             // ],
             onChanged: _onProfilePicFileSelected,
           ),
-
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
             child: FormBuilderTextField(
@@ -641,20 +733,63 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.nid = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'nidphoto',
-              decoration: const InputDecoration(
-                labelText: 'Nid Photo',
-                hintText: 'nidphoto',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.nidLocation,
-              validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.nidLocation = value ?? ''),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+            child: Stack(
+              children: [
+                FutureBuilder<String>(
+                  future:
+                      _formData.nidLocation.isNotEmpty ? ApiService.fetchPicFile('nid/download', _formData.nidLocation) : Future.value(""), // Check if value is not empty before making the API call
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Image.memory(
+                        base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                        fit: BoxFit.cover, // Adjust image to cover the entire space
+                        // width: 120, // Adjust width as needed
+                        height: 50, // Adjust height as needed
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
+          ),
+          FormBuilderFilePicker(
+            name: 'nidphoto',
+            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+            allowMultiple: false,
+            maxFiles: 1,
+            type: FileType.any,
+            previewImages: true,
+            decoration: const InputDecoration(
+              labelText: 'Select Nid File',
+              hintText: 'nidphoto',
+              border: OutlineInputBorder(),
+            ),
+            selector: const Row(
+              children: [
+                Icon(Icons.file_upload_rounded),
+                Text('Upload'),
+              ],
+            ),
+            // typeSelectors: [
+            //   TypeSelector(
+            //     type: FileType.custom,
+            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+            //     selector: Row(
+            //       children: [
+            //         Icon(Icons.file_upload),
+            //         Text('Upload'),
+            //       ],
+            //     ),
+            //   ),
+            // ],
+            onChanged: _onNidFileSelected,
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
@@ -731,51 +866,124 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.permanentAddress = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'profilePicLocation',
-              decoration: const InputDecoration(
-                labelText: 'Profile Pic Location',
-                hintText: 'profilePicLocation',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.profilePicLocation,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.profilePicLocation = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'signatureLocation',
-              decoration: const InputDecoration(
-                labelText: 'Signature Location',
-                hintText: 'signatureLocation',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.signatureLocation,
-              onSaved: (value) => (_formData.signatureLocation = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'sealLocation',
-              decoration: const InputDecoration(
-                labelText: 'Seal Location',
-                hintText: 'sealLocation',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.sealLocation,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.sealLocation = value ?? ''),
-            ),
-          ),
 
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+            child: Stack(
+              children: [
+                FutureBuilder<String>(
+                  future: _formData.signatureLocation.isNotEmpty
+                      ? ApiService.fetchPicFile('signature/download', _formData.signatureLocation)
+                      : Future.value(""), // Check if value is not empty before making the API call
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Image.memory(
+                        base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                        fit: BoxFit.cover, // Adjust image to cover the entire space
+                        // width: 120, // Adjust width as needed
+                        height: 50, // Adjust height as needed
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          FormBuilderFilePicker(
+            name: 'signatureLocation',
+            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+            allowMultiple: false,
+            maxFiles: 1,
+            type: FileType.any,
+            previewImages: true,
+            decoration: const InputDecoration(
+              labelText: 'Select Signature File',
+              hintText: 'signatureLocation',
+              border: OutlineInputBorder(),
+            ),
+            selector: const Row(
+              children: [
+                Icon(Icons.file_upload_rounded),
+                Text('Upload'),
+              ],
+            ),
+            // typeSelectors: [
+            //   TypeSelector(
+            //     type: FileType.custom,
+            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+            //     selector: Row(
+            //       children: [
+            //         Icon(Icons.file_upload),
+            //         Text('Upload'),
+            //       ],
+            //     ),
+            //   ),
+            // ],
+            onChanged: _onSignatureFileSelected,
+          ),
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+            child: Stack(
+              children: [
+                FutureBuilder<String>(
+                  future:
+                      _formData.sealLocation.isNotEmpty ? ApiService.fetchPicFile('seal/download', _formData.sealLocation) : Future.value(""), // Check if value is not empty before making the API call
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Image.memory(
+                        base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                        fit: BoxFit.cover, // Adjust image to cover the entire space
+                        // width: 120, // Adjust width as needed
+                        height: 50, // Adjust height as needed
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          FormBuilderFilePicker(
+            name: 'sealLocation',
+            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+            allowMultiple: false,
+            maxFiles: 1,
+            type: FileType.any,
+            previewImages: true,
+            decoration: const InputDecoration(
+              labelText: 'Select Seal File',
+              hintText: 'sealLocation',
+              border: OutlineInputBorder(),
+            ),
+            selector: const Row(
+              children: [
+                Icon(Icons.file_upload_rounded),
+                Text('Upload'),
+              ],
+            ),
+            // typeSelectors: [
+            //   TypeSelector(
+            //     type: FileType.custom,
+            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+            //     selector: Row(
+            //       children: [
+            //         Icon(Icons.file_upload),
+            //         Text('Upload'),
+            //       ],
+            //     ),
+            //   ),
+            // ],
+            onChanged: _onSealFileSelected,
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
