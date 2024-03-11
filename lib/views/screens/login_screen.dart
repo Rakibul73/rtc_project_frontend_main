@@ -93,12 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
           // }
           // final profilePicLocation = ss;
           final profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'defaultprofilepic.png';
+          final roleId = userDetails['user']['RoleID'];
           await userDataProvider.setUserDataAsync(
             username: username,
             firstname: firstName,
             lastname: lastname,
             profilePicLocation: profilePicLocation,
-            userProfileImageUrl: 'https://picsum.photos/id/1005/300/300',
+            roleId: roleId,
           );
 
           onSuccess.call();

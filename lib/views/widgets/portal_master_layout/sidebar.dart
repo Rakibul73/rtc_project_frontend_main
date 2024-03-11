@@ -144,38 +144,46 @@ class _SidebarState extends State<Sidebar> {
     if (currentLocation.isEmpty && widget.autoSelectMenu) {
       currentLocation = GoRouter.of(context).location;
     }
+    final bool isAdmin = Provider.of<UserDataProvider>(context).roleId == 1;
+    final bool isStudent = Provider.of<UserDataProvider>(context).roleId == 5;
 
     return Column(
       children: sidebarMenuConfigs.map<Widget>((menu) {
-        if (menu.children.isEmpty) {
-          return _sidebarMenu(
-            context,
-            EdgeInsets.fromLTRB(
-              sidebarTheme.menuLeftPadding,
-              sidebarTheme.menuTopPadding,
-              sidebarTheme.menuRightPadding,
-              sidebarTheme.menuBottomPadding,
-            ),
-            menu.uri,
-            menu.icon,
-            menu.title(context),
-            (currentLocation.startsWith(menu.uri)),
-          );
+        // Check if the menu item is "Admin Panel" and the user is not a Admin
+        if (menu.title(context) == "Admin Panel" && !isAdmin) {
+          return Container(); // Return an empty container to hide the menu item
         } else {
-          return _expandableSidebarMenu(
-            context,
-            EdgeInsets.fromLTRB(
-              sidebarTheme.menuLeftPadding,
-              sidebarTheme.menuTopPadding,
-              sidebarTheme.menuRightPadding,
-              sidebarTheme.menuBottomPadding,
-            ),
-            menu.uri,
-            menu.icon,
-            menu.title(context),
-            menu.children,
-            currentLocation,
-          );
+          if (menu.children.isEmpty) {
+            return _sidebarMenu(
+              context,
+              EdgeInsets.fromLTRB(
+                sidebarTheme.menuLeftPadding,
+                sidebarTheme.menuTopPadding,
+                sidebarTheme.menuRightPadding,
+                sidebarTheme.menuBottomPadding,
+              ),
+              menu.uri,
+              menu.icon,
+              menu.title(context),
+              (currentLocation.startsWith(menu.uri)),
+            );
+          } else {
+            return _expandableSidebarMenu(
+              context,
+              EdgeInsets.fromLTRB(
+                sidebarTheme.menuLeftPadding,
+                sidebarTheme.menuTopPadding,
+                sidebarTheme.menuRightPadding,
+                sidebarTheme.menuBottomPadding,
+              ),
+              menu.uri,
+              menu.icon,
+              menu.title(context),
+              menu.children,
+              currentLocation,
+              isStudent,
+            );
+          }
         }
       }).toList(growable: false),
     );
@@ -238,6 +246,7 @@ class _SidebarState extends State<Sidebar> {
     String title,
     List<SidebarChildMenuConfig> children,
     String currentLocation,
+    bool isStudent,
   ) {
     final themeData = Theme.of(context);
     final sidebarTheme = Theme.of(context).extension<AppSidebarTheme>()!;
@@ -286,6 +295,10 @@ class _SidebarState extends State<Sidebar> {
               ],
             ),
             children: children.map<Widget>((childMenu) {
+              if (title == "Project" && isStudent && childMenu.title(context) == "Create Project") {
+                // If the user is a student and the menu item is "Create Project", don't render it
+                return Container();
+              }
               return _sidebarMenu(
                 context,
                 EdgeInsets.fromLTRB(
