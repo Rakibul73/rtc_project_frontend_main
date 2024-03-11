@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -255,7 +257,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
         'CreatorUserSealLocation': creatorUserSealFileLocation,
         'CreatorUserSignatureLocation': creatorUserSignatureFileLocation,
-        'CreatorUserSignatureDate': _formData.dateOfPi,
+        'CreatorUserSignatureDate': _formData.piSignatureDate,
 
         'ChairmanOfDepartmentComment': _formData.commentsOfTheChairmanOfTheDepartment,
         'ChairmanOfDepartmentSealLocation': chairmanOfDepartmentSealFileLocation,
@@ -1717,112 +1719,85 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           builder: (context, constraints) {
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                              
+                              children:  [
                                 SizedBox(
-                                  width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                                  child: FormBuilderFilePicker(
-                                    name: 'signature_of_the_pi',
-                                    // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-                                    allowMultiple: false,
-                                    maxFiles: 1,
-                                    type: FileType.any,
-                                    previewImages: true,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Signature of the PI',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    selector: const Row(
+                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                    child: Stack(
                                       children: [
-                                        Icon(Icons.file_upload_rounded),
-                                        Text('Upload'),
+                                        FutureBuilder<String>(
+                                          future: _formData.piSignatureLocation.isNotEmpty
+                                              ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
+                                              : Future.value(""), // Check if value is not empty before making the API call
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const CircularProgressIndicator();
+                                            } else if (snapshot.hasError) {
+                                              return Text('Error: ${snapshot.error}');
+                                            } else {
+                                              return Image.memory(
+                                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                // width: 120, // Adjust width as needed
+                                                height: 50, // Adjust height as needed
+                                              );
+                                            }
+                                          },
+                                        ),
                                       ],
                                     ),
-                                    // typeSelectors: const [
-                                    //   TypeSelector(
-                                    //     type: FileType.custom,
-                                    //     selector: Row(
-                                    //       children: [
-                                    //         Icon(Icons.file_upload),
-                                    //         Text('Upload'),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ],
-                                    onChanged: _onCreatorUserSignatureFileSelected,
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
                                 SizedBox(
-                                  width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                                  child: const Text('Show Signature of the PI'),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderDateTimePicker(
-                                    name: 'date_of_PI',
+                                    name: 'pi_signature_date',
                                     inputType: InputType.date,
                                     decoration: const InputDecoration(
-                                      labelText: 'Date',
+                                      labelText: 'PI Signature Date',
                                       border: OutlineInputBorder(),
                                     ),
                                     initialTime: const TimeOfDay(hour: 8, minute: 0),
                                     initialValue: DateTime.now(),
                                     textAlign: TextAlign.center,
                                     format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-                                    onChanged: (value) => (_formData.dateOfPi = value.toString()),
+                                    onChanged: (value) => (_formData.piSignatureDate = value.toString()),
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderFilePicker(
-                                    name: 'seal_of_the_pi',
-                                    // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-                                    allowMultiple: false,
-                                    maxFiles: 1,
-                                    type: FileType.any,
-                                    previewImages: true,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Seal of the PI',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    selector: const Row(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                    child: Stack(
                                       children: [
-                                        Icon(Icons.file_upload_rounded),
-                                        Text('Upload'),
+                                        FutureBuilder<String>(
+                                          future: _formData.piSealLocation.isNotEmpty
+                                              ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
+                                              : Future.value(""), // Check if value is not empty before making the API call
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return const CircularProgressIndicator();
+                                            } else if (snapshot.hasError) {
+                                              return Text('Error: ${snapshot.error}');
+                                            } else {
+                                              return Image.memory(
+                                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                // width: 120, // Adjust width as needed
+                                                height: 50, // Adjust height as needed
+                                              );
+                                            }
+                                          },
+                                        ),
                                       ],
                                     ),
-                                    // typeSelectors: [
-                                    //   TypeSelector(
-                                    //     type: FileType.custom,
-                                    //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
-                                    //     selector: Row(
-                                    //       children: [
-                                    //         Icon(Icons.file_upload),
-                                    //         Text('Upload'),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ],
-                                    onChanged: _onCreatorUserSealFileSelected,
                                   ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: const Text('Show Seal of the PI'),
                                 ),
                               ],
                             );
@@ -2018,6 +1993,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                                 if (user != null) {
                                                   setState(() {
                                                     _formData.piUserID = user.userId;
+                                                    _formData.piSignatureLocation = user.signatureLocation;
+                                                    _formData.piSealLocation = user.sealLocation;
                                                   });
                                                 }
                                               },
@@ -2760,7 +2737,9 @@ class FormData {
   int piUserID = 0;
   String dateOfChairmanOfTheDepartment = '';
   String commentsOfTheChairmanOfTheDepartment = '';
-  String dateOfPi = '';
+  String piSignatureDate = '';
+  String piSignatureLocation = '';
+  String piSealLocation = '';
   String totalCostTk = '';
   String unitPrice = '';
   String quantity = '';

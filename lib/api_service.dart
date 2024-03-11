@@ -532,12 +532,16 @@ class User {
   final String username;
   final String firstName;
   final String lastName;
+  final String signatureLocation;
+  final String sealLocation;
 
   User({
     required this.userId,
     required this.username,
     required this.firstName,
     required this.lastName,
+    required this.signatureLocation,
+    required this.sealLocation,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -546,6 +550,8 @@ class User {
       username: json['Username'],
       firstName: json['FirstName'],
       lastName: json['LastName'],
+      signatureLocation: json['SignatureLocation'],
+      sealLocation: json['SealLocation'],
     );
   }
 
