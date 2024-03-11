@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const String baseUrl = 'http://192.168.1.188:5000';
-// const String baseUrl = 'http://localhost:5000';
+// const String baseUrl = 'http://192.168.1.188:5000';
+const String baseUrl = 'http://localhost:5000';
 const storage = FlutterSecureStorage();
 
 class ApiService {
@@ -103,10 +103,10 @@ class ApiService {
         }
         return users;
       } else {
-        throw Exception('Failed to load users');
+        throw Exception('Failed to load get_only_student_users');
       }
     } catch (e) {
-      throw Exception('Failed to fetch total number of users: $e');
+      throw Exception('Failed to fetch get_only_student_users: $e');
     }
   }
 
@@ -135,10 +135,10 @@ class ApiService {
         }
         return users;
       } else {
-        throw Exception('Failed to load users');
+        throw Exception('Failed to load get_all_users_except_students');
       }
     } catch (e) {
-      throw Exception('Failed to fetch total number of users: $e');
+      throw Exception('Failed to fetch get_all_users_except_students: $e');
     }
   }
 
@@ -550,8 +550,8 @@ class User {
       username: json['Username'],
       firstName: json['FirstName'],
       lastName: json['LastName'],
-      signatureLocation: json['SignatureLocation'],
-      sealLocation: json['SealLocation'],
+      signatureLocation: json['SignatureLocation'] ?? '',
+      sealLocation: json['SealLocation'] ?? '',
     );
   }
 
