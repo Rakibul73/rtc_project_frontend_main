@@ -47,6 +47,23 @@ final sidebarMenuConfigs = [
     ],
   ),
   SidebarMenuConfig(
+    uri: '',
+    icon: Icons.article_outlined,
+    title: (context) => "Admin Panel",
+    children: [
+      SidebarChildMenuConfig(
+        uri: RouteUri.viewallusers,
+        icon: Icons.circle_outlined,
+        title: (context) => "View All Users",
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.deleteuser,
+        icon: Icons.circle_outlined,
+        title: (context) => "Delete User",
+      ),
+    ],
+  ),
+  SidebarMenuConfig(
     uri: RouteUri.logout,
     icon: Icons.logout_rounded,
     title: (context) => "Logout",
