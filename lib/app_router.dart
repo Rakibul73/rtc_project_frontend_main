@@ -107,11 +107,12 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
       ),
       GoRoute(
         path: RouteUri.viewproject,
-        pageBuilder: (context, state) => NoTransitionPage<void>(
-          key: state.pageKey,
-          child: const ViewProjectScreen(),
-          // child: const ViewProjectScreen(id: state.queryParameters['ProjectID'] ?? ''),
-        ),
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
       ),
       GoRoute(
         path: RouteUri.projectprogressreport,
