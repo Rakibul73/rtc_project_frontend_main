@@ -16,6 +16,34 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> getSpecificProject(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("getSpecificProject $projectId");
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/projects/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load project details. Error: ${response.body}');
+    }
+  }
+
   static Future<Map<String, dynamic>> deleteProject(int projectId) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
