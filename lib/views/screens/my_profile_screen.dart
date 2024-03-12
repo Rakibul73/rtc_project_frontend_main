@@ -230,7 +230,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.positionHeldSince = userDetails['user']['PositionHeldSince'] ?? '';
       _formData.gender = userDetails['user']['Gender'] ?? '';
       _formData.nid = userDetails['user']['Nid'] ?? '';
-      _formData.nidLocation = userDetails['user']['NidLocation'] ?? '';
+      _formData.nidLocation = userDetails['user']['NidLocation'] ?? 'defaultnid.png';
       _formData.instituteName = userDetails['user']['InstituteName'] ?? '';
       _formData.instituteLocation = userDetails['user']['InstituteLocation'] ?? '';
       _formData.instituteEmail = userDetails['user']['InstituteEmail'] ?? '';
@@ -238,9 +238,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
       _formData.profilePicLocation = userDetails['user']['ProfilePicLocation'] ?? 'defaultprofilepic.png';
       print(" presentAddress: ${_formData.presentAddress}");
-      _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? '';
+      _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? 'defaultsignature.png';
       print(" Signature Location: ${_formData.signatureLocation}");
-      _formData.sealLocation = userDetails['user']['SealLocation'] ?? '';
+      _formData.sealLocation = userDetails['user']['SealLocation'] ?? 'defaultseal.png';
       _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
       _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
       _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
