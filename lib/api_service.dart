@@ -29,9 +29,14 @@ class ApiService {
       },
     );
 
+    print("deleteProject response: ${response.statusCode}");
+
     if (response.statusCode == 200) {
       return {'message': 'Project with id $projectId deleted successfully' , 'statusCode': 200};
-    } else {
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access' , 'statusCode': 403};
+    }
+    else {
       throw Exception('Failed to delete user. errors: ${response.body}');
     }
   }
@@ -61,6 +66,39 @@ class ApiService {
         return data['projects'];
       } else {
         print("fetchAllProjects = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchMyProjects() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+    final userId = await storage.read(key: 'user_id');
+
+    final Uri url = Uri.parse('$baseUrl/myprojects/user/$userId');
+    print("fetchMyProjects url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // print(data['projects']);
+        return data['projects'];
+      } else {
+        print("fetchMyProjects = Failed to load projects: ${response.statusCode}");
         throw Exception('Failed to load projects: ${response.statusCode}');
       }
     } catch (e) {
