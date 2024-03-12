@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'dart:math';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -47,7 +46,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final lang = Lang.of(context);
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
@@ -138,7 +136,7 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
                                                           size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                                         ),
                                                       ),
-                                                      Text(lang.search),
+                                                      const Text("Search"),
                                                     ],
                                                   ),
                                                 ),
