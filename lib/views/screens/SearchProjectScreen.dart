@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
@@ -22,17 +25,93 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   late DataSource _dataSource;
-  // late Future<List<dynamic>> _futureProjects;
-  late Future<List<dynamic>> _futureProjects;
+  late List<dynamic> _initialProjects = []; // Updated projects list to hold all projects
+
+// Function to filter projects based on search text
+  void filterProjects(String searchText) {
+    List<dynamic> updatedProjects = [];
+    if (searchText.isEmpty) {
+      setState(() {
+        // Update the data source with all projects
+        _dataSource.data = List<dynamic>.from(_initialProjects);
+      });
+    } else {
+      updatedProjects = _initialProjects.where((project) {
+        final projectTitle = project['ProjectTitle'].toString().toLowerCase();
+        final searchLowerCase = searchText.toLowerCase();
+        return projectTitle.contains(searchLowerCase);
+      }).toList();
+      setState(() {
+        // Update the data source with filtered projects
+        _dataSource.data = updatedProjects;
+      });
+    }
+  }
+
+  void viewAllProjects() async {
+    try {
+      _initialProjects = await ApiService.fetchAllProjects();
+      setState(() {
+        _dataSource.data = _initialProjects; // Update the projects list with fetched data
+      });
+    } catch (e) {
+      print('Failed to fetch projects: $e');
+      // Handle error if needed
+    }
+  }
+
+  Future<void> deletingProject(int projectID) async {
+    try {
+      final responseBody = await ApiService.deleteProject(projectID);
+      print(responseBody);
+      
+      if (responseBody['statusCode'] == 200) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          title: responseBody['message'],
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {},
+        );
+        dialog.show();
+        print('Project deleted successfully');
+        // Refresh the initial projects list
+        viewAllProjects();
+      }
+    } catch (e) {
+      print('Failed to delete project: $e');
+    }
+  }
+
+  // function to delete a project with data['ProjectID']
+  void deleteProject(int projectID) {
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      title: "Delete this project?",
+      desc: "Project Id $projectID will be deleted. This action cannot be undone.",
+      width: kDialogWidth,
+      btnOkText: 'Delete This',
+      btnOkOnPress: () {
+        deletingProject(projectID);
+      },
+      btnCancelOnPress: () {},
+    );
+    dialog.show();
+  }
 
   @override
   void initState() {
     super.initState();
-    _futureProjects = ApiService.fetchAllProjects();
+    // Fetch all projects
+    viewAllProjects();
 
     _dataSource = DataSource(
       onDetailButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
-      onDeleteButtonPressed: (data) {},
+      onDeleteButtonPressed: (data) {
+        deleteProject(data['ProjectID']);
+      },
       data: [],
     );
   }
@@ -40,7 +119,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
-
     super.dispose();
   }
 
@@ -50,186 +128,177 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-      body: FutureBuilder<List<dynamic>>(
-        future: _futureProjects,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final List<dynamic> projects = snapshot.data!;
-            _dataSource = DataSource(
-              onDetailButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
-              onDeleteButtonPressed: (data) {},
-              data: projects,
-            );
-            return ListView(
-              padding: const EdgeInsets.all(kDefaultPadding),
+        body: ListView(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      children: [
+        Text(
+          'Search Project',
+          style: themeData.textTheme.headlineMedium,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Search Project',
-                  style: themeData.textTheme.headlineMedium,
+                const CardHeader(
+                  title: 'Project List',
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CardHeader(
-                          title: 'Project List',
-                        ),
-                        CardBody(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                                child: FormBuilder(
-                                  key: _formKey,
-                                  autovalidateMode: AutovalidateMode.disabled,
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Wrap(
-                                      direction: Axis.horizontal,
-                                      spacing: kDefaultPadding,
-                                      runSpacing: kDefaultPadding,
-                                      alignment: WrapAlignment.spaceBetween,
-                                      crossAxisAlignment: WrapCrossAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 300.0,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
-                                            child: FormBuilderTextField(
-                                              name: 'search',
-                                              decoration: const InputDecoration(
-                                                labelText: 'search',
-                                                hintText: 'search',
-                                                border: OutlineInputBorder(),
-                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                                isDense: true,
+                CardBody(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                        child: FormBuilder(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.disabled,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Wrap(
+                              direction: Axis.horizontal,
+                              spacing: kDefaultPadding,
+                              runSpacing: kDefaultPadding,
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 300.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                    child: FormBuilderTextField(
+                                      name: 'search',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Search by Project Title',
+                                        hintText: 'Enter project title',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        isDense: true,
+                                      ),
+                                      onChanged: (value) {
+                                        filterProjects(value!);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: kDefaultPadding),
+                                      child: SizedBox(
+                                        height: 40.0,
+                                        child: ElevatedButton(
+                                          style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                                          onPressed: () => viewAllProjects(),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                child: Icon(
+                                                  Icons.search,
+                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                ),
                                               ),
-                                            ),
+                                              const Text("View All Projects"),
+                                            ],
                                           ),
                                         ),
-                                        Row(
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 40.0,
+                                      child: ElevatedButton(
+                                        style: themeData.extension<AppButtonTheme>()!.successElevated,
+                                        onPressed: () => GoRouter.of(context).go(RouteUri.createproject),
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(right: kDefaultPadding),
-                                              child: SizedBox(
-                                                height: 40.0,
-                                                child: ElevatedButton(
-                                                  style: themeData.extension<AppButtonTheme>()!.infoElevated,
-                                                  onPressed: () {},
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                                        child: Icon(
-                                                          Icons.search,
-                                                          size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                                        ),
-                                                      ),
-                                                      const Text("Search"),
-                                                    ],
-                                                  ),
-                                                ),
+                                              padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                              child: Icon(
+                                                Icons.add,
+                                                size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                               ),
                                             ),
-                                            SizedBox(
-                                              height: 40.0,
-                                              child: ElevatedButton(
-                                                style: themeData.extension<AppButtonTheme>()!.successElevated,
-                                                onPressed: () => GoRouter.of(context).go(RouteUri.createproject),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                                      ),
-                                                    ),
-                                                    const Text("New"),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
+                                            const Text("New"),
                                           ],
                                         ),
-                                      ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
+                            return Scrollbar(
+                              controller: _scrollController,
+                              thumbVisibility: true,
+                              trackVisibility: true,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                controller: _scrollController,
+                                child: SizedBox(
+                                  width: dataTableWidth,
+                                  child: Theme(
+                                    data: themeData.copyWith(
+                                      cardTheme: appDataTableTheme.cardTheme,
+                                      dataTableTheme: appDataTableTheme.dataTableThemeData,
+                                    ),
+                                    child: Builder(
+                                      builder: (context) {
+                                        // Return the PaginatedDataTable with _dataSource
+                                        return PaginatedDataTable(
+                                          key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
+                                          source: _dataSource,
+                                          rowsPerPage: 20,
+                                          showCheckboxColumn: false,
+                                          showFirstLastButtons: true,
+                                          columns: const [
+                                            DataColumn(label: Text('ProjectID'), numeric: true),
+                                            DataColumn(label: Text('CodeByRTC')),
+                                            DataColumn(label: Text('ProjectTitle')),
+                                            DataColumn(label: Text('ProjectStatus')),
+                                            DataColumn(label: Text('TotalPoints')),
+                                            DataColumn(label: Text('Actions')),
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
-                                    return Scrollbar(
-                                      controller: _scrollController,
-                                      thumbVisibility: true,
-                                      trackVisibility: true,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        controller: _scrollController,
-                                        child: SizedBox(
-                                          width: dataTableWidth,
-                                          child: Theme(
-                                            data: themeData.copyWith(
-                                              cardTheme: appDataTableTheme.cardTheme,
-                                              dataTableTheme: appDataTableTheme.dataTableThemeData,
-                                            ),
-                                            child: PaginatedDataTable(
-                                              source: _dataSource,
-                                              rowsPerPage: 20,
-                                              showCheckboxColumn: false,
-                                              showFirstLastButtons: true,
-                                              columns: const [
-                                                DataColumn(label: Text('ProjectID'), numeric: true),
-                                                DataColumn(label: Text('CodeByRTC')),
-                                                DataColumn(label: Text('ProjectTitle')),
-                                                DataColumn(label: Text('ProjectStatus')),
-                                                DataColumn(label: Text('TotalPoints')),
-                                                DataColumn(label: Text('Actions')),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            );
-          }
-        },
-      ),
-    );
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 }
 
 class DataSource extends DataTableSource {
   final void Function(Map<String, dynamic> data) onDetailButtonPressed;
   final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
-  final List<dynamic> data;
+  List<dynamic> data;
 
   DataSource({
     required this.onDetailButtonPressed,

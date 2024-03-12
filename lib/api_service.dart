@@ -16,6 +16,26 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> deleteProject(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/projects/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return {'message': 'Project with id $projectId deleted successfully' , 'statusCode': 200};
+    } else {
+      throw Exception('Failed to delete user. errors: ${response.body}');
+    }
+  }
+
   static Future<List<dynamic>> fetchAllProjects() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
