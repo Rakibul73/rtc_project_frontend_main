@@ -30,13 +30,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final List<Widget> budgetsummaryfields = [];
 
   List<PlatformFile>? _methodologyFiles; // Change to List<PlatformFile>?
-  List<PlatformFile>? _creatorUserSignatureFiles; // Change to List<PlatformFile>?
-  List<PlatformFile>? _creatorUserSealFiles; // Change to List<PlatformFile>?
+  // List<PlatformFile>? _creatorUserSignatureFiles; // Change to List<PlatformFile>?
+  // List<PlatformFile>? _creatorUserSealFiles; // Change to List<PlatformFile>?
   List<PlatformFile>? _chairmanOfDepartmentSealFiles; // Change to List<PlatformFile>?
   List<PlatformFile>? _chairmanOfDepartmentSignatureFiles; // Change to List<PlatformFile>?
   String methodologyFileLocation = '';
-  String creatorUserSignatureFileLocation = '';
-  String creatorUserSealFileLocation = '';
+  // String creatorUserSignatureFileLocation = '';
+  // String creatorUserSealFileLocation = '';
   String chairmanOfDepartmentSealFileLocation = '';
   String chairmanOfDepartmentSignatureFileLocation = '';
 
@@ -50,20 +50,20 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     // _uploadMethodologyFiles();
   }
 
-  // Function to handle creatorUserSignature file selection
-  void _onCreatorUserSignatureFileSelected(List<PlatformFile>? files) {
-    setState(() {
-      _creatorUserSignatureFiles = files != null ? List.from(files) : null; // Update to assign the list of files
-    });
-  }
+  // // Function to handle creatorUserSignature file selection
+  // void _onCreatorUserSignatureFileSelected(List<PlatformFile>? files) {
+  //   setState(() {
+  //     _creatorUserSignatureFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+  //   });
+  // }
 
-  // Function to handle seal file selection
-  void _onCreatorUserSealFileSelected(List<PlatformFile>? files) {
-    // Change parameter type to List<PlatformFile>?
-    setState(() {
-      _creatorUserSealFiles = files != null ? List.from(files) : null; // Update to assign the list of files
-    });
-  }
+  // // Function to handle seal file selection
+  // void _onCreatorUserSealFileSelected(List<PlatformFile>? files) {
+  //   // Change parameter type to List<PlatformFile>?
+  //   setState(() {
+  //     _creatorUserSealFiles = files != null ? List.from(files) : null; // Update to assign the list of files
+  //   });
+  // }
 
   // Function to handle seal file selection
   void _onChairmanOfDepartmentSealFileSelected(List<PlatformFile>? files) {
@@ -104,49 +104,49 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     }
   }
 
-  Future<void> _uploadCreatorUserSignatureFiles() async {
-    if (_creatorUserSignatureFiles != null && _creatorUserSignatureFiles!.isNotEmpty) {
-      // try {
-      for (var file in _creatorUserSignatureFiles!) {
-        final fileBytes = file.bytes!;
-        final fileName = file.name;
-        creatorUserSignatureFileLocation = fileName;
-        print(fileName);
-        final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
-      }
-      // } catch (e) {
-      //   print('Failed to upload seal files: $e');
-      //   // Handle error
-      // }
-    } else {
-      print('No signature files selected');
-    }
-  }
+  // Future<void> _uploadCreatorUserSignatureFiles() async {
+  //   if (_creatorUserSignatureFiles != null && _creatorUserSignatureFiles!.isNotEmpty) {
+  //     // try {
+  //     for (var file in _creatorUserSignatureFiles!) {
+  //       final fileBytes = file.bytes!;
+  //       final fileName = file.name;
+  //       _formData.piSignatureLocation = fileName;
+  //       print(fileName);
+  //       final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
+  //       if (responseBody['statuscode'] == 200) {
+  //         print('File uploaded successfully');
+  //       }
+  //     }
+  //     // } catch (e) {
+  //     //   print('Failed to upload seal files: $e');
+  //     //   // Handle error
+  //     // }
+  //   } else {
+  //     print('No signature files selected');
+  //   }
+  // }
 
-  Future<void> _uploadCreatorUserSealFiles() async {
-    if (_creatorUserSealFiles != null && _creatorUserSealFiles!.isNotEmpty) {
-      // try {
-      for (var file in _creatorUserSealFiles!) {
-        final fileBytes = file.bytes!;
-        final fileName = file.name;
-        creatorUserSealFileLocation = fileName;
-        print(fileName);
-        final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
-      }
-      // } catch (e) {
-      //   print('Failed to upload seal files: $e');
-      //   // Handle error
-      // }
-    } else {
-      print('No seal files selected');
-    }
-  }
+  // Future<void> _uploadCreatorUserSealFiles() async {
+  //   if (_creatorUserSealFiles != null && _creatorUserSealFiles!.isNotEmpty) {
+  //     // try {
+  //     for (var file in _creatorUserSealFiles!) {
+  //       final fileBytes = file.bytes!;
+  //       final fileName = file.name;
+  //       creatorUserSealFileLocation = fileName;
+  //       print(fileName);
+  //       final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
+  //       if (responseBody['statuscode'] == 200) {
+  //         print('File uploaded successfully');
+  //       }
+  //     }
+  //     // } catch (e) {
+  //     //   print('Failed to upload seal files: $e');
+  //     //   // Handle error
+  //     // }
+  //   } else {
+  //     print('No seal files selected');
+  //   }
+  // }
 
   Future<void> _uploadchairmanOfDepartmentSealFiles() async {
     if (_chairmanOfDepartmentSealFiles != null && _chairmanOfDepartmentSealFiles!.isNotEmpty) {
@@ -205,8 +205,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
       // Call _uploadSealFiles() to upload the selected files
       await _uploadMethodologyFiles();
-      await _uploadCreatorUserSignatureFiles();
-      await _uploadCreatorUserSealFiles();
+      // await _uploadCreatorUserSignatureFiles();
+      // await _uploadCreatorUserSealFiles();
       await _uploadchairmanOfDepartmentSealFiles();
       await _uploadchairmanOfDepartmentSignatureFiles();
 
@@ -255,8 +255,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         'CoPiUserID': _formData.coPiUserID,
         'StudentUserID': _formData.studentUserID,
 
-        'CreatorUserSealLocation': creatorUserSealFileLocation,
-        'CreatorUserSignatureLocation': creatorUserSignatureFileLocation,
+        'CreatorUserSealLocation': _formData.piSealLocation,
+        'CreatorUserSignatureLocation': _formData.piSignatureLocation,
         'CreatorUserSignatureDate': _formData.piSignatureDate,
 
         'ChairmanOfDepartmentComment': _formData.commentsOfTheChairmanOfTheDepartment,
