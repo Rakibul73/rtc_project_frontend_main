@@ -169,20 +169,20 @@ class _SidebarState extends State<Sidebar> {
             );
           } else {
             return _expandableSidebarMenu(
-              context,
-              EdgeInsets.fromLTRB(
-                sidebarTheme.menuLeftPadding,
-                sidebarTheme.menuTopPadding,
-                sidebarTheme.menuRightPadding,
-                sidebarTheme.menuBottomPadding,
-              ),
-              menu.uri,
-              menu.icon,
-              menu.title(context),
-              menu.children,
-              currentLocation,
-              isStudent,
-            );
+                context,
+                EdgeInsets.fromLTRB(
+                  sidebarTheme.menuLeftPadding,
+                  sidebarTheme.menuTopPadding,
+                  sidebarTheme.menuRightPadding,
+                  sidebarTheme.menuBottomPadding,
+                ),
+                menu.uri,
+                menu.icon,
+                menu.title(context),
+                menu.children,
+                currentLocation,
+                isStudent,
+                isAdmin);
           }
         }
       }).toList(growable: false),
@@ -239,15 +239,7 @@ class _SidebarState extends State<Sidebar> {
   }
 
   Widget _expandableSidebarMenu(
-    BuildContext context,
-    EdgeInsets padding,
-    String uri,
-    IconData icon,
-    String title,
-    List<SidebarChildMenuConfig> children,
-    String currentLocation,
-    bool isStudent,
-  ) {
+      BuildContext context, EdgeInsets padding, String uri, IconData icon, String title, List<SidebarChildMenuConfig> children, String currentLocation, bool isStudent, bool isAdmin) {
     final themeData = Theme.of(context);
     final sidebarTheme = Theme.of(context).extension<AppSidebarTheme>()!;
     final hasSelectedChild = children.any((e) => currentLocation.startsWith(e.uri));
@@ -297,6 +289,10 @@ class _SidebarState extends State<Sidebar> {
             children: children.map<Widget>((childMenu) {
               if (title == "Project" && isStudent && childMenu.title(context) == "Create Project") {
                 // If the user is a student and the menu item is "Create Project", don't render it
+                return Container();
+              }
+              if (title == "Project" && !isAdmin && childMenu.title(context) == "Search All Project") {
+                // If the user is NOT a admin and the menu item is "Search All Project", don't render it
                 return Container();
               }
               return _sidebarMenu(
