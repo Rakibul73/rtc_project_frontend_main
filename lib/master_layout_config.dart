@@ -44,11 +44,6 @@ final sidebarMenuConfigs = [
         icon: Icons.circle_outlined,
         title: (context) => "Bill Information",
       ),
-      SidebarChildMenuConfig(
-        uri: RouteUri.searchproject,
-        icon: Icons.circle_outlined,
-        title: (context) => "Search All Project",
-      ),
     ],
   ),
   SidebarMenuConfig(
@@ -56,6 +51,11 @@ final sidebarMenuConfigs = [
     icon: Icons.article_outlined,
     title: (context) => "Admin Panel",
     children: [
+      SidebarChildMenuConfig(
+        uri: RouteUri.searchproject,
+        icon: Icons.circle_outlined,
+        title: (context) => "View All Project",
+      ),
       SidebarChildMenuConfig(
         uri: RouteUri.viewallusers,
         icon: Icons.circle_outlined,
