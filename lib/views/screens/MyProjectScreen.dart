@@ -120,7 +120,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
     viewAllProjects();
 
     _dataSource = DataSource(
-      onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${data['ProjectID']}'),
       onDeleteButtonPressed: (data) {
         deleteProject(data['ProjectID']);
       },
