@@ -216,10 +216,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         // Part I: Research Proposal Identification Data
         'ProjectTitle': _formData.projectTitle,
         'NatureOfResearchProposal': _formData.natureOfTheResearchProposal,
-        'NameOfCollaboratingDepartments': _formData.nameOfCollaboratingDepartmentInstitute,
-        'AddressOfCollaboratingDepartments': _formData.addressOfCollaboratingDepartmentInstitute,
+        'NameOfCollaboratingDepartments': _formData.nameOfCollaboratingDepartmentDepartment,
+        'AddressOfCollaboratingDepartments': _formData.addressOfCollaboratingDepartmentDepartment,
 
-        /// extra field NameOfCollaboratingInstitutes AddressOfCollaboratingInstitutes
         'NameOfCollaboratingInstitutes': _formData.nameOfCollaboratingDepartmentInstitute,
         'AddressOfCollaboratingInstitutes': _formData.addressOfCollaboratingDepartmentInstitute,
         'LocationOfFieldActivities': _formData.locationOfFieldActivities,
@@ -510,14 +509,14 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                      const SizedBox(height: 20),
+                                      // const SizedBox(height: 20),
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDropdown(
                                           initialValue: 'Faculty of Computer Science and Engineering',
-                                          name: 'name_of_collaborating_department_institute',
+                                          name: 'name_of_collaborating_department',
                                           decoration: const InputDecoration(
-                                            labelText: 'Name of Collaborating Department / Institute',
+                                            labelText: 'Name of Collaborating Department',
                                             border: OutlineInputBorder(),
                                             hoverColor: Colors.transparent,
                                             focusColor: Colors.transparent,
@@ -535,6 +534,51 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             'Faculty of Nutrition and Food Science',
                                             'Faculty of Law and Land Administration'
                                           ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                          onChanged: (value) => (_formData.nameOfCollaboratingDepartmentDepartment = value ?? ''),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 30),
+                                      SizedBox(
+                                        width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
+                                        child: FormBuilderTextField(
+                                          initialValue: 'PSTU patuakhali',
+                                          name: 'address_of_collaborating_department',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Address of Collaborating Department',
+                                            hintText: 'Address of Collaborating Department',
+                                            border: OutlineInputBorder(),
+                                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          ),
+                                          validator: FormBuilderValidators.required(),
+                                          onChanged: (value) => (_formData.addressOfCollaboratingDepartmentDepartment = value ?? ''),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      SizedBox(
+                                        width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
+                                        child: FormBuilderDropdown(
+                                          initialValue: 'Faculty of Computer Science and Engineering',
+                                          name: 'name_of_collaborating_institute',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Name of Collaborating Institute',
+                                            border: OutlineInputBorder(),
+                                            hoverColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hintText: 'Select',
+                                          ),
+                                          focusColor: Colors.transparent,
+                                          validator: FormBuilderValidators.required(),
+                                          items: [
+                                            'Patuakhali Science & Technology University (PSTU)',
+                                            'Faculty of Agriculture',
+                                            'Faculty of Computer Science and Engineering',
+                                            'Faculty of Business Administration',
+                                            'Faculty of Animal Science and Veterinary Medicine',
+                                            'Faculty of Fisheries',
+                                            'Faculty of Environmental Science and Disaster Management',
+                                            'Faculty of Nutrition and Food Science',
+                                            'Faculty of Law and Land Administration'
+                                          ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
                                           onChanged: (value) => (_formData.nameOfCollaboratingDepartmentInstitute = value ?? ''),
                                         ),
                                       ),
@@ -543,10 +587,10 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
                                           initialValue: 'PSTU patuakhali',
-                                          name: 'address_of_collaborating_department_institute',
+                                          name: 'address_of_collaborating_institute',
                                           decoration: const InputDecoration(
-                                            labelText: 'Address of Collaborating Department / Institute',
-                                            hintText: 'Address of Collaborating Department / Institute',
+                                            labelText: 'Address of Collaborating Institute',
+                                            hintText: 'Address of Collaborating Institute',
                                             border: OutlineInputBorder(),
                                             floatingLabelBehavior: FloatingLabelBehavior.always,
                                           ),
@@ -2857,7 +2901,9 @@ class FormData {
   String locationOfFieldActivities = '';
   String natureOfTheResearchProposal = '';
   String addressOfCollaboratingDepartmentInstitute = '';
+  String addressOfCollaboratingDepartmentDepartment = '';
   String nameOfCollaboratingDepartmentInstitute = '';
+  String nameOfCollaboratingDepartmentDepartment = '';
   String projectTitle = '';
   String dateOfReceived = '';
   String rtcCode = '';
