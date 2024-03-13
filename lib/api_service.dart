@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +15,71 @@ class ApiService {
     print("getAccessToken called");
     return await storage.read(key: 'jwt_token');
     // await userDataProvider.loadAsync();
+  }
+
+  static Future<Map<String, Object>> downloadProjectSoftCopy( String endpoint , String filename) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+    final String downloadUrl = '$baseUrl/$endpoint/$filename';
+    try {
+      // Create an anchor element to trigger the download
+      final html.AnchorElement anchor = html.AnchorElement(href: downloadUrl);
+      // Set the authorization header with the access token
+      // anchor.headers['Authorization'] = 'Bearer $accessToken';
+      anchor.download = filename; // Specify the filename for the downloaded file
+      anchor.click(); // Trigger the download
+
+      print("ooooooooooooooooooooooooooooo");
+
+      // Wait for the download to complete
+      // await Future.delayed(const Duration(seconds: 10));
+      return {
+        'statuscode': 200,
+        'message': 'File downloaded successfully',
+      };
+
+      // Note: This approach works for web, but does not save the file locally on the device.
+      // The file is downloaded by the browser and saved in the user's Downloads folder.
+    } catch (e) {
+      throw Exception('Error downloading file: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProjectDetails(int projectId, Map<String, dynamic> updateProjectData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_project/$projectId');
+    print("apiservice url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(updateProjectData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update project: ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
   }
 
   static Future<Map<String, dynamic>> getSpecificProject(int projectId) async {
@@ -60,11 +126,10 @@ class ApiService {
     print("deleteProject response: ${response.statusCode}");
 
     if (response.statusCode == 200) {
-      return {'message': 'Project with id $projectId deleted successfully' , 'statusCode': 200};
+      return {'message': 'Project with id $projectId deleted successfully', 'statusCode': 200};
     } else if (response.statusCode == 403) {
-      return {'message': 'Unauthorized access' , 'statusCode': 403};
-    }
-    else {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
       throw Exception('Failed to delete user. errors: ${response.body}');
     }
   }
