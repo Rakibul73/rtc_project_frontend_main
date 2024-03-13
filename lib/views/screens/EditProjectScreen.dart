@@ -17,19 +17,19 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class ViewProjectScreen extends StatefulWidget {
+class EditProjectScreen extends StatefulWidget {
   final String projectID;
 
-  const ViewProjectScreen({
+  const EditProjectScreen({
     Key? key,
     required this.projectID,
   }) : super(key: key);
 
   @override
-  State<ViewProjectScreen> createState() => _ViewProjectScreenState();
+  State<EditProjectScreen> createState() => _EditProjectScreenState();
 }
 
-class _ViewProjectScreenState extends State<ViewProjectScreen> {
+class _EditProjectScreenState extends State<EditProjectScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
@@ -165,7 +165,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         // read user id
         final userId = await storage.read(key: 'user_id');
         int userid = int.parse(userId!);
-        print("ViewProjectScreen userid: $userid");
+        print("EditProjectScreen userid: $userid");
 
         int projectId = int.parse(widget.projectID);
         final userDetails = await ApiService.getSpecificProject(

@@ -10,6 +10,7 @@ import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.da
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/error_screen.dart';
@@ -34,6 +35,7 @@ class RouteUri {
   static const String searchproject = '/searchproject';
   static const String myprojects = '/myprojects';
   static const String viewproject = '/viewproject';
+  static const String editproject = '/editproject';
   static const String projecttracking = '/projecttracking';
   static const String projectdashboard = '/projectdashboard';
   static const String billinformation = '/billinformation';
@@ -111,6 +113,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.editproject,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: EditProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),

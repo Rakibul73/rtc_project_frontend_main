@@ -477,6 +477,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _content(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
+    // ignore: unnecessary_null_comparison
     DateTime? initialDate = _formData.dateOfBirth != null && _formData.dateOfBirth!.isNotEmpty ? DateTime.parse(_formData.dateOfBirth) : null;
 
     return FormBuilder(

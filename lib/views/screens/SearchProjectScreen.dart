@@ -108,7 +108,8 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
     viewAllProjects();
 
     _dataSource = DataSource(
-      onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onViewButtonPressed:  (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${data['ProjectID']}'),
       onDeleteButtonPressed: (data) {
         deleteProject(data['ProjectID']);
       },
@@ -297,11 +298,13 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
 
 class DataSource extends DataTableSource {
   final void Function(Map<String, dynamic> data) onEditButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewButtonPressed;
   final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
   List<dynamic> data;
 
   DataSource({
     required this.onEditButtonPressed,
+    required this.onViewButtonPressed,
     required this.onDeleteButtonPressed,
     required this.data,
   });
@@ -321,6 +324,14 @@ class DataSource extends DataTableSource {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding),
+                child: OutlinedButton(
+                  onPressed: () => onViewButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
+                  child: const Text("View"),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding),
                 child: OutlinedButton(
