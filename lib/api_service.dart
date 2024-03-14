@@ -17,7 +17,119 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
-  static Future<Map<String, Object>> downloadProjectSoftCopy( String endpoint , String filename) async {
+  static Future<List<dynamic>> fetchAllPendingUsers() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_pending_users');
+    print("fetchAllPendingUsers url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // print(data['TempUsers']);
+        return data['TempUsers'];
+      } else {
+        print("fetchAllPendingUsers = Failed to load pending users: ${response.statusCode}");
+        throw Exception('Failed to load pending users: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load pending users : $e');
+    }
+  }
+
+static Future<Map<String, dynamic>> approvePendingUser(int userID , String username) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/approve_temp_user/$userID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print("approvePendingUser response: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      return {'message': 'Username: $username approved successfully', 'statusCode': 200};
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
+      throw Exception('Failed to delete pending user. errors: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> deletePendingUser(int userID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/delete_temp_user/$userID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print("deletePendingUser response: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      return {'message': 'Pending User with id $userID deleted successfully', 'statusCode': 200};
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
+      throw Exception('Failed to delete pending user. errors: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getUserManagementOverview() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/user_management_overview');
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        print("getUserManagementOverview = responseBody: $responseBody");
+        return responseBody;
+      } else if (response.statusCode == 401) {
+        print("getUserManagementOverview = Token expired");
+        return {'statuscode': 401}; // Return status code as a map
+      } else {
+        return {'statuscode': response.statusCode}; // Return status code as a map
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch getUserManagementOverview: $e');
+    }
+  }
+
+  static Future<Map<String, Object>> downloadProjectSoftCopy(String endpoint, String filename) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');

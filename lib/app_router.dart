@@ -5,10 +5,13 @@ import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/MyProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/PendingUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/UserManagementOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/VerifyUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewProjectScreen.dart';
@@ -40,7 +43,10 @@ class RouteUri {
   static const String projectdashboard = '/projectdashboard';
   static const String billinformation = '/billinformation';
   static const String projectprogressreport = '/projectprogressreport';
+  static const String usermanagementoverview = '/usermanagementoverview';
   static const String viewallusers = '/viewallusers';
+  static const String pendingusers = '/pendingusers';
+  static const String verifyuser = '/verifyuser';
   static const String deleteuser = '/deleteuser';
   static const String changepassword = '/changepassword';
 }
@@ -126,6 +132,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.verifyuser,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: VerifyUserScreen(userID: state.queryParameters['pendinguserid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.projectprogressreport,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -165,6 +180,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ViewAllUsersScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.usermanagementoverview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const UserManagementOverviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.pendingusers,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const PendingUsersScreen(),
         ),
       ),
       GoRoute(
