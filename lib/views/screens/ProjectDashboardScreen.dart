@@ -19,7 +19,7 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
   late Future<Map<String, dynamic>> _summaryDataFuture;
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
-    final data = await ApiService.getProjectDashboard();
+    final data = await ApiService.getSelfProjectDashboard();
     print("_fetchProjectSummaryData = data: $data");
     print(data['statuscode']);
     if (data['statuscode'] == 200) {
