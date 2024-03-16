@@ -217,7 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               validator: FormBuilderValidators.compose([
                                 FormBuilderValidators.required(),
                                 FormBuilderValidators.minLength(6),
-                                FormBuilderValidators.maxLength(18),
+                                FormBuilderValidators.maxLength(30),
                               ]),
                               onSaved: (value) => (_formData.password = value ?? ''),
                             ),
