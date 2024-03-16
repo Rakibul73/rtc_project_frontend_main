@@ -313,10 +313,15 @@ class DataSource extends DataTableSource {
   DataRow? getRow(int index) {
     final data = this.data[index];
 
+    // Determine the maximum length of the project title to be displayed without scrolling
+    const maxLength = 20; // Adjust this value as needed
+
     return DataRow.byIndex(index: index, cells: [
       DataCell(Text(data['ProjectID'].toString())),
       DataCell(Text(data['CodeByRTC'].toString())),
-      DataCell(Text(data['ProjectTitle'].toString())),
+      DataCell(Text(data['ProjectTitle'].toString().length > maxLength
+          ? '${data['ProjectTitle'].toString().substring(0, maxLength)}...' // Display a truncated title with ellipsis
+          : data['ProjectTitle'].toString())),
       DataCell(Text(data['ProjectStatus'].toString())),
       DataCell(Text(data['TotalPoints'].toString())),
       DataCell(Builder(
