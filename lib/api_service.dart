@@ -17,6 +17,67 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> updateTempUserDetails(int userId, Map<String, dynamic> userData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_pending_user/$userId');
+    print("updateTempUserDetails url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(userData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update Temp user: ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSpecificPendingUser(int userId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_specific_pending_user/$userId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load user details. Error: ${response.body}');
+    }
+  }
+
   static Future<List<dynamic>> fetchAllPendingUsers() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
