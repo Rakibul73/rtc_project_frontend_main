@@ -136,7 +136,7 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
             key: state.pageKey,
-            child: VerifyUserScreen(userID: state.queryParameters['pendinguserid'] ?? ''),
+            child: VerifyUserScreen(pendingUserID: state.queryParameters['pendinguserid'] ?? ''),
           );
         },
       ),
