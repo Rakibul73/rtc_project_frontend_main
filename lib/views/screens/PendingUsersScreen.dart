@@ -318,7 +318,7 @@ class DataSource extends DataTableSource {
                 child: OutlinedButton(
                   onPressed: () => onVerifyButtonPressed.call(data),
                   style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
-                  child: const Text("Verify"),
+                  child: const Text("View"),
                 ),
               ),
               Padding(
