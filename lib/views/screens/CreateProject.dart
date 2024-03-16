@@ -938,8 +938,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   return 'This field is required.';
                                 } else {
                                   final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 500) {
-                                    _showWordCountExceededDialog(context, 500);
+                                  if (wordCount > 1000) {
+                                    _showWordCountExceededDialog(context, 1000);
                                     return 'Maximum word count exceeded. (500 words maximum)';
                                   }
                                 }
