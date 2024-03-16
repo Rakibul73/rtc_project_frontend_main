@@ -7,6 +7,7 @@ import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/MyProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/PendingUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ProjectOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
@@ -47,6 +48,7 @@ class RouteUri {
   static const String viewallusers = '/viewallusers';
   static const String pendingusers = '/pendingusers';
   static const String verifyuser = '/verifyuser';
+  static const String projectoverview = '/projectoverview';
   static const String deleteuser = '/deleteuser';
   static const String changepassword = '/changepassword';
 }
@@ -180,6 +182,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ViewAllUsersScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectoverview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectOverviewScreen(),
         ),
       ),
       GoRoute(

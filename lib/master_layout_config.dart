@@ -57,6 +57,11 @@ final sidebarMenuConfigs = [
         title: (context) => "User Management Overview",
       ),
       SidebarChildMenuConfig(
+        uri: RouteUri.projectoverview,
+        icon: Icons.circle_outlined,
+        title: (context) => "Projects Overview",
+      ),
+      SidebarChildMenuConfig(
         uri: RouteUri.searchproject,
         icon: Icons.circle_outlined,
         title: (context) => "View All Project",
