@@ -51,11 +51,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
-        // read user id
-        final userId = await storage.read(key: 'user_id');
-        int userid = int.parse(userId!);
-        print("ViewProjectScreen userid: $userid");
-
         int projectId = int.parse(widget.projectID);
         final userDetails = await ApiService.getSpecificProject(
           projectId,
@@ -166,7 +161,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
     final themeData = Theme.of(context);
 
     return PortalMasterLayout(
-      selectedMenuUri: RouteUri.myprojects,
+      selectedMenuUri: RouteUri.searchproject,
       body: FutureBuilder<bool>(
         initialData: null,
         future: (_future ??= _getDataAsync()),
