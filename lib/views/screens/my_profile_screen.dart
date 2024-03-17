@@ -477,8 +477,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget _content(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
-    // ignore: unnecessary_null_comparison
-    DateTime? initialDate = _formData.dateOfBirth != null && _formData.dateOfBirth!.isNotEmpty ? DateTime.parse(_formData.dateOfBirth) : null;
 
     return FormBuilder(
       key: _formKey,
@@ -675,7 +673,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 hintText: 'dateOfBirth',
                 border: OutlineInputBorder(),
               ),
-              initialValue: initialDate,
+              // ignore: unnecessary_null_comparison
+              initialValue: _formData.dateOfBirth != null && _formData.dateOfBirth!.isNotEmpty ? DateTime.parse(_formData.dateOfBirth) : null,
               textAlign: TextAlign.center,
               format: DateFormat("MMMM d, yyyy"),
               validator: FormBuilderValidators.required(),
