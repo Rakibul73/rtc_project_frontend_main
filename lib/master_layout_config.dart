@@ -48,7 +48,7 @@ final sidebarMenuConfigs = [
   ),
   SidebarMenuConfig(
     uri: '',
-    icon: Icons.article_outlined,
+    icon: Icons.admin_panel_settings_outlined,
     title: (context) => "Admin Panel",
     children: [
       SidebarChildMenuConfig(
