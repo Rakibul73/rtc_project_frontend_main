@@ -28,6 +28,27 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
   late List<dynamic> _initialProjects = []; // Updated projects list to hold all projects
 
 // Function to filter projects based on search text
+  void filterProjectsStatus(String searchText) {
+    List<dynamic> updatedProjects = [];
+    if (searchText.isEmpty) {
+      setState(() {
+        // Update the data source with all projects
+        _dataSource.data = List<dynamic>.from(_initialProjects);
+      });
+    } else {
+      updatedProjects = _initialProjects.where((project) {
+        final projectTitle = project['ProjectStatus'].toString().toLowerCase();
+        final searchLowerCase = searchText.toLowerCase();
+        return projectTitle.contains(searchLowerCase);
+      }).toList();
+      setState(() {
+        // Update the data source with filtered projects
+        _dataSource.data = updatedProjects;
+      });
+    }
+  }
+
+  // Function to filter projects based on search text
   void filterProjects(String searchText) {
     List<dynamic> updatedProjects = [];
     if (searchText.isEmpty) {
@@ -64,7 +85,7 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
     try {
       final responseBody = await ApiService.deleteProject(projectID);
       print(responseBody);
-      
+
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
           context: context,
@@ -108,7 +129,7 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
     viewAllProjects();
 
     _dataSource = DataSource(
-      onViewButtonPressed:  (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
       onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${data['ProjectID']}'),
       onDeleteButtonPressed: (data) {
         deleteProject(data['ProjectID']);
@@ -164,24 +185,61 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
                               alignment: WrapAlignment.spaceBetween,
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
-                                SizedBox(
-                                  width: 300.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
-                                    child: FormBuilderTextField(
-                                      name: 'search',
-                                      decoration: const InputDecoration(
-                                        labelText: 'Search by Project Title',
-                                        hintText: 'Enter project title',
-                                        border: OutlineInputBorder(),
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        isDense: true,
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: kDefaultPadding),
+                                      child: SizedBox(
+                                        width: 300.0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                          child: FormBuilderTextField(
+                                            name: 'search_project_title',
+                                            decoration: const InputDecoration(
+                                              labelText: 'Search by Project Title',
+                                              hintText: 'Enter project title',
+                                              border: OutlineInputBorder(),
+                                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                                              isDense: true,
+                                            ),
+                                            onChanged: (value) {
+                                              filterProjects(value!);
+                                            },
+                                          ),
+                                        ),
                                       ),
-                                      onChanged: (value) {
-                                        filterProjects(value!);
-                                      },
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 200.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                        child: FormBuilderDropdown(
+                                            name: 'search_project_status',
+                                            decoration: const InputDecoration(
+                                              labelText: 'Search by Project Status',
+                                              border: OutlineInputBorder(),
+                                              hoverColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hintText: 'Select',
+                                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                                              isDense: true,
+                                            ),
+                                            focusColor: Colors.transparent,
+                                            items: [
+                                              '',
+                                              'Pending',
+                                              'Approved',
+                                              'Rejected',
+                                              'Running',
+                                              'Completed',
+                                            ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                            onChanged: (value) {
+                                              filterProjectsStatus(value!);
+                                            }),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
