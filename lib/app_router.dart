@@ -5,6 +5,7 @@ import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/MyProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/NotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/PendingUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ProjectOverviewScreen.dart';
@@ -13,8 +14,10 @@ import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/UserManagementOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/VerifyUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ViewAllNotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/EditProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/ViewIndividualNotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/error_screen.dart';
@@ -50,6 +53,9 @@ class RouteUri {
   static const String verifyuser = '/verifyuser';
   static const String projectoverview = '/projectoverview';
   static const String deleteuser = '/deleteuser';
+  static const String notification = '/notification';
+  static const String viewallnotifications = '/viewallnotifications';
+  static const String viewindividualnotification = '/viewindividualnotification';
   static const String changepassword = '/changepassword';
 }
 
@@ -143,6 +149,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.viewindividualnotification,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewIndividualNotificationScreen(notificationID: state.queryParameters['notification_id'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.projectprogressreport,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -168,6 +183,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectTrackingScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.notification,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const NotificationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.viewallnotifications,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ViewAllNotificationScreen(),
         ),
       ),
       GoRoute(

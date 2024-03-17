@@ -47,6 +47,11 @@ final sidebarMenuConfigs = [
     ],
   ),
   SidebarMenuConfig(
+    uri: RouteUri.notification,
+    icon: Icons.notifications_outlined,
+    title: (context) => "Notification",
+  ),
+  SidebarMenuConfig(
     uri: '',
     icon: Icons.admin_panel_settings_outlined,
     title: (context) => "Admin Panel",
@@ -70,6 +75,11 @@ final sidebarMenuConfigs = [
         uri: RouteUri.viewallusers,
         icon: Icons.circle_outlined,
         title: (context) => "View All Users",
+      ),
+      SidebarChildMenuConfig(
+        uri: RouteUri.viewallnotifications,
+        icon: Icons.circle_outlined,
+        title: (context) => "View All Notifications",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.deleteuser,
