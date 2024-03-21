@@ -249,11 +249,12 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                                       Padding(
                                         padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
                                         child: Icon(
+                                          color: Colors.black,
                                           Icons.verified_user_outlined,
                                           size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                         ),
                                       ),
-                                      const Text("Pending Users List"),
+                                      const Text("Pending Users List", style: TextStyle(color: Colors.black),)
                                     ],
                                   ),
                                 ),
