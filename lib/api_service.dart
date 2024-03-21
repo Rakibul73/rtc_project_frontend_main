@@ -17,6 +17,30 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> requestProjectDeletionToAdmin(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/request_project_deletion_to_admin/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print("requestProjectDeletionToAdmin response: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      return {'message': 'Project with id $projectId requested for deletion', 'statusCode': 200};
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
+      throw Exception('Failed to request project deletion. errors: ${response.body}');
+    }
+  }
+
   static Future<Map<String, dynamic>> markAllAsRead() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
