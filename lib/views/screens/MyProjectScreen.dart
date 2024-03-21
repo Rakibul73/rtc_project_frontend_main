@@ -104,10 +104,28 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
           context: context,
           dialogType: DialogType.error,
           title: "You don't have permission to delete this project.",
-          desc: "Please contact admin.",
+          desc: "Send a delete request to admin.",
           width: kDialogWidth,
-          btnOkText: 'OK',
-          btnOkOnPress: () {},
+          btnOkText: 'Send Request',
+          btnCancelText: 'Cancel',
+          btnCancelOnPress: () {},
+          btnOkOnPress: () async {
+            // Send a delete request to admin
+            final responseBody = await ApiService.requestProjectDeletionToAdmin(projectID);
+            print(responseBody);
+            if (responseBody['statusCode'] == 200) {
+              final dialog = AwesomeDialog(
+                context: context,
+                dialogType: DialogType.success,
+                title: responseBody['message'],
+                width: kDialogWidth,
+                btnOkText: 'OK',
+                btnOkOnPress: () {},
+              );
+              dialog.show();
+              print('Project deletion request sent successfully');
+            }
+          },
         );
         dialog.show();
       }
