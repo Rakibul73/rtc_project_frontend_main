@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     Text(
-                      "PSTU Research & Training Center",
+                      "PSTU RTC Project Management",
                       style: themeData.textTheme.headlineMedium!.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 22.0,

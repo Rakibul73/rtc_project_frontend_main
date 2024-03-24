@@ -120,7 +120,7 @@ class _ForgotPassState extends State<ForgotPass> {
                       ),
                     ),
                     Text(
-                      "PSTU Research & Training Center",
+                      "PSTU RTC Project Management",
                       style: themeData.textTheme.headlineMedium!.copyWith(
                         fontWeight: FontWeight.w600, fontSize: 22.0,
                       ),

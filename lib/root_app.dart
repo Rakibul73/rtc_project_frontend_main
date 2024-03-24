@@ -66,7 +66,7 @@ class _RootAppState extends State<RootApp> {
                           FormBuilderLocalizations.delegate,
                         ],
                         // locale: provider.locale,
-                        onGenerateTitle: (context) => "PSTU Research & Training Center",
+                        onGenerateTitle: (context) => "PSTU Research & Training Center Project Management",
                         theme: AppThemeData.instance.light(),
                         darkTheme: AppThemeData.instance.dark(),
                         themeMode: provider.themeMode,

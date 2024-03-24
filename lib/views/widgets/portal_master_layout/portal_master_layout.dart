@@ -231,7 +231,7 @@ class ResponsiveAppBarTitle extends StatelessWidget {
                 ),
               ),
             ),
-            const Text("PSTU Research & Training Center"),
+            const Text("PSTU RTC Project Management"),
           ],
         ),
       ),

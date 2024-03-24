@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     Text(
-                      "PSTU Research & Training Center",
+                      "PSTU RTC Project Management", textAlign: TextAlign.center,
                       style: themeData.textTheme.headlineMedium!.copyWith(
                         fontWeight: FontWeight.w600, fontSize: 22.0
                       ),
