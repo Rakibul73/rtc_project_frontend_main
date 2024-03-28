@@ -913,33 +913,6 @@ class ApiService {
     }
   }
 
-  static Future<void> sendPasswordToEmail(String email) async {
-    const String apiUrl = '$baseUrl/send_password'; // Replace with your actual backend URL
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': email,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Password sent successfully
-        print('Password sent to $email successfully');
-        return;
-      } else {
-        // If the server did not return a 200 OK response, throw an exception.
-        throw Exception('Failed to send password to email');
-      }
-    } catch (e) {
-      // If an error occurs, throw an exception
-      throw Exception('Failed to send password to email: $e');
-    }
-  }
 
   static Future<int> resetPassword(String token, String newPassword) async {
     try {
@@ -1009,26 +982,6 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> deleteUser(int userId) async {
-    final accessToken = await getAccessToken();
-    if (accessToken == null) {
-      throw Exception('JWT token not found');
-    }
-
-    final response = await http.delete(
-      Uri.parse('$baseUrl/delete_user/$userId'),
-      headers: <String, String>{
-        'Authorization': 'Bearer $accessToken',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return {'message': 'User deleted successfully'};
-    } else {
-      throw Exception('Failed to delete user. errors: ${response.body}');
-    }
-  }
-
   static Future<Map<String, dynamic>> getSpecificUser(int userId) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1052,27 +1005,6 @@ class ApiService {
       return data;
     } else {
       throw Exception('Failed to load user details. Error: ${response.body}');
-    }
-  }
-
-  static Future<List<Map<String, dynamic>>> getAllUsers() async {
-    final accessToken = await getAccessToken();
-    if (accessToken == null) {
-      throw Exception('JWT token not found');
-    }
-
-    final response = await http.get(
-      Uri.parse('$baseUrl/get_all_users'),
-      headers: <String, String>{
-        'Authorization': 'Bearer $accessToken',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['users'];
-      return data.cast<Map<String, dynamic>>();
-    } else {
-      throw Exception('Failed to load users. errors: ${response.body}');
     }
   }
 
