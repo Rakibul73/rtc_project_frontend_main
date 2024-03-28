@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:rtc_project_fronend/constants/values.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -231,6 +232,8 @@ class UserDataProvider extends ChangeNotifier {
   Future<void> clearUserDataAsync() async {
     final sharedPref = await SharedPreferences.getInstance();
 
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: 'jwt_token');
     await sharedPref.remove(StorageKeys.username);
     await sharedPref.remove(StorageKeys.firstname);
     await sharedPref.remove(StorageKeys.lastname);
