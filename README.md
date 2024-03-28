@@ -7,7 +7,11 @@
 [![](https://skillicons.dev/icons?i=flutter,dart,vscode,py,mysql)]()
 </div>
 <hr/>
+<<<<<<< HEAD
 With the goal of improving research and training initiatives at any institution, the "PSTU RTC Project Management" is a ground-breaking project created with the Flutter framework (frontend), Python (Flask backend), and MySQL database. Administrators have full authority over the system, including monitoring, modifying, and managing research projects, while researchers may submit, manage, and update their project ideas. The Reviewer Panel, which enables designated reviewers to assess and offer input on research project proposals, is one of this system's key components.
+=======
+With the goal of improving research and training initiatives at any institution, the "Research and Training Center Automation Web Application" is a ground-breaking project created with the Flutter framework (frontend), Python (Flask backend), and MySQL database. Administrators have full authority over the system, including monitoring, modifying, and managing research projects, while researchers may submit, manage, and update their project ideas. The Reviewer Panel, which enables designated reviewers to assess and offer input on research project proposals, is one of this system's key components.
+>>>>>>> ce85eb776b64d56c7e65f2ac8cd05358a0d1ac7b
 <hr>
 
 ##### This Website uses this Python (Flask) backend [PSTU RTC Project Management `Backend`](https://github.com/Rakibul73/rtc_project_backend) 
