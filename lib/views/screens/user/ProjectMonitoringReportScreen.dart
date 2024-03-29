@@ -9,8 +9,8 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:rtc_project_fronend/views/widgets/public_master_layout/public_master_layout.dart';
 
-class ProjectProgressReportScreen extends StatelessWidget {
-  const ProjectProgressReportScreen({Key? key}) : super(key: key);
+class ProjectMonitoringReportScreen extends StatelessWidget {
+  const ProjectMonitoringReportScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

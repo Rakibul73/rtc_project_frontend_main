@@ -30,14 +30,14 @@ final sidebarMenuConfigs = [
         title: (context) => "My Projects",
       ),
       SidebarChildMenuConfig(
-        uri: RouteUri.projecttracking,
+        uri: RouteUri.projectreviewtracking,
         icon: Icons.circle_outlined,
-        title: (context) => "Project Tracking",
+        title: (context) => "Project Review Tracking",
       ),
       SidebarChildMenuConfig(
-        uri: RouteUri.projectprogressreport,
+        uri: RouteUri.projectmonitoringreport,
         icon: Icons.circle_outlined,
-        title: (context) => "Project Progress Report",
+        title: (context) => "Project Monitoring Report",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.billinformation,

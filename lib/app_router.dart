@@ -1,30 +1,31 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
-import 'package:rtc_project_fronend/views/screens/BillInformationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
-import 'package:rtc_project_fronend/views/screens/CreateProject.dart';
-import 'package:rtc_project_fronend/views/screens/DeleteUserScreen.dart';
-import 'package:rtc_project_fronend/views/screens/MyProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/NotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/PendingUsersScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ProjectDashboardScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ProjectOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ProjectProgressReportScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ProjectTrackingScreen.dart';
-import 'package:rtc_project_fronend/views/screens/SearchProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/UserManagementOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/VerifyUserScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ViewAllNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ViewAllUsersScreen.dart';
-import 'package:rtc_project_fronend/views/screens/EditProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
+import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MyProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/NotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/PendingUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/UserManagementOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/VerifyUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewAllNotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewAllUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/ViewIndividualNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ViewProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/error_screen.dart';
 import 'package:rtc_project_fronend/views/screens/forgot_pass.dart';
 import 'package:rtc_project_fronend/views/screens/login_screen.dart';
 import 'package:rtc_project_fronend/views/screens/logout_screen.dart';
-import 'package:rtc_project_fronend/views/screens/my_profile_screen.dart';
+import 'package:rtc_project_fronend/views/screens/MyProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/reset_pass_screen.dart';
 
@@ -43,10 +44,11 @@ class RouteUri {
   static const String myprojects = '/myprojects';
   static const String viewproject = '/viewproject';
   static const String editproject = '/editproject';
-  static const String projecttracking = '/projecttracking';
+  static const String editprojectadmin = '/editprojectadmin';
+  static const String projectreviewtracking = '/projectreviewtracking';
   static const String projectdashboard = '/projectdashboard';
   static const String billinformation = '/billinformation';
-  static const String projectprogressreport = '/projectprogressreport';
+  static const String projectmonitoringreport = '/projectmonitoringreport';
   static const String usermanagementoverview = '/usermanagementoverview';
   static const String viewallusers = '/viewallusers';
   static const String pendingusers = '/pendingusers';
@@ -140,6 +142,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.editprojectadmin,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: EditProjectScreenAdmin(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.verifyuser,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
@@ -158,10 +169,10 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
-        path: RouteUri.projectprogressreport,
+        path: RouteUri.projectmonitoringreport,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const ProjectProgressReportScreen(),
+          child: const ProjectMonitoringReportScreen(),
         ),
       ),
       GoRoute(
@@ -179,10 +190,10 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.projecttracking,
+        path: RouteUri.projectreviewtracking,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const ProjectTrackingScreen(),
+          child: const ProjectReviewTrackingScreen(),
         ),
       ),
       GoRoute(

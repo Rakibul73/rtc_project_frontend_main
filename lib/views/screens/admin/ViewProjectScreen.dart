@@ -69,7 +69,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
           dialog.show();
         }
 
-        // print("userDetails: ${userDetails['project']}");
         print("_formData.piUserID = ${userDetails['project']['CreatorUserID']}");
         print("_formData.coPiUserID = ${userDetails['project']['CoPiUserID']}");
         print("_formData.studentUserID = ${userDetails['project']['StudentUserID']}");
@@ -134,6 +133,84 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
 
         _formData.projectStatus = userDetails['project']['ProjectStatus'];
         _formData.projectSoftCopyLocation = userDetails['project']['ProjectSoftCopyLocation'] ?? '';
+
+        // get student user details
+        final studentUserDetails = await ApiService.getSpecificUser(
+          _formData.studentUserID,
+        );
+        if (studentUserDetails['statuscode'] == 401) {
+          // Handle token expiration
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
+        _formData.studentName = studentUserDetails['user']['FirstName'] + ' ' + studentUserDetails['user']['LastName'];
+        _formData.studentId = studentUserDetails['user']['StudentID'].toString();
+        _formData.studentRegNo = studentUserDetails['user']['StudentRegNo'] ?? '';
+        _formData.firstEnrollmentSemester = studentUserDetails['user']['FirstEnrollmentSemester'] ?? '';
+        _formData.cgpaUndergraduateLevel = studentUserDetails['user']['UndergraduateCGPALevel'] ?? '';
+
+        // get PI user details
+        final piUserDetails = await ApiService.getSpecificUser(
+          _formData.piUserID,
+        );
+        if (piUserDetails['statuscode'] == 401) {
+          // Handle token expiration
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
+        _formData.piName = piUserDetails['user']['FirstName'] + ' ' + piUserDetails['user']['LastName'];
+        _formData.piPresentAddress = piUserDetails['user']['PresentAddress'] ?? '';
+        _formData.piPermanentAddress = piUserDetails['user']['PermanentAddress'] ?? '';
+        _formData.piEmail = piUserDetails['user']['Email'] ?? '';
+        _formData.piPhone = piUserDetails['user']['Phone'] ?? '';
+        _formData.piSalaryScale = piUserDetails['user']['SalaryScale'].toString();
+        _formData.piHighestAcademicQualification = piUserDetails['user']['HighestAcademicQualification'] ?? '';
+        _formData.piAreaOfExpertise = piUserDetails['user']['AreaOfExpertise'] ?? '';
+        _formData.piExperienceInResearch = piUserDetails['user']['ExperienceInResearch'].toString();
+        _formData.piExperienceInTeaching = piUserDetails['user']['Teaching'].toString();
+        _formData.piReferencesOfLatestPublications = piUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
+
+        // get CO-PI user details
+        final coPiUserDetails = await ApiService.getSpecificUser(
+          _formData.coPiUserID,
+        );
+        if (coPiUserDetails['statuscode'] == 401) {
+          // Handle token expiration
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
+        _formData.coPiName = coPiUserDetails['user']['FirstName'] + ' ' + coPiUserDetails['user']['LastName'];
+        _formData.coPiPresentAddress = coPiUserDetails['user']['PresentAddress'] ?? '';
+        _formData.coPiPermanentAddress = coPiUserDetails['user']['PermanentAddress'] ?? '';
+        _formData.coPiEmail = coPiUserDetails['user']['Email'] ?? '';
+        _formData.coPiPhone = coPiUserDetails['user']['Phone'] ?? '';
+        _formData.coPiSalaryScale = coPiUserDetails['user']['SalaryScale'].toString();
+        _formData.coPiHighestAcademicQualification = coPiUserDetails['user']['HighestAcademicQualification'] ?? '';
+        _formData.coPiAreaOfExpertise = coPiUserDetails['user']['AreaOfExpertise'] ?? '';
+        _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
+        _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
+        _formData.coPiReferencesOfLatestPublications = coPiUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
       });
     }
 
@@ -1960,7 +2037,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piName,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -1983,13 +2060,13 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piPresentAddress,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piPermanentAddress,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2012,7 +2089,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piEmail,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2035,7 +2112,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piPhone,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2058,7 +2135,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piSalaryScale,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2081,25 +2158,25 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piHighestAcademicQualification,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piHighestAcademicQualificationUniversity,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piHighestAcademicQualificationCountry,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piHighestAcademicQualificationYear,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2122,7 +2199,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piAreaOfExpertise,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2145,7 +2222,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piExperienceInResearch,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2168,7 +2245,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piExperienceInTeaching,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2191,7 +2268,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.piReferencesOfLatestPublications,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2235,7 +2312,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiName,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2258,13 +2335,13 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiPresentAddress,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiPermanentAddress,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2287,7 +2364,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiEmail,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2310,7 +2387,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiPhone,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2333,7 +2410,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiSalaryScale,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2356,25 +2433,25 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiHighestAcademicQualification,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiHighestAcademicQualificationUniversity,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiHighestAcademicQualificationCountry,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiHighestAcademicQualificationYear,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2397,7 +2474,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiAreaOfExpertise,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2420,7 +2497,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiExperienceInResearch,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2443,7 +2520,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiExperienceInTeaching,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2466,7 +2543,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.coPiReferencesOfLatestPublications,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2522,7 +2599,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.studentName,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2546,7 +2623,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.methodology,
+                                              title: _formData.studentRegNo,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2582,7 +2659,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.natureOfTheResearchProposal,
+                                              title: _formData.studentId,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2606,7 +2683,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.locationOfFieldActivities,
+                                              title: _formData.firstEnrollmentSemester,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -2630,7 +2707,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.totalBudgetOfResearchProposal,
+                                              title: _formData.cgpaUndergraduateLevel,
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -3022,45 +3099,49 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
 
 class FormData {
   String projectID = '';
-  String price = '';
-
   String roleID = '';
-  // String cgpaUndergraduateLevel = '';
-  // String firstEnrollmentSemester = '';
-  // String studentId = '';
-  // String studentRegNo = '';
-  // String studentName = '';
+
+  String cgpaUndergraduateLevel = '';
+  String firstEnrollmentSemester = '';
+  String studentId = '';
+  String studentRegNo = '';
+  String studentName = '';
   int studentUserID = 0;
-  // String coPiReferencesOfLatestPublications = '';
-  // String coPiExperienceInTeaching = '';
-  // String coPiExperienceInResearch = '';
-  // String coPiAreaOfExpertise = '';
-  // String coPiHighestAcademicQualificationYear = '';
-  // String coPiHighestAcademicQualificationCountry = '';
-  // String coPiHighestAcademicQualificationUniversity = '';
-  // String coPiHighestAcademicQualification = '';
-  // String coPiBasicPay = '';
-  // String coPiSalaryScale = '';
-  // String coPiEmail = '';
-  // String coPiAddress = '';
-  // String coPiPhone = '';
-  // String coPiName = '';
+
+  String coPiReferencesOfLatestPublications = '';
+  String coPiExperienceInTeaching = '';
+  String coPiExperienceInResearch = '';
+  String coPiAreaOfExpertise = '';
+  String coPiHighestAcademicQualificationYear = '';
+  String coPiHighestAcademicQualificationCountry = '';
+  String coPiHighestAcademicQualificationUniversity = '';
+  String coPiHighestAcademicQualification = '';
+  String coPiBasicPay = '';
+  String coPiSalaryScale = '';
+  String coPiEmail = '';
+  String coPiPresentAddress = '';
+  String coPiPermanentAddress = '';
+  String coPiPhone = '';
+  String coPiName = '';
   int coPiUserID = 0;
-  // String piReferencesOfLatestPublications = '';
-  // int piExperienceInTeaching = 0;
-  // int piExperienceInResearch = 0;
-  // String piAreaOfExpertise = '';
-  // int piHighestQualificationYear = 0;
-  // String piHighestQualificationCountry = '';
-  // String piHighestQualificationUniversity = '';
-  // String piHighestQualification = '';
-  // int piBasicPay = 0;
-  // int piSalaryScale = 0;
-  // String piEmail = '';
-  // String piAddress = '';
-  // String piPhone = '';
-  // String piName = '';
+
+  String piReferencesOfLatestPublications = '';
+  String piExperienceInTeaching = '';
+  String piExperienceInResearch = '';
+  String piAreaOfExpertise = '';
+  String piHighestAcademicQualificationYear = '';
+  String piHighestAcademicQualificationCountry = '';
+  String piHighestAcademicQualificationUniversity = '';
+  String piHighestAcademicQualification = '';
+  String piBasicPay = '';
+  String piSalaryScale = '';
+  String piEmail = '';
+  String piPresentAddress = '';
+  String piPermanentAddress = '';
+  String piPhone = '';
+  String piName = '';
   int piUserID = 0;
+
   String projectStatus = '';
   String projectSoftCopyLocation = '';
   String dateOfChairmanOfTheDepartment = '';
