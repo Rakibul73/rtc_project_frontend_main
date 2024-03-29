@@ -18,6 +18,90 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> getReviewerUserId(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("getSpecificNotification $projectId");
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_revieweruserid_for_specific_project/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load notification details. Error: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> setReviewer(Map<String, dynamic> reviewer1, Map<String, dynamic> reviewer2, Map<String, dynamic> reviewer3) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/set_reviewer_for_specific_project');
+    print("setReviewer url: $url");
+
+    try {
+      final http.Response response1 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(reviewer1),
+      );
+      final http.Response response2 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(reviewer2),
+      );
+      final http.Response response3 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(reviewer3),
+      );
+
+      print('Response status: ${response1.statusCode}');
+      print('Response body: ${response1.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response1.body);
+
+      if (response1.statusCode == 201 && response2.statusCode == 201 && response3.statusCode == 201) {
+        // reviewer set successfully
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to set reviewer: ${responseBody['error']} | ${jsonDecode(response2.body)} | ${jsonDecode(response3.body)} ');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+
   static Future<Map<String, dynamic>> getSpecificNotification(int notificationID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -45,7 +129,6 @@ class ApiService {
       throw Exception('Failed to load notification details. Error: ${response.body}');
     }
   }
-
 
   static Future<Map<String, dynamic>> requestProjectDeletionToAdmin(int projectId) async {
     final accessToken = await getAccessToken();
@@ -169,7 +252,7 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
-  
+
   static Future<Map<String, dynamic>> markAsRead(int notificationID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -913,7 +996,6 @@ class ApiService {
     }
   }
 
-
   static Future<int> resetPassword(String token, String newPassword) async {
     try {
       final response = await http.post(
@@ -1099,6 +1181,7 @@ class User {
   final String lastName;
   final String signatureLocation;
   final String sealLocation;
+  final String profilePicLocation;
 
   User({
     required this.userId,
@@ -1107,6 +1190,7 @@ class User {
     required this.lastName,
     required this.signatureLocation,
     required this.sealLocation,
+    required this.profilePicLocation,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -1117,6 +1201,7 @@ class User {
       lastName: json['LastName'],
       signatureLocation: json['SignatureLocation'] ?? '',
       sealLocation: json['SealLocation'] ?? '',
+      profilePicLocation: json['ProfilePicLocation'] ?? '',
     );
   }
 

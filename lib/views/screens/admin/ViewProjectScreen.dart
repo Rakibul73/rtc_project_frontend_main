@@ -211,6 +211,48 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
         _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
         _formData.coPiReferencesOfLatestPublications = coPiUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
+
+        final reviewerUserId = await ApiService.getReviewerUserId(projectId);
+        if (reviewerUserId['statuscode'] == 401) {
+          // Handle token expiration
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
+
+        print(reviewerUserId);
+        print(reviewerUserId['revieweruserid'].length);
+
+        if (reviewerUserId['revieweruserid'].length != 0) {
+          _formData.fetchReviewerUserId1 = reviewerUserId['revieweruserid'][0]['ReviewerUserID'];
+          _formData.fetchReviewerUserId2 = reviewerUserId['revieweruserid'][1]['ReviewerUserID'];
+          _formData.fetchReviewerUserId3 = reviewerUserId['revieweruserid'][2]['ReviewerUserID'];
+
+          final fetchReviewerUserDetail1 = await ApiService.getSpecificUser(
+            _formData.fetchReviewerUserId1,
+          );
+          final fetchReviewerUserDetail2 = await ApiService.getSpecificUser(
+            _formData.fetchReviewerUserId2,
+          );
+          final fetchReviewerUserDetail3 = await ApiService.getSpecificUser(
+            _formData.fetchReviewerUserId3,
+          );
+          _formData.profilePicLocation1 = fetchReviewerUserDetail1['user']['ProfilePicLocation'] ?? '';
+          _formData.profilePicLocation2 = fetchReviewerUserDetail2['user']['ProfilePicLocation'] ?? '';
+          _formData.profilePicLocation3 = fetchReviewerUserDetail3['user']['ProfilePicLocation'] ?? '';
+          _formData.reviewerFullname1 = fetchReviewerUserDetail1['user']['FirstName'] + ' ' + fetchReviewerUserDetail1['user']['LastName'];
+          _formData.reviewerFullname2 = fetchReviewerUserDetail2['user']['FirstName'] + ' ' + fetchReviewerUserDetail2['user']['LastName'];
+          _formData.reviewerFullname3 = fetchReviewerUserDetail3['user']['FirstName'] + ' ' + fetchReviewerUserDetail3['user']['LastName'];
+          _formData.reviewerUsername1 = fetchReviewerUserDetail1['user']['Username'] ?? '';
+          _formData.reviewerUsername2 = fetchReviewerUserDetail2['user']['Username'] ?? '';
+          _formData.reviewerUsername3 = fetchReviewerUserDetail3['user']['Username'] ?? '';
+        }
       });
     }
 
@@ -227,6 +269,89 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       width: kDialogWidth,
       btnOkText: "Yes",
       btnOkOnPress: () => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${widget.projectID}'),
+      btnCancelText: "No",
+      btnCancelOnPress: () {},
+    );
+    dialog.show();
+  }
+
+  void _setReviewer(BuildContext context) {
+    AppFocusHelper.instance.requestUnfocus();
+
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      title: "Assign these reviewer to this project id = ${widget.projectID}?",
+      desc: "Note: This action cannot be undone.",
+      width: kDialogWidth,
+      btnOkText: "Yes",
+      btnOkOnPress: () async {
+        _formKey.currentState!.save();
+        try {
+          final reviewer1 = {
+            'ProjectID': _formData.projectID,
+            'ReviewerUserID': _formData.reviewerUserId1,
+          };
+          final reviewer2 = {
+            'ProjectID': _formData.projectID,
+            'ReviewerUserID': _formData.reviewerUserId2,
+          };
+          final reviewer3 = {
+            'ProjectID': _formData.projectID,
+            'ReviewerUserID': _formData.reviewerUserId3,
+          };
+          final responseBody = await ApiService.setReviewer(reviewer1, reviewer2, reviewer3);
+          if (responseBody['statuscode'] == 201) {
+            // Handle success
+            print('Reviewer set successfully');
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.success,
+              title: "Reviewer set successfully",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          } else if (responseBody['msg'] == "Token has expired") {
+            // Handle error
+            print('Token has expired');
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              title: "Token has expired , please login again",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          } else {
+            // Handle error
+            print('Error seting reviewer: ${responseBody['message']}');
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              title: "Error seting reviewer: ${responseBody['message']}",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          }
+        } catch (e) {
+          // Handle error
+          print('Error seting reviewer: $e');
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            title: "Error seting reviewer: $e",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
+      },
       btnCancelText: "No",
       btnCancelOnPress: () {},
     );
@@ -292,10 +417,465 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // const CardHeader(
-                    //     title: "This research proposal must be submitted according to the following format",
-                    //     backgroundColor: Color.fromARGB(255, 139, 161, 168),
-                    //     titleColor: Color.fromARGB(255, 50, 39, 42)),
+                    CardBody(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId1 == 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardBody(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                                      child: FutureBuilder<List<User>>(
+                                                        future: ApiService.getAllUsersExceptStudents(),
+                                                        builder: (context, snapshot) {
+                                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                                          } else if (snapshot.hasError) {
+                                                            return Text('Error: ${snapshot.error}');
+                                                          } else {
+                                                            return FormBuilderDropdown<User>(
+                                                              name: 'reviewer_1',
+                                                              decoration: const InputDecoration(
+                                                                labelText: 'Reviewer 1',
+                                                                hintText: 'Select Reviewer 1',
+                                                                border: OutlineInputBorder(),
+                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                              ),
+                                                              // validator: FormBuilderValidators.required(),
+                                                              items: snapshot.data!
+                                                                  .map((user) => DropdownMenuItem<User>(
+                                                                        value: user,
+                                                                        child: Text(user.getDisplayName()),
+                                                                      ))
+                                                                  .toList(),
+                                                              onChanged: (User? user) {
+                                                                if (user != null) {
+                                                                  setState(() {
+                                                                    _formData.profilePicLocation1 = user.profilePicLocation;
+                                                                    _formData.reviewerUserId1 = user.userId;
+                                                                  });
+                                                                }
+                                                              },
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId1 != 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardHeader(
+                                                title: "Name: ${_formData.reviewerFullname1}     | Username: ${_formData.reviewerUsername1}",
+                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
+                                                showDivider: false,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                        child: Stack(
+                                          children: [
+                                            FutureBuilder<String>(
+                                              future: _formData.profilePicLocation1.isNotEmpty
+                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation1)
+                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text('Error: ${snapshot.error}');
+                                                } else {
+                                                  return Image.memory(
+                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                    // width: 120, // Adjust width as needed
+                                                    height: 60, // Adjust height as needed
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                                      child: const Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CardHeader(
+                                              title: 'Reviewer Selection :',
+                                              backgroundColor: Color.fromARGB(255, 74, 89, 96),
+                                              titleColor: Color.fromARGB(255, 151, 204, 197),
+                                              showDivider: false,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId2 == 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardBody(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                                      child: FutureBuilder<List<User>>(
+                                                        future: ApiService.getAllUsersExceptStudents(),
+                                                        builder: (context, snapshot) {
+                                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                                          } else if (snapshot.hasError) {
+                                                            return Text('Error: ${snapshot.error}');
+                                                          } else {
+                                                            return FormBuilderDropdown<User>(
+                                                              name: 'reviewer_2',
+                                                              decoration: const InputDecoration(
+                                                                labelText: 'Reviewer 2',
+                                                                hintText: 'Select Reviewer 2',
+                                                                border: OutlineInputBorder(),
+                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                              ),
+                                                              // validator: FormBuilderValidators.required(),
+                                                              items: snapshot.data!
+                                                                  .map((user) => DropdownMenuItem<User>(
+                                                                        value: user,
+                                                                        child: Text(user.getDisplayName()),
+                                                                      ))
+                                                                  .toList(),
+                                                              onChanged: (User? user) {
+                                                                if (user != null) {
+                                                                  setState(() {
+                                                                    _formData.profilePicLocation2 = user.profilePicLocation;
+                                                                    _formData.reviewerUserId2 = user.userId;
+                                                                  });
+                                                                }
+                                                              },
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId2 != 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardHeader(
+                                                title: "Name: ${_formData.reviewerFullname2}     | Username: ${_formData.reviewerUsername2}",
+                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
+                                                showDivider: false,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                        child: Stack(
+                                          children: [
+                                            FutureBuilder<String>(
+                                              future: _formData.profilePicLocation2.isNotEmpty
+                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation2)
+                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text('Error: ${snapshot.error}');
+                                                } else {
+                                                  return Image.memory(
+                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                    // width: 120, // Adjust width as needed
+                                                    height: 60, // Adjust height as needed
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId3 == 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardBody(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                                      child: FutureBuilder<List<User>>(
+                                                        future: ApiService.getAllUsersExceptStudents(),
+                                                        builder: (context, snapshot) {
+                                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                                          } else if (snapshot.hasError) {
+                                                            return Text('Error: ${snapshot.error}');
+                                                          } else {
+                                                            return FormBuilderDropdown<User>(
+                                                              name: 'reviewer_3',
+                                                              decoration: const InputDecoration(
+                                                                labelText: 'Reviewer 3',
+                                                                hintText: 'Select Reviewer 3',
+                                                                border: OutlineInputBorder(),
+                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                              ),
+                                                              // validator: FormBuilderValidators.required(),
+                                                              items: snapshot.data!
+                                                                  .map((user) => DropdownMenuItem<User>(
+                                                                        value: user,
+                                                                        child: Text(user.getDisplayName()),
+                                                                      ))
+                                                                  .toList(),
+                                                              onChanged: (User? user) {
+                                                                if (user != null) {
+                                                                  setState(() {
+                                                                    _formData.profilePicLocation3 = user.profilePicLocation;
+                                                                    _formData.reviewerUserId3 = user.userId;
+                                                                  });
+                                                                }
+                                                              },
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: _formData.fetchReviewerUserId3 != 0,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardHeader(
+                                                title: "Name: ${_formData.reviewerFullname3}     | Username: ${_formData.reviewerUsername3}",
+                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
+                                                showDivider: false,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                        child: Stack(
+                                          children: [
+                                            FutureBuilder<String>(
+                                              future: _formData.profilePicLocation3.isNotEmpty
+                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation3)
+                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                } else if (snapshot.hasError) {
+                                                  return Text('Error: ${snapshot.error}');
+                                                } else {
+                                                  return Image.memory(
+                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                    // width: 120, // Adjust width as needed
+                                                    height: 60, // Adjust height as needed
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _formData.fetchReviewerUserId1 == 0,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                              child: Card(
+                                clipBehavior: Clip.antiAlias,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CardBody(
+                                      child: Wrap(
+                                        direction: Axis.horizontal,
+                                        spacing: kDefaultPadding * 5.0,
+                                        runSpacing: kDefaultPadding * 2.0,
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: SizedBox(
+                                              height: 40.0,
+                                              child: ElevatedButton(
+                                                style: themeData.extension<AppButtonTheme>()!.successOutlined,
+                                                onPressed: () => _setReviewer(context),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                      child: Icon(
+                                                        Icons.save_outlined,
+                                                        size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      "Save Changes",
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     CardBody(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -3100,6 +3680,21 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
 class FormData {
   String projectID = '';
   String roleID = '';
+  String profilePicLocation1 = '';
+  String profilePicLocation2 = '';
+  String profilePicLocation3 = '';
+  String reviewerUsername1 = '';
+  String reviewerUsername2 = '';
+  String reviewerUsername3 = '';
+  String reviewerFullname1 = '';
+  String reviewerFullname2 = '';
+  String reviewerFullname3 = '';
+  int reviewerUserId1 = 0;
+  int reviewerUserId2 = 0;
+  int reviewerUserId3 = 0;
+  int fetchReviewerUserId1 = 0;
+  int fetchReviewerUserId2 = 0;
+  int fetchReviewerUserId3 = 0;
 
   String cgpaUndergraduateLevel = '';
   String firstEnrollmentSemester = '';
