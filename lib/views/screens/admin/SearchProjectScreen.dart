@@ -329,7 +329,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
                                             DataColumn(label: Text('CodeByRTC')),
                                             DataColumn(label: Text('ProjectTitle')),
                                             DataColumn(label: Text('ProjectStatus')),
-                                            DataColumn(label: Text('TotalPoints')),
                                             DataColumn(label: Text('Actions')),
                                           ],
                                         );
@@ -381,7 +380,6 @@ class DataSource extends DataTableSource {
           ? '${data['ProjectTitle'].toString().substring(0, maxLength)}...' // Display a truncated title with ellipsis
           : data['ProjectTitle'].toString())),
       DataCell(Text(data['ProjectStatus'].toString())),
-      DataCell(Text(data['TotalPoints'].toString())),
       DataCell(Builder(
         builder: (context) {
           return Row(
@@ -392,7 +390,7 @@ class DataSource extends DataTableSource {
                 child: OutlinedButton(
                   onPressed: () => onViewButtonPressed.call(data),
                   style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
-                  child: const Text("View"),
+                  child: const Text("View & Set Reviewer"),
                 ),
               ),
               Padding(
