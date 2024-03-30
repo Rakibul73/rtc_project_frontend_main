@@ -18,6 +18,64 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check_a_project_reviewed_or_not/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    print("checkProjectReviewedOrNot: ${data['ProjectReviewCheck']}");
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to check project reviewed or not. Error: ${response.body}');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllProjectHaveToReviewList() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_projects_have_to_review');
+    print("fetchAllProjectHaveToReviewList url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // print(data['ProjectHaveToReviewList']);
+        return data['ProjectHaveToReviewList'];
+      } else {
+        print("fetchAllProjectHaveToReviewList = Failed to load Project Have To Review: ${response.statusCode}");
+        throw Exception('Failed to load Project Have To Review: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load Project Have To Review : $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> getReviewDashboard() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

@@ -30,6 +30,7 @@ import 'package:rtc_project_fronend/views/screens/logout_screen.dart';
 import 'package:rtc_project_fronend/views/screens/MyProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/reset_pass_screen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 
 class RouteUri {
   static const String home = '/';
@@ -63,6 +64,7 @@ class RouteUri {
   static const String changepassword = '/changepassword';
   static const String myprojectreview = '/myprojectreview';
   static const String projecthavetoreview = '/projecthavetoreview';
+  static const String reviewprojectscreen = '/reviewprojectscreen';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -174,6 +176,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: VerifyUserScreen(pendingUserID: state.queryParameters['pendinguserid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.reviewprojectscreen,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ReviewIndividualProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),
