@@ -1403,7 +1403,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // const CardHeader(title: "Part II: Outline of The Research Proposal", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
                     CardBody(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1422,11 +1421,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.introductionResearchProposal,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.introductionResearchProposal,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1445,11 +1442,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.specificObjectivesProposal,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.specificObjectivesProposal,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1468,11 +1463,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.relevanceStrategicDevelopmentGoals,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.relevanceStrategicDevelopmentGoals,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1491,11 +1484,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.briefReviewAlreadyPerformedReferences,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.briefReviewAlreadyPerformedReferences,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1523,11 +1514,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                                 titleColor: Color.fromARGB(255, 151, 204, 197),
                                                 showDivider: false,
                                               ),
-                                              CardHeader(
-                                                title: _formData.methodology,
-                                                backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                showDivider: false,
+                                              ReadMoreText(
+                                                text: _formData.methodology,
+                                                maxLength: 50,
                                               ),
                                             ],
                                           ),
@@ -1583,11 +1572,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.expectedOutputs,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.expectedOutputs,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1606,11 +1593,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.successIndicators,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.successIndicators,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -1629,11 +1614,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                     titleColor: Color.fromARGB(255, 151, 204, 197),
                                     showDivider: false,
                                   ),
-                                  CardHeader(
-                                    title: _formData.beneficiaries,
-                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                    showDivider: false,
+                                  ReadMoreText(
+                                    text: _formData.beneficiaries,
+                                    maxLength: 50,
                                   ),
                                 ],
                               ),
@@ -3474,6 +3457,70 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
             ),
           ],
         ));
+  }
+}
+
+class ReadMoreText extends StatefulWidget {
+  final String text;
+  final int maxLength;
+
+  const ReadMoreText({
+    Key? key,
+    required this.text,
+    this.maxLength = 50,
+  }) : super(key: key);
+
+  @override
+  _ReadMoreTextState createState() => _ReadMoreTextState();
+}
+
+class _ReadMoreTextState extends State<ReadMoreText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    return Column(
+      children: [
+        CardHeader(
+          title: isExpanded ? widget.text : _getTrimmedText(),
+          backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+          titleColor: const Color.fromARGB(255, 238, 216, 221),
+          showDivider: false,
+        ),
+        ElevatedButton(
+          style: themeData.extension<AppButtonTheme>()!.secondaryText,
+          onPressed: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                child: Icon(
+                  isExpanded ? Icons.arrow_upward_outlined : Icons.arrow_downward_outlined,
+                  size: (themeData.textTheme.labelSmall!.fontSize! + 4.0),
+                ),
+              ),
+              Text(
+                isExpanded ? 'Show less' : 'See more',
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getTrimmedText() {
+    if (widget.text.length <= widget.maxLength) {
+      return widget.text;
+    }
+    return '${widget.text.substring(0, widget.maxLength)}... ';
   }
 }
 
