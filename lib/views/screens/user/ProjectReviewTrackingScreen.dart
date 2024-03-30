@@ -231,7 +231,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
                           children: <Widget>[
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () => GoRouter.of(context).go(RouteUri.projecthavetoreview),
                                 style: appButtonTheme.successOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -248,7 +248,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
                             const SizedBox(width: 20),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () => GoRouter.of(context).go(RouteUri.myprojectreview),
                                 style: appButtonTheme.infoOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,

@@ -4,11 +4,13 @@ import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dar
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MyProjectReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/NotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/PendingUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectHaveToReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
@@ -59,6 +61,8 @@ class RouteUri {
   static const String viewallnotifications = '/viewallnotifications';
   static const String viewindividualnotification = '/viewindividualnotification';
   static const String changepassword = '/changepassword';
+  static const String myprojectreview = '/myprojectreview';
+  static const String projecthavetoreview = '/projecthavetoreview';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -114,6 +118,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const SearchProjectScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projecthavetoreview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectHaveToReviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.myprojectreview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MyProjectReviewScreen(),
         ),
       ),
       GoRoute(
