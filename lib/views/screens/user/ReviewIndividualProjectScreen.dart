@@ -35,14 +35,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
   final List<Widget> ganttfields = [];
   final List<Widget> budgetsummaryfields = [];
   Future<bool>? _future;
-
-  void _downloadProjectSoftCopy(String fileName) async {
-    final responseBody = await ApiService.downloadProjectSoftCopy('project_softcopy/download', fileName);
-    // print(responseBody);
-    if (responseBody['statuscode'] == 200) {
-      print('File downloaded successfully');
-    }
-  }
+  bool initialReviewExist = false;
 
   Future<bool> _getDataAsync() async {
     print('projectID: ${widget.projectID}');
@@ -123,6 +116,28 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
 
         _formData.projectStatus = userDetails['project']['ProjectStatus'];
         _formData.projectSoftCopyLocation = userDetails['project']['ProjectSoftCopyLocation'] ?? '';
+
+        // read user id
+        final userId = await storage.read(key: 'user_id');
+        int userid = int.parse(userId!);
+        final projectIDAndReviewerUserID = {
+          'ProjectID': int.parse(_formData.projectID),
+          'ReviewerUserID': userid,
+        };
+        final fetchSpecificReviewDetail = await ApiService.getAllReviewsForSpecificReviewer(projectIDAndReviewerUserID);
+        print(fetchSpecificReviewDetail);
+        print("==========*************===========");
+        print((fetchSpecificReviewDetail['reviews']).length);
+
+        if (fetchSpecificReviewDetail['statuscode'] == 200 && (fetchSpecificReviewDetail['reviews']).length != 0) {
+          print("==========**S      T      A      R      T*****===========");
+          print(fetchSpecificReviewDetail['reviews'][0]['Points'].runtimeType);
+          _formData.totalMarks = fetchSpecificReviewDetail['reviews'][0]['Points'];
+          _formData.markComment = fetchSpecificReviewDetail['reviews'][0]['Comments'];
+          initialReviewExist = true;
+        }
+
+        print("==========**E      N      D*****===========");
       });
     }
 
@@ -139,51 +154,31 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
       desc: "Note: This action cannot be undone.",
       width: kDialogWidth,
       btnOkText: "Yes",
-      btnOkOnPress: () {
-        // here should make a api request to submit review
-      },
-      btnCancelText: "No",
-      btnCancelOnPress: () {},
-    );
-    dialog.show();
-  }
-
-  void _setReviewer(BuildContext context) {
-    AppFocusHelper.instance.requestUnfocus();
-
-    final dialog = AwesomeDialog(
-      context: context,
-      dialogType: DialogType.question,
-      title: "Assign these reviewer to this project id = ${widget.projectID}?",
-      desc: "Note: This action cannot be undone.",
-      width: kDialogWidth,
-      btnOkText: "Yes",
       btnOkOnPress: () async {
+        // here should make a api request to submit review
         _formKey.currentState!.save();
+        // read user id
+        final userId = await storage.read(key: 'user_id');
+        int userid = int.parse(userId!);
         try {
-          final reviewer1 = {
-            'projectID': _formData.projectID,
-            'ReviewerUserID': _formData.reviewerUserId1,
+          final reviewData = {
+            'ProjectID': int.parse(_formData.projectID),
+            'ReviewerUserID': userid,
+            'Points': _formData.totalMarks,
+            'Comments': _formData.markComment,
           };
-          final reviewer2 = {
-            'projectID': _formData.projectID,
-            'ReviewerUserID': _formData.reviewerUserId2,
-          };
-          final reviewer3 = {
-            'projectID': _formData.projectID,
-            'ReviewerUserID': _formData.reviewerUserId3,
-          };
-          final responseBody = await ApiService.setReviewer(reviewer1, reviewer2, reviewer3);
+          print(reviewData);
+          final responseBody = await ApiService.createReviewSpecificProject(reviewData);
           if (responseBody['statuscode'] == 201) {
             // Handle success
-            print('Reviewer set successfully');
+            print('Review submitted successfully');
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
-              title: "Reviewer set successfully",
+              title: "Review submitted successfully",
               width: kDialogWidth,
               btnOkText: 'OK',
-              btnOkOnPress: () {},
+              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projecthavetoreview),
             );
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
@@ -200,11 +195,11 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
             dialog.show();
           } else {
             // Handle error
-            print('Error seting reviewer: ${responseBody['message']}');
+            print('Error submitting review: ${responseBody['message']}');
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
-              title: "Error seting reviewer: ${responseBody['message']}",
+              title: "Error submitting review: ${responseBody['message']}",
               width: kDialogWidth,
               btnOkText: 'OK',
               btnOkOnPress: () {},
@@ -213,11 +208,11 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
           }
         } catch (e) {
           // Handle error
-          print('Error seting reviewer: $e');
+          print('Error submitting review: $e');
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
-            title: "Error seting reviewer: $e",
+            title: "Error submitting review: $e",
             width: kDialogWidth,
             btnOkText: 'OK',
             btnOkOnPress: () {},
@@ -229,6 +224,35 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
       btnCancelOnPress: () {},
     );
     dialog.show();
+  }
+
+  void saveTotalMarks() {
+    AppFocusHelper.instance.requestUnfocus();
+
+    _formKey.currentState!.save();
+
+    // Initialize totalMark to 0
+    double totalMark = 0.0;
+
+    // Helper function to parse and add the value to totalMark
+    void addToTotal(String fieldValue) {
+      if (fieldValue.isNotEmpty) {
+        totalMark += double.parse(fieldValue);
+      }
+    }
+
+    addToTotal(_formData.markBackground);
+    addToTotal(_formData.markBudget);
+    addToTotal(_formData.markExpected);
+    addToTotal(_formData.markGantt);
+    addToTotal(_formData.markIntro);
+    addToTotal(_formData.markMethodology);
+    addToTotal(_formData.markObjective);
+    addToTotal(_formData.markProposal);
+    addToTotal(_formData.markRelevance);
+    addToTotal(_formData.markTitle);
+
+    _formData.totalMarks = totalMark;
   }
 
   @override
@@ -272,7 +296,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
 
     return FormBuilder(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.always,
+        autovalidateMode: AutovalidateMode.disabled,
         clearValueOnUnregister: false,
         autoFocusOnValidationFailure: true,
         child: ListView(
@@ -283,6 +307,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
               style: themeData.textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
+
             Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),
               child: Card(
@@ -1718,8 +1743,972 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                 ),
               ),
             ),
-            
+
             // add a review field here
+
+            Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CardHeader(
+                      title: "Review Section",
+                      backgroundColor: Color.fromARGB(255, 139, 161, 168),
+                      titleColor: Color.fromARGB(255, 50, 39, 42),
+                      showDivider: false,
+                    ),
+                    Visibility(
+                      visible: !initialReviewExist,
+                      child: CardBody(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.6)),
+                                    child: const Text(
+                                      'Criteria',
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Text('Marks Distribution'),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: const Text('Given Marks'),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Project Title",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "5",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_title',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 5)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markTitle = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Introduction, innovativeness and problem statement",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "15",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_intro',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 15)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markIntro = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Specific objectives",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "5",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_objective',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 5)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markObjective = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Relevance to the vision of PSTU and national development goals",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "10",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_relevance',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 10)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markRelevance = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Review and background information",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "15",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_review',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 15)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markBackground = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Expected outputs and benefits of stakeholder",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "5",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_benefits',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 5)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markExpected = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Methodology",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "20",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_methodology',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 20)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markMethodology = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Activity plan/Gantt chart",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "10",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_activity_plan_and_gantt_chart',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 10)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markGantt = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Budget rationale",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "10",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_budget',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 10)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markBudget = value ?? '';
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.5)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Proposal design, presentation and feasibility",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "5",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: FormBuilderTextField(
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      maxLines: 1, // Allow unlimited lines
+                                      name: 'mark_Proposal',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Mark',
+                                        hintText: 'Mark (Out of 5)',
+                                        border: OutlineInputBorder(),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                      ),
+                                      onChanged: (value) {
+                                        _formData.markProposal = value ?? '';
+                                        print("markProposal: ${_formData.markProposal}");
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        _linearProgressIndicator(context, 1.0, const Color.fromARGB(255, 139, 161, 168), true),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.48) - (kDefaultPadding * 0.48)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Total marks",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.12) - (kDefaultPadding * 0.12)),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          ElevatedButton(
+                                            style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                                            onPressed: () {
+                                              setState(() {
+                                                _formKey.currentState!.reset();
+                                                _formData.totalMarks = 0.0;
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                  child: Icon(
+                                                    Icons.save_outlined, // Change icon based on edit mode
+                                                    size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                  ),
+                                                ),
+                                                Text("Reset", style: themeData.textTheme.labelLarge),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: kDefaultPadding),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding * 0.5),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "100",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.15) - (kDefaultPadding * 0.15)),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Tooltip(
+                                            message: 'Out of 100',
+                                            child: CardHeader(
+                                              title: _formData.totalMarks.toString(),
+                                              backgroundColor: const Color.fromARGB(255, 73, 108, 117),
+                                              titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                              showDivider: false,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          ElevatedButton(
+                                            style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                                            onPressed: () {
+                                              setState(() {
+                                                _formKey.currentState!.validate();
+                                                _formKey.currentState!.save();
+                                                saveTotalMarks();
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                  child: Icon(
+                                                    Icons.save_outlined, // Change icon based on edit mode
+                                                    size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                  ),
+                                                ),
+                                                Text("Save", style: themeData.textTheme.labelLarge),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: kDefaultPadding),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ])),
+                    ),
+                    Visibility(
+                      visible: initialReviewExist,
+                      child: CardBody(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.6) - (kDefaultPadding * 0.6)),
+                                    child: const Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "Total marks Given",
+                                            backgroundColor: Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: kDefaultPadding),
+                                  SizedBox(
+                                    width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          CardHeader(
+                                            title: "${_formData.totalMarks} out of 100",
+                                            backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ])),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: !initialReviewExist,
+                      child: CardBody(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0, top: kDefaultPadding * 1.0),
+                              child: FormBuilderTextField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null, // Allow unlimited lines
+                                name: 'comment_for_this_project',
+                                decoration: const InputDecoration(
+                                  labelText: 'Comment for this Project',
+                                  hintText: 'Comment for this Project',
+                                  border: OutlineInputBorder(),
+                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                ),
+                                onChanged: (value) {
+                                  _formData.markComment = value ?? '';
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: initialReviewExist,
+                      child: CardBody(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0, top: kDefaultPadding * 1.0),
+                              child: Card(
+                                clipBehavior: Clip.antiAlias,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CardHeader(
+                                      title: _formData.markComment,
+                                      backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                      titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                      showDivider: false,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
@@ -1757,7 +2746,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                               ),
                               const Spacer(),
                               Visibility(
-                                visible: widget.projectID.isNotEmpty,
+                                visible: !initialReviewExist,
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: kDefaultPadding),
                                   child: SizedBox(
@@ -1794,6 +2783,23 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
             ),
           ],
         ));
+  }
+
+  Widget _linearProgressIndicator(BuildContext context, double? value, Color color, bool withBottomPadding) {
+    final themeData = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: (withBottomPadding ? kDefaultPadding * 1.5 : 0.0)),
+      child: Theme(
+        data: themeData.copyWith(
+          colorScheme: themeData.colorScheme.copyWith(primary: color),
+        ),
+        child: LinearProgressIndicator(
+          value: value,
+          backgroundColor: themeData.scaffoldBackgroundColor,
+        ),
+      ),
+    );
   }
 }
 
@@ -2064,6 +3070,20 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
 class FormData {
   String projectID = '';
   String roleID = '';
+
+  String markTitle = '';
+  String markIntro = '';
+  String markObjective = '';
+  String markRelevance = '';
+  String markBackground = '';
+  String markMethodology = '';
+  String markExpected = '';
+  String markGantt = '';
+  String markBudget = '';
+  String markProposal = '';
+  double totalMarks = 0.0;
+  String markComment = '';
+
   String profilePicLocation1 = '';
   String profilePicLocation2 = '';
   String profilePicLocation3 = '';

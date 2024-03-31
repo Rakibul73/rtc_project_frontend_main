@@ -86,7 +86,7 @@ class _ProjectHaveToReviewScreenState extends State<ProjectHaveToReviewScreen> {
 
     _dataSource = DataSource(
       onGiveReviewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.reviewprojectscreen}?projectid=${data['ProjectID']}'),
-      onViewReviewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.verifyuser}?pendinguserid=${data['UserID']}'),
+      onViewReviewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.reviewprojectscreen}?projectid=${data['ProjectID']}'),
       data: [],
     );
   }
@@ -305,7 +305,7 @@ class DataSource extends DataTableSource {
                         message: 'Already Given Review',
                         child: OutlinedButton(
                           onPressed: null,
-                          style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
+                          style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
                           child: const Text("Give Review"),
                         ),
                       )),

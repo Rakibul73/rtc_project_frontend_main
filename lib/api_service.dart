@@ -18,7 +18,80 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
-static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID) async {
+  static Future<Map<String, dynamic>> getAllReviewsForSpecificReviewer(Map<String, dynamic> projectIDAndReviewerUserID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_reviews_for_specific_reviewer');
+    print("getAllReviewsForSpecificReviewer url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(projectIDAndReviewerUserID),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to getAllReviewsForSpecificReviewer: ${responseBody['error']}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> createReviewSpecificProject(Map<String, dynamic> reviewData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_reviews_specific_project');
+    print("createReviewSpecificProject url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(reviewData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Project created successfully
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to createReviewSpecificProject: ${responseBody['error']}');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
