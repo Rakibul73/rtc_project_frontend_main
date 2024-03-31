@@ -3,6 +3,7 @@ import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
@@ -71,6 +72,7 @@ class RouteUri {
   static const String reviewpaneloverview = '/reviewpaneloverview';
   static const String projectyouhavetoassignreviewer = '/projectyouhavetoassignreviewer';
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
+  static const String viewreviewoftheproject = '/viewreviewoftheproject';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -191,6 +193,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ReviewIndividualProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewreviewoftheproject,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewReviewOfTheProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),

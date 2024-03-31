@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
@@ -69,9 +68,9 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     }
   }
 
-  void viewAllProjects() async {
+  void viewAllProjectsReviewerGivenReview() async {
     try {
-      _initialProjects = await ApiService.fetchAllProjects();
+      _initialProjects = await ApiService.fetchAllProjectsReviewerGivenReview();
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
@@ -81,59 +80,16 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     }
   }
 
-  Future<void> deletingProject(int projectID) async {
-    try {
-      final responseBody = await ApiService.deleteProject(projectID);
-      print(responseBody);
-
-      if (responseBody['statusCode'] == 200) {
-        final dialog = AwesomeDialog(
-          context: context,
-          dialogType: DialogType.success,
-          title: responseBody['message'],
-          width: kDialogWidth,
-          btnOkText: 'OK',
-          btnOkOnPress: () {},
-        );
-        dialog.show();
-        print('Project deleted successfully');
-        // Refresh the initial projects list
-        viewAllProjects();
-      }
-    } catch (e) {
-      print('Failed to delete project: $e');
-    }
-  }
-
-  // function to delete a project with data['ProjectID']
-  void deleteProject(int projectID) {
-    final dialog = AwesomeDialog(
-      context: context,
-      dialogType: DialogType.warning,
-      title: "Delete this project?",
-      desc: "Project Id $projectID will be deleted. This action cannot be undone.",
-      width: kDialogWidth,
-      btnOkText: 'Delete This',
-      btnOkOnPress: () {
-        deletingProject(projectID);
-      },
-      btnCancelOnPress: () {},
-    );
-    dialog.show();
-  }
 
   @override
   void initState() {
     super.initState();
     // Fetch all projects
-    viewAllProjects();
+    viewAllProjectsReviewerGivenReview();
 
     _dataSource = DataSource(
-      onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
-      onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editprojectadmin}?projectid=${data['ProjectID']}'),
-      onDeleteButtonPressed: (data) {
-        deleteProject(data['ProjectID']);
-      },
+      onViewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onViewReviewsButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewreviewoftheproject}?projectid=${data['ProjectID']}'),
       data: [],
     );
   }
@@ -150,11 +106,12 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
+      selectedMenuUri: RouteUri.reviewpaneloverview,
         body: ListView(
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [
         Text(
-          'Search Project',
+          'Reviewed Projects',
           style: themeData.textTheme.headlineMedium,
         ),
         Padding(
@@ -249,8 +206,8 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
                                       child: SizedBox(
                                         height: 40.0,
                                         child: ElevatedButton(
-                                          style: themeData.extension<AppButtonTheme>()!.infoOutlined,
-                                          onPressed: () => viewAllProjects(),
+                                          style: themeData.extension<AppButtonTheme>()!.warningOutlined,
+                                          onPressed: () => viewAllProjectsReviewerGivenReview(),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,30 +219,9 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
                                                   size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                                 ),
                                               ),
-                                              const Text("View All Projects"),
+                                              const Text("Refresh Reviewed Projects"),
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 40.0,
-                                      child: ElevatedButton(
-                                        style: themeData.extension<AppButtonTheme>()!.successElevated,
-                                        onPressed: () => GoRouter.of(context).go(RouteUri.createproject),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                              child: Icon(
-                                                Icons.add,
-                                                size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                              ),
-                                            ),
-                                            const Text("New"),
-                                          ],
                                         ),
                                       ),
                                     ),
@@ -354,15 +290,13 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
 }
 
 class DataSource extends DataTableSource {
-  final void Function(Map<String, dynamic> data) onEditButtonPressed;
-  final void Function(Map<String, dynamic> data) onViewButtonPressed;
-  final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewReviewsButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewProjectButtonPressed;
   List<dynamic> data;
 
   DataSource({
-    required this.onEditButtonPressed,
-    required this.onViewButtonPressed,
-    required this.onDeleteButtonPressed,
+    required this.onViewReviewsButtonPressed,
+    required this.onViewProjectButtonPressed,
     required this.data,
   });
 
@@ -388,23 +322,18 @@ class DataSource extends DataTableSource {
               Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding),
                 child: OutlinedButton(
-                  onPressed: () => onViewButtonPressed.call(data),
-                  style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
-                  child: const Text("View & Set Reviewer"),
+                  onPressed: () => onViewProjectButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
+                  child: const Text("View Project"),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding),
                 child: OutlinedButton(
-                  onPressed: () => onEditButtonPressed.call(data),
-                  style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                  child: const Text("Edit"),
+                  onPressed: () => onViewReviewsButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
+                  child: const Text("View Reviews"),
                 ),
-              ),
-              OutlinedButton(
-                onPressed: () => onDeleteButtonPressed.call(data),
-                style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
-                child: const Text("Delete"),
               ),
             ],
           );

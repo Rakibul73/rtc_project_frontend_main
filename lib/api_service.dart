@@ -18,6 +18,95 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+
+  static Future<Map<String, dynamic>> getSpecificUserMinimum(int userId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_specific_user_minimum/$userId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load user details. Error: ${response.body}');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllReviewForSpecificProject(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_reviews_for_specific_project/$projectID');
+    print("fetchAllReviewForSpecificProject url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['reviews'];
+      } else {
+        print("fetchAllReviewForSpecificProject = Failed to load Reviews: ${response.statusCode}");
+        throw Exception('Failed to load Reviews: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load Reviews : $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllProjectsReviewerGivenReview() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_projects_reviewer_given_review');
+    print("fetchAllProjectsReviewerGivenReview url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects'];
+      } else {
+        print("fetchAllProjectsReviewerGivenReview = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> getReviewPanelOverview() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

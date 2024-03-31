@@ -150,6 +150,7 @@ class _ProjectYouHaveToAssignReviewerScreenState extends State<ProjectYouHaveToA
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
+      selectedMenuUri: RouteUri.reviewpaneloverview,
         body: ListView(
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [
