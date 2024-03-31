@@ -91,14 +91,14 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID) async {
+  static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID , int userID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
     }
 
     final response = await http.get(
-      Uri.parse('$baseUrl/check_a_project_reviewed_or_not/$projectID'),
+      Uri.parse('$baseUrl/check_a_project_reviewed_or_not/$projectID/$userID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
       },

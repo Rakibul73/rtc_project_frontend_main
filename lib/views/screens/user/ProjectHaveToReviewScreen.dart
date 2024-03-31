@@ -343,7 +343,10 @@ class DataSource extends DataTableSource {
   int get selectedRowCount => 0;
 
   Future<String> getTheProjectReviewedOrNot(int projectID) async {
-    final responseBody = await ApiService.checkProjectReviewedOrNot(projectID);
+    // read user id
+    final userId = await storage.read(key: 'user_id');
+    int userid = int.parse(userId!);
+    final responseBody = await ApiService.checkProjectReviewedOrNot(projectID, userid);
     String projectReviewCheck = responseBody['ProjectReviewCheck'];
     return projectReviewCheck;
   }
