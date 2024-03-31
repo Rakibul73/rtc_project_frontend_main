@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
@@ -65,6 +68,9 @@ class RouteUri {
   static const String myprojectreview = '/myprojectreview';
   static const String projecthavetoreview = '/projecthavetoreview';
   static const String reviewprojectscreen = '/reviewprojectscreen';
+  static const String reviewpaneloverview = '/reviewpaneloverview';
+  static const String projectyouhavetoassignreviewer = '/projectyouhavetoassignreviewer';
+  static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -237,6 +243,27 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ViewAllNotificationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectyouhavetoassignreviewer,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectYouHaveToAssignReviewerScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectreviewerhasgivenreview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectReviewerHasGivenReviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.reviewpaneloverview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ReviewPanelOverviewScreen(),
         ),
       ),
       GoRoute(
