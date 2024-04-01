@@ -154,7 +154,7 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [
         Text(
-          'Search Project',
+          'Viewing All Projects',
           style: themeData.textTheme.headlineMedium,
         ),
         Padding(
@@ -265,27 +265,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
                                               const Text("View All Projects"),
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 40.0,
-                                      child: ElevatedButton(
-                                        style: themeData.extension<AppButtonTheme>()!.successElevated,
-                                        onPressed: () => GoRouter.of(context).go(RouteUri.createproject),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                              child: Icon(
-                                                Icons.add,
-                                                size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                              ),
-                                            ),
-                                            const Text("New"),
-                                          ],
                                         ),
                                       ),
                                     ),
