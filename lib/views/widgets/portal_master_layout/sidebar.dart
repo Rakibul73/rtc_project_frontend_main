@@ -152,6 +152,9 @@ class _SidebarState extends State<Sidebar> {
         // Check if the menu item is "Admin Panel" and the user is not a Admin
         if (menu.title(context) == "Admin Panel" && !isAdmin) {
           return Container(); // Return an empty container to hide the menu item
+        }
+        if (menu.title(context) == "Project" && isAdmin) {
+          return Container(); // Return an empty container to hide the menu item
         } else {
           if (menu.children.isEmpty) {
             return _sidebarMenu(
