@@ -5,7 +5,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignRe
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/ChangePasswordScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectReviewScreen.dart';
@@ -24,16 +24,16 @@ import 'package:rtc_project_fronend/views/screens/admin/ViewAllNotificationScree
 import 'package:rtc_project_fronend/views/screens/admin/ViewAllUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
-import 'package:rtc_project_fronend/views/screens/ViewIndividualNotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/ViewIndividualNotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/dashboard_screen.dart';
-import 'package:rtc_project_fronend/views/screens/error_screen.dart';
-import 'package:rtc_project_fronend/views/screens/forgot_pass.dart';
-import 'package:rtc_project_fronend/views/screens/login_screen.dart';
-import 'package:rtc_project_fronend/views/screens/logout_screen.dart';
-import 'package:rtc_project_fronend/views/screens/MyProfileScreen.dart';
-import 'package:rtc_project_fronend/views/screens/register_screen.dart';
-import 'package:rtc_project_fronend/views/screens/reset_pass_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/dashboard_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/error_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/forgot_pass.dart';
+import 'package:rtc_project_fronend/views/screens/general/login_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/logout_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/MyProfileScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 
 class RouteUri {
