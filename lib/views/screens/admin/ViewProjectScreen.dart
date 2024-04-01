@@ -268,7 +268,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       title: "Are you sure you want to edit this project?",
       width: kDialogWidth,
       btnOkText: "Yes",
-      btnOkOnPress: () => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${widget.projectID}'),
+      btnOkOnPress: () => GoRouter.of(context).go('${RouteUri.editprojectadmin}?projectid=${widget.projectID}'),
       btnCancelText: "No",
       btnCancelOnPress: () {},
     );
@@ -310,7 +310,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
               title: "Reviewer set successfully",
               width: kDialogWidth,
               btnOkText: 'OK',
-              btnOkOnPress: () {},
+              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projectyouhavetoassignreviewer),
             );
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
