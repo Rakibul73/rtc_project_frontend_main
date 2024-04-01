@@ -2368,32 +2368,61 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderDropdown(
-                                    initialValue: _formData.projectStatus,
-                                    name: 'project_status',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Project Status',
-                                      border: OutlineInputBorder(),
-                                      hoverColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hintText: 'Select',
+                                Visibility(
+                                  visible: _formData.projectStatus == 'Pending' || _formData.projectStatus == 'Rejected',
+                                  child: SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const CardHeader(
+                                            title: 'Project Status :',
+                                            backgroundColor: Color.fromARGB(255, 74, 89, 96),
+                                            titleColor: Color.fromARGB(255, 151, 204, 197),
+                                            showDivider: false,
+                                          ),
+                                          CardHeader(
+                                            title: _formData.projectStatus,
+                                            backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    focusColor: Colors.transparent,
-                                    validator: FormBuilderValidators.required(),
-                                    items: [
-                                      'Pending',
-                                      'Approved',
-                                      'Rejected',
-                                      'Running',
-                                      'Completed',
-                                    ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                                    onChanged: (value) => (_formData.projectStatus = value ?? ''),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _formData.projectStatus == 'Approved',
+                                  child: SizedBox(
+                                    width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                    child: FormBuilderDropdown(
+                                      initialValue: _formData.projectStatus,
+                                      name: 'project_status',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Project Status',
+                                        border: OutlineInputBorder(),
+                                        hoverColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hintText: 'Select',
+                                      ),
+                                      focusColor: Colors.transparent,
+                                      validator: FormBuilderValidators.required(),
+                                      items: [
+                                        'Approved',
+                                        'Running',
+                                        'Completed',
+                                      ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                      onChanged: (value) => (_formData.projectStatus = value ?? ''),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: kDefaultPadding),
-                                SizedBox(
+                                Visibility(
+                                  visible: _formData.projectStatus != 'Pending' && _formData.projectStatus != 'Rejected',
+                                  child: SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderFilePicker(
                                     name: 'project_softcopy',
@@ -2414,7 +2443,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                                     ),
                                     onChanged: _onProjectSoftCopyFileSelected,
                                   ),
-                                ),
+                                ),),
                                 const SizedBox(width: kDefaultPadding),
                                 // const Spacer(),
                                 Visibility(
