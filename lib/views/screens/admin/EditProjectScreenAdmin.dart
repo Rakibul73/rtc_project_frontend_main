@@ -2486,7 +2486,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go(RouteUri.myprojects),
+                                  onPressed: () => GoRouter.of(context).go(RouteUri.searchproject),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
