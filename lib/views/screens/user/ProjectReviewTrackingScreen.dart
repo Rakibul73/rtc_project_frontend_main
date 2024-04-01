@@ -32,6 +32,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
       final completedReviews = await data['completed_reviews'];
       final pendingReviews = await data['pending_reviews'];
       final totalProjectsToReview = await data['total_projects_to_review'];
+      final myTotalProject = await data['my_total_project'];
 
       final Map<String, dynamic> summaryData = {
         'review_queue': await reviewQueue,
@@ -39,6 +40,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
         'completed_reviews': await completedReviews,
         'pending_reviews': await pendingReviews,
         'total_projects_to_review': await totalProjectsToReview,
+        'my_total_project': await myTotalProject,
       };
       return summaryData;
     } else if (data['statuscode'] == 401) {
@@ -60,6 +62,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
         'completed_reviews': 0,
         'pending_reviews': 0,
         'total_projects_to_review': 0,
+        'my_total_project': 0,
       };
       return summaryData;
     } else {
@@ -70,6 +73,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
         'completed_reviews': 'x',
         'pending_reviews': 'x',
         'total_projects_to_review': 'x',
+        'my_total_project': 'x',
       };
       return summaryData;
     }
@@ -179,6 +183,15 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
                       runSpacing: kDefaultPadding,
                       children: [
                         SummaryCard(
+                          title: "My Total Projects",
+                          value: snapshot.data!['my_total_project'].toString(),
+                          icon: Icons.group_add_rounded,
+                          backgroundColor: const Color.fromARGB(255, 53, 225, 176),
+                          textColor: appColorScheme.buttonTextBlack,
+                          iconColor: Colors.black12,
+                          width: summaryCardWidth,
+                        ),
+                        SummaryCard(
                           title: "Review Queue",
                           value: snapshot.data!['review_queue'].toString(),
                           icon: Icons.people_rounded,
@@ -196,15 +209,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
                         ),
-                        // SummaryCard(
-                        //   title: "Total Reviewers",
-                        //   value: snapshot.data!['total_reviewer'].toString(),
-                        //   icon: Icons.group_add_rounded,
-                        //   backgroundColor: appColorScheme.secondary,
-                        //   textColor: appColorScheme.buttonTextBlack,
-                        //   iconColor: Colors.black12,
-                        //   width: summaryCardWidth,
-                        // ),
+                        
                         // SummaryCard(
                         //   title: "Total Students",
                         //   value: snapshot.data!['total_student'].toString(),

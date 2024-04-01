@@ -260,7 +260,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
     final themeData = Theme.of(context);
 
     return PortalMasterLayout(
-      selectedMenuUri: RouteUri.searchproject,
+      selectedMenuUri: RouteUri.projectreviewtracking,
       body: FutureBuilder<bool>(
         initialData: null,
         future: (_future ??= _getDataAsync()),

@@ -103,6 +103,7 @@ class _ProjectHaveToReviewScreenState extends State<ProjectHaveToReviewScreen> {
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
+      selectedMenuUri: RouteUri.projectreviewtracking,
         body: ListView(
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [

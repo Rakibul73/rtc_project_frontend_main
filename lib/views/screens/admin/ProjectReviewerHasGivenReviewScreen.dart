@@ -80,7 +80,6 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -89,7 +88,7 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
 
     _dataSource = DataSource(
       onViewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
-      onViewReviewsButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewreviewoftheproject}?projectid=${data['ProjectID']}'),
+      onViewReviewsButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewreviewoftheprojectadmin}?projectid=${data['ProjectID']}'),
       data: [],
     );
   }
@@ -106,186 +105,199 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-      selectedMenuUri: RouteUri.reviewpaneloverview,
+        selectedMenuUri: RouteUri.reviewpaneloverview,
         body: ListView(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      children: [
-        Text(
-          'Reviewed Projects',
-          style: themeData.textTheme.headlineMedium,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CardHeader(
-                  title: 'Project List',
-                ),
-                CardBody(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                        child: FormBuilder(
-                          key: _formKey,
-                          autovalidateMode: AutovalidateMode.disabled,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              spacing: kDefaultPadding,
-                              runSpacing: kDefaultPadding,
-                              alignment: WrapAlignment.spaceBetween,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
+          padding: const EdgeInsets.all(kDefaultPadding),
+          children: [
+            RichText(
+              text: TextSpan(
+                style: themeData.textTheme.headlineMedium,
+                children: const [
+                  TextSpan(
+                    text: 'Reviewed',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(183, 255, 235, 59), // Change color to your desired color
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' Projects',
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CardHeader(
+                      title: 'Project List',
+                    ),
+                    CardBody(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                            child: FormBuilder(
+                              key: _formKey,
+                              autovalidateMode: AutovalidateMode.disabled,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Wrap(
+                                  direction: Axis.horizontal,
+                                  spacing: kDefaultPadding,
+                                  runSpacing: kDefaultPadding,
+                                  alignment: WrapAlignment.spaceBetween,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: kDefaultPadding),
-                                      child: SizedBox(
-                                        width: 300.0,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
-                                          child: FormBuilderTextField(
-                                            name: 'search_project_title',
-                                            decoration: const InputDecoration(
-                                              labelText: 'Search by Project Title',
-                                              hintText: 'Enter project title',
-                                              border: OutlineInputBorder(),
-                                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                                              isDense: true,
-                                            ),
-                                            onChanged: (value) {
-                                              filterProjects(value!);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 200.0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
-                                        child: FormBuilderDropdown(
-                                            name: 'search_project_status',
-                                            decoration: const InputDecoration(
-                                              labelText: 'Search by Project Status',
-                                              border: OutlineInputBorder(),
-                                              hoverColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hintText: 'Select',
-                                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                                              isDense: true,
-                                            ),
-                                            focusColor: Colors.transparent,
-                                            items: [
-                                              '',
-                                              'Pending',
-                                              'Approved',
-                                              'Rejected',
-                                              'Running',
-                                              'Completed',
-                                            ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                                            onChanged: (value) {
-                                              filterProjectsStatus(value!);
-                                            }),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: kDefaultPadding),
-                                      child: SizedBox(
-                                        height: 40.0,
-                                        child: ElevatedButton(
-                                          style: themeData.extension<AppButtonTheme>()!.warningOutlined,
-                                          onPressed: () => viewAllProjectsReviewerGivenReview(),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                                child: Icon(
-                                                  Icons.search,
-                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: kDefaultPadding),
+                                          child: SizedBox(
+                                            width: 300.0,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                              child: FormBuilderTextField(
+                                                name: 'search_project_title',
+                                                decoration: const InputDecoration(
+                                                  labelText: 'Search by Project Title',
+                                                  hintText: 'Enter project title',
+                                                  border: OutlineInputBorder(),
+                                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  isDense: true,
                                                 ),
+                                                onChanged: (value) {
+                                                  filterProjects(value!);
+                                                },
                                               ),
-                                              const Text("Refresh Reviewed Projects"),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                        SizedBox(
+                                          width: 200.0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                            child: FormBuilderDropdown(
+                                                name: 'search_project_status',
+                                                decoration: const InputDecoration(
+                                                  labelText: 'Search by Project Status',
+                                                  border: OutlineInputBorder(),
+                                                  hoverColor: Colors.transparent,
+                                                  focusColor: Colors.transparent,
+                                                  hintText: 'Select',
+                                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  isDense: true,
+                                                ),
+                                                focusColor: Colors.transparent,
+                                                items: [
+                                                  '',
+                                                  'Pending',
+                                                  'Approved',
+                                                  'Rejected',
+                                                  'Running',
+                                                  'Completed',
+                                                ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                                onChanged: (value) {
+                                                  filterProjectsStatus(value!);
+                                                }),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: kDefaultPadding),
+                                          child: SizedBox(
+                                            height: 40.0,
+                                            child: ElevatedButton(
+                                              style: themeData.extension<AppButtonTheme>()!.warningOutlined,
+                                              onPressed: () => viewAllProjectsReviewerGivenReview(),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                    child: Icon(
+                                                      Icons.search,
+                                                      size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                    ),
+                                                  ),
+                                                  const Text("Refresh Reviewed Projects"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
-                            return Scrollbar(
-                              controller: _scrollController,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                controller: _scrollController,
-                                child: SizedBox(
-                                  width: dataTableWidth,
-                                  child: Theme(
-                                    data: themeData.copyWith(
-                                      cardTheme: appDataTableTheme.cardTheme,
-                                      dataTableTheme: appDataTableTheme.dataTableThemeData,
-                                    ),
-                                    child: Builder(
-                                      builder: (context) {
-                                        // Return the PaginatedDataTable with _dataSource
-                                        return PaginatedDataTable(
-                                          key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
-                                          source: _dataSource,
-                                          rowsPerPage: 20,
-                                          showCheckboxColumn: false,
-                                          showFirstLastButtons: true,
-                                          columns: const [
-                                            DataColumn(label: Text('ProjectID'), numeric: true),
-                                            DataColumn(label: Text('CodeByRTC')),
-                                            DataColumn(label: Text('ProjectTitle')),
-                                            DataColumn(label: Text('ProjectStatus')),
-                                            DataColumn(label: Text('Actions')),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
+                                return Scrollbar(
+                                  controller: _scrollController,
+                                  thumbVisibility: true,
+                                  trackVisibility: true,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    controller: _scrollController,
+                                    child: SizedBox(
+                                      width: dataTableWidth,
+                                      child: Theme(
+                                        data: themeData.copyWith(
+                                          cardTheme: appDataTableTheme.cardTheme,
+                                          dataTableTheme: appDataTableTheme.dataTableThemeData,
+                                        ),
+                                        child: Builder(
+                                          builder: (context) {
+                                            // Return the PaginatedDataTable with _dataSource
+                                            return PaginatedDataTable(
+                                              key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
+                                              source: _dataSource,
+                                              rowsPerPage: 20,
+                                              showCheckboxColumn: false,
+                                              showFirstLastButtons: true,
+                                              columns: const [
+                                                DataColumn(label: Text('ProjectID'), numeric: true),
+                                                DataColumn(label: Text('CodeByRTC')),
+                                                DataColumn(label: Text('ProjectTitle')),
+                                                DataColumn(label: Text('ProjectStatus')),
+                                                DataColumn(label: Text('Actions')),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 }
 

@@ -18,6 +18,162 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<List<dynamic>> fetchProjectsUnassignedReviewer() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_projects_have_to_set_reviewer');
+    print("fetchProjectsUnassignedReviewer url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['ProjectHaveToSetReviewerList'];
+      } else {
+        print("fetchProjectsUnassignedReviewer = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllProjectPiCanView() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_projects_pi_can_view_review');
+    print("fetchAllProjectPiCanView url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['ProjectsPiCanViewReview'];
+      } else {
+        print("fetchAllProjectPiCanView = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updatePiCanViewOrNot(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_picanviewornot/$projectID');
+    print("updatePiCanViewOrNot url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update PiCanViewOrNot : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProjectStatusAndPoints(int projectID, Map<String, dynamic> projectData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_projectstatus_point/$projectID');
+    print("updateProjectStatusAndPoints url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(projectData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update ProjectStatus : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
+static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_project_status_specific_project/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load ProjectStatus. Error: ${response.body}');
+    }
+  }
 
   static Future<Map<String, dynamic>> getSpecificUserMinimum(int userId) async {
     final accessToken = await getAccessToken();

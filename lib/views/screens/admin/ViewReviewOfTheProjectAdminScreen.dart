@@ -14,19 +14,19 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class ViewReviewOfTheProjectScreen extends StatefulWidget {
+class ViewReviewOfTheProjectAdminScreen extends StatefulWidget {
   final String projectID;
 
-  const ViewReviewOfTheProjectScreen({
+  const ViewReviewOfTheProjectAdminScreen({
     Key? key,
     required this.projectID,
   }) : super(key: key);
 
   @override
-  State<ViewReviewOfTheProjectScreen> createState() => _ViewReviewOfTheProjectScreenState();
+  State<ViewReviewOfTheProjectAdminScreen> createState() => _ViewReviewOfTheProjectAdminScreenState();
 }
 
-class _ViewReviewOfTheProjectScreenState extends State<ViewReviewOfTheProjectScreen> {
+class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProjectAdminScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
@@ -39,6 +39,74 @@ class _ViewReviewOfTheProjectScreenState extends State<ViewReviewOfTheProjectScr
   bool initialPendingUserDataChange = false;
 
   Future<bool>? _future;
+
+  void _sendCommentsToPI() async {
+    AppFocusHelper.instance.requestUnfocus();
+
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      title: "Want to Send Comments to PI?",
+      desc: "Press Yes to confirm.",
+      width: kDialogWidth,
+      btnOkText: 'Yes',
+      btnOkOnPress: () async {
+        final responseBody = await ApiService.updatePiCanViewOrNot(int.parse(_formData.projectID));
+        if (responseBody['statuscode'] == 200) {
+            // Handle success
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.success,
+              title: "Comments Sent successfully",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          } 
+      },
+      btnCancelOnPress: () {},
+      btnCancelText: 'No',
+    );
+    dialog.show();
+  }
+
+  void _updateProjectStatusAndPoints() async {
+    AppFocusHelper.instance.requestUnfocus();
+
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      title: "Want to update project status and points?",
+      desc: "This action cannot be undone. Press Yes to confirm.",
+      width: kDialogWidth,
+      btnOkText: 'Yes',
+      btnOkOnPress: () async {
+        _formKey.currentState!.validate();
+        _formKey.currentState!.save();
+        final updateProjectStatusAndPoints = {
+          'ProjectStatus': _formData.projectStatus,
+          'TotalPoints': ((_formData.reviewPoint1 + _formData.reviewPoint2 + _formData.reviewPoint3) / 3.0),
+        };
+        final responseBody = await ApiService.updateProjectStatusAndPoints(int.parse(_formData.projectID), updateProjectStatusAndPoints);
+        if (responseBody['statuscode'] == 200) {
+            // Handle success
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.success,
+              title: "ProjectStatus & Point Updated successfully",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projectreviewerhasgivenreview),
+            );
+            dialog.show();
+          } 
+      },
+      btnCancelOnPress: () {},
+      btnCancelText: 'No',
+    );
+    dialog.show();
+  }
 
   Future<bool> _getDataAsync() async {
     print('projectID: ${widget.projectID}');
@@ -92,6 +160,13 @@ class _ViewReviewOfTheProjectScreenState extends State<ViewReviewOfTheProjectScr
             _formData.reviewerLastname3 = reviewerDetails3['user']['LastName'];
             _formData.reviewerUsername3 = reviewerDetails3['user']['Username'];
             _formData.reviewerProfilePicLocation3 = reviewerDetails3['user']['ProfilePicLocation'] ?? '';
+          }
+
+          final projectStatus = await ApiService.getProjectStatusSpecificProject(
+            int.parse(widget.projectID),
+          );
+          if (projectStatus['statuscode'] == 200) {
+            _formData.projectStatus = projectStatus['ProjectStatus'];
           }
         }
       });
@@ -580,6 +655,139 @@ class _ViewReviewOfTheProjectScreenState extends State<ViewReviewOfTheProjectScr
               ),
             ),
             Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CardBody(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 25),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.30) - (kDefaultPadding * 0.30)),
+                                      child: Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CardHeader(
+                                              title: 'Average Point:  ${(_formData.reviewPoint1 + _formData.reviewPoint2 + _formData.reviewPoint3) / 3.0}',
+                                              backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                              titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                              showDivider: false,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: ((constraints.maxWidth * 0.30) - (kDefaultPadding * 0.30)),
+                                          child: FormBuilderDropdown(
+                                            initialValue: _formData.projectStatus,
+                                            name: 'project_status',
+                                            decoration: const InputDecoration(
+                                              labelText: 'Project Status',
+                                              border: OutlineInputBorder(),
+                                              hoverColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hintText: 'Select',
+                                            ),
+                                            focusColor: Colors.transparent,
+                                            validator: FormBuilderValidators.required(),
+                                            items: [
+                                              'Pending',
+                                              'Approved',
+                                              'Rejected',
+                                              'Running',
+                                              'Completed',
+                                            ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                            onChanged: (value) => (_formData.projectStatus = value ?? ''),
+                                          ),
+                                        ),
+                                        const SizedBox(height: kDefaultPadding * 2),
+                                        SizedBox(
+                                          width: ((constraints.maxWidth * 0.30) - (kDefaultPadding * 0.30)),
+                                          child: ElevatedButton(
+                                            style: themeData.extension<AppButtonTheme>()!.successText,
+                                            onPressed: () {
+                                              _updateProjectStatusAndPoints();
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                  child: Icon(
+                                                    Icons.check_outlined,
+                                                    size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                  ),
+                                                ),
+                                                const Text(
+                                                  "Confirm Project Status & Point",
+                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      const SizedBox(height: 20),
+                                      SizedBox(
+                                        width: ((constraints.maxWidth * 0.30) - (kDefaultPadding * 0.30)),
+                                        child: ElevatedButton(
+                                          style: themeData.extension<AppButtonTheme>()!.warningText,
+                                          onPressed: () {
+                                            _sendCommentsToPI();
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                child: Icon(
+                                                  Icons.send_outlined,
+                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                ),
+                                              ),
+                                              const Text("Send Comments to PI", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: kDefaultPadding * 2),
+                                    ]),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
                 clipBehavior: Clip.antiAlias,
@@ -655,10 +863,5 @@ class FormData {
   String reviewerProfilePicLocation2 = '';
   String reviewerProfilePicLocation3 = '';
 
-  String roleID = '';
-  String email = '';
-  String phone = '';
-  String firstName = '';
-  String lastName = '';
-  String userName = '';
+  String projectStatus = '';
 }

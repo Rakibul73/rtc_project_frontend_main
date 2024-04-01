@@ -3,7 +3,7 @@ import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
@@ -35,6 +35,7 @@ import 'package:rtc_project_fronend/views/screens/general/MyProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
 
 class RouteUri {
   static const String home = '/';
@@ -73,6 +74,7 @@ class RouteUri {
   static const String projectyouhavetoassignreviewer = '/projectyouhavetoassignreviewer';
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
   static const String viewreviewoftheproject = '/viewreviewoftheproject';
+  static const String viewreviewoftheprojectadmin = '/viewreviewoftheprojectadmin';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -193,6 +195,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ReviewIndividualProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewreviewoftheprojectadmin,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewReviewOfTheProjectAdminScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),
