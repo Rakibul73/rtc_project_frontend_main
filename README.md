@@ -21,15 +21,26 @@ With the goal of improving research and training initiatives at any institution,
     - [ ] Admin can search , view , edit and delete all users
     - [x] Admin can view Projects Overview info
     - [x] Admin can search , view , edit and delete all Projects
-    - [ ] Admin can approve / reject users project proposals `Currently self user can approve or reject. Need to remove this`
-    - [ ] Admin can set , edit and delete project review feedback
+    - [x] Admin can approve / reject users project proposals based on review feedback
+    - [x] Admin can set project review feedback
     - [ ] Online notice board for project proposals
+    - [ ] Project deletion request from normal user must be handled
+    - [ ] Notification panel for admin must be handled
+    - [ ] Project funding functionality
+    - [ ] Project monitoring functionality
+
 
 
 - [x] Role-based access control
 - [x] User registration and secure login
-- [ ] Reviewer panel for feedback
+- [x] User can give review to the project that he have assigned to
+- [x] Author of the project can see his projects review if admin sends it to him
 - [x] User profile section
+- [ ] Generate PDF report for every section
+- [ ] Notification panel for user must be handled
+- [ ] Project funding functionality where user can manage their projects funds.
+- [ ] Project monitoring functionality where PI & reviewer can co-operate to handle the project completion.
+
 
 
 
