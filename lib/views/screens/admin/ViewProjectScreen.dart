@@ -421,398 +421,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId1 == 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardBody(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                                      child: FutureBuilder<List<User>>(
-                                                        future: ApiService.getAllUsersExceptStudents(),
-                                                        builder: (context, snapshot) {
-                                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                                          } else if (snapshot.hasError) {
-                                                            return Text('Error: ${snapshot.error}');
-                                                          } else {
-                                                            return FormBuilderDropdown<User>(
-                                                              name: 'reviewer_1',
-                                                              decoration: const InputDecoration(
-                                                                labelText: 'Reviewer 1',
-                                                                hintText: 'Select Reviewer 1',
-                                                                border: OutlineInputBorder(),
-                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                                              ),
-                                                              // validator: FormBuilderValidators.required(),
-                                                              items: snapshot.data!
-                                                                  .map((user) => DropdownMenuItem<User>(
-                                                                        value: user,
-                                                                        child: Text(user.getDisplayName()),
-                                                                      ))
-                                                                  .toList(),
-                                                              onChanged: (User? user) {
-                                                                if (user != null) {
-                                                                  setState(() {
-                                                                    _formData.profilePicLocation1 = user.profilePicLocation;
-                                                                    _formData.reviewerUserId1 = user.userId;
-                                                                  });
-                                                                }
-                                                              },
-                                                            );
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId1 != 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardHeader(
-                                                title: "Name: ${_formData.reviewerFullname1}     | Username: ${_formData.reviewerUsername1}",
-                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
-                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
-                                                showDivider: false,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                        child: Stack(
-                                          children: [
-                                            FutureBuilder<String>(
-                                              future: _formData.profilePicLocation1.isNotEmpty
-                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation1)
-                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else {
-                                                  return Image.memory(
-                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                    // width: 120, // Adjust width as needed
-                                                    height: 60, // Adjust height as needed
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
-                                      child: const Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CardHeader(
-                                              title: 'Reviewer Selection :',
-                                              backgroundColor: Color.fromARGB(255, 74, 89, 96),
-                                              titleColor: Color.fromARGB(255, 151, 204, 197),
-                                              showDivider: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId2 == 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardBody(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                                      child: FutureBuilder<List<User>>(
-                                                        future: ApiService.getAllUsersExceptStudents(),
-                                                        builder: (context, snapshot) {
-                                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                                          } else if (snapshot.hasError) {
-                                                            return Text('Error: ${snapshot.error}');
-                                                          } else {
-                                                            return FormBuilderDropdown<User>(
-                                                              name: 'reviewer_2',
-                                                              decoration: const InputDecoration(
-                                                                labelText: 'Reviewer 2',
-                                                                hintText: 'Select Reviewer 2',
-                                                                border: OutlineInputBorder(),
-                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                                              ),
-                                                              // validator: FormBuilderValidators.required(),
-                                                              items: snapshot.data!
-                                                                  .map((user) => DropdownMenuItem<User>(
-                                                                        value: user,
-                                                                        child: Text(user.getDisplayName()),
-                                                                      ))
-                                                                  .toList(),
-                                                              onChanged: (User? user) {
-                                                                if (user != null) {
-                                                                  setState(() {
-                                                                    _formData.profilePicLocation2 = user.profilePicLocation;
-                                                                    _formData.reviewerUserId2 = user.userId;
-                                                                  });
-                                                                }
-                                                              },
-                                                            );
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId2 != 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardHeader(
-                                                title: "Name: ${_formData.reviewerFullname2}     | Username: ${_formData.reviewerUsername2}",
-                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
-                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
-                                                showDivider: false,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                        child: Stack(
-                                          children: [
-                                            FutureBuilder<String>(
-                                              future: _formData.profilePicLocation2.isNotEmpty
-                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation2)
-                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else {
-                                                  return Image.memory(
-                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                    // width: 120, // Adjust width as needed
-                                                    height: 60, // Adjust height as needed
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId3 == 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardBody(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                                      child: FutureBuilder<List<User>>(
-                                                        future: ApiService.getAllUsersExceptStudents(),
-                                                        builder: (context, snapshot) {
-                                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                                          } else if (snapshot.hasError) {
-                                                            return Text('Error: ${snapshot.error}');
-                                                          } else {
-                                                            return FormBuilderDropdown<User>(
-                                                              name: 'reviewer_3',
-                                                              decoration: const InputDecoration(
-                                                                labelText: 'Reviewer 3',
-                                                                hintText: 'Select Reviewer 3',
-                                                                border: OutlineInputBorder(),
-                                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                                              ),
-                                                              // validator: FormBuilderValidators.required(),
-                                                              items: snapshot.data!
-                                                                  .map((user) => DropdownMenuItem<User>(
-                                                                        value: user,
-                                                                        child: Text(user.getDisplayName()),
-                                                                      ))
-                                                                  .toList(),
-                                                              onChanged: (User? user) {
-                                                                if (user != null) {
-                                                                  setState(() {
-                                                                    _formData.profilePicLocation3 = user.profilePicLocation;
-                                                                    _formData.reviewerUserId3 = user.userId;
-                                                                  });
-                                                                }
-                                                              },
-                                                            );
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Visibility(
-                                      visible: _formData.fetchReviewerUserId3 != 0,
-                                      child: SizedBox(
-                                        width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
-                                        child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              CardHeader(
-                                                title: "Name: ${_formData.reviewerFullname3}     | Username: ${_formData.reviewerUsername3}",
-                                                backgroundColor: const Color.fromARGB(255, 74, 89, 96),
-                                                titleColor: const Color.fromARGB(255, 151, 204, 197),
-                                                showDivider: false,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
-                                        child: Stack(
-                                          children: [
-                                            FutureBuilder<String>(
-                                              future: _formData.profilePicLocation3.isNotEmpty
-                                                  ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation3)
-                                                  : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else {
-                                                  return Image.memory(
-                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                    fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                    // width: 120, // Adjust width as needed
-                                                    height: 60, // Adjust height as needed
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
+                          ReviewerSelection1(formData: _formData),
+                          ReviewerSelection2(formData: _formData),
+                          ReviewerSelection3(formData: _formData),
                           Visibility(
                             visible: _formData.fetchReviewerUserId1 == 0,
                             child: Padding(
@@ -3835,4 +3446,465 @@ class FormData {
   String projectTitle = '';
   String dateOfReceived = '';
   String rtcCode = '';
+}
+
+class ReviewerSelection1 extends StatefulWidget {
+  final FormData formData;
+
+  const ReviewerSelection1({required this.formData, Key? key}) : super(key: key);
+
+  @override
+  _ReviewerSelection1State createState() => _ReviewerSelection1State();
+}
+
+class _ReviewerSelection1State extends State<ReviewerSelection1> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId1 == 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardBody(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                  child: FutureBuilder<List<User>>(
+                                    future: ApiService.getAllUsersExceptStudents(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return FormBuilderDropdown<User>(
+                                          name: 'reviewer_1',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Reviewer 1',
+                                            hintText: 'Select Reviewer 1',
+                                            border: OutlineInputBorder(),
+                                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          ),
+                                          // validator: FormBuilderValidators.required(),
+                                          items: snapshot.data!
+                                              .map((user) => DropdownMenuItem<User>(
+                                                    value: user,
+                                                    child: Text(user.getDisplayName()),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (User? user) {
+                                            if (user != null) {
+                                              setState(() {
+                                                widget.formData.profilePicLocation1 = user.profilePicLocation;
+                                                widget.formData.reviewerUserId1 = user.userId;
+                                              });
+
+                                              _formKey.currentState?.save();
+                                            }
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId1 != 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardHeader(
+                            title: "Name: ${widget.formData.reviewerFullname1}     | Username: ${widget.formData.reviewerUsername1}",
+                            backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                            titleColor: const Color.fromARGB(255, 151, 204, 197),
+                            showDivider: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                    child: Stack(
+                      children: [
+                        FutureBuilder<String>(
+                          future: widget.formData.profilePicLocation1.isNotEmpty
+                              ? ApiService.fetchPicFile('profile-pic/download', widget.formData.profilePicLocation1)
+                              : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Image.memory(
+                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                fit: BoxFit.cover, // Adjust image to cover the entire space
+                                // width: 120, // Adjust width as needed
+                                height: 60, // Adjust height as needed
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ReviewerSelection2 extends StatefulWidget {
+  final FormData formData;
+
+  const ReviewerSelection2({required this.formData, Key? key}) : super(key: key);
+
+  @override
+  _ReviewerSelection2State createState() => _ReviewerSelection2State();
+}
+
+class _ReviewerSelection2State extends State<ReviewerSelection2> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                  child: const Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CardHeader(
+                          title: 'Reviewer Selection :',
+                          backgroundColor: Color.fromARGB(255, 74, 89, 96),
+                          titleColor: Color.fromARGB(255, 151, 204, 197),
+                          showDivider: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId2 == 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardBody(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                  child: FutureBuilder<List<User>>(
+                                    future: ApiService.getAllUsersExceptStudents(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return FormBuilderDropdown<User>(
+                                          name: 'reviewer_2',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Reviewer 2',
+                                            hintText: 'Select Reviewer 2',
+                                            border: OutlineInputBorder(),
+                                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          ),
+                                          // validator: FormBuilderValidators.required(),
+                                          items: snapshot.data!
+                                              .map((user) => DropdownMenuItem<User>(
+                                                    value: user,
+                                                    child: Text(user.getDisplayName()),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (User? user) {
+                                            if (user != null) {
+                                              setState(() {
+                                                widget.formData.profilePicLocation2 = user.profilePicLocation;
+                                                widget.formData.reviewerUserId2 = user.userId;
+                                              });
+
+                                              _formKey.currentState!.save();
+                                            }
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId2 != 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardHeader(
+                            title: "Name: ${widget.formData.reviewerFullname2}     | Username: ${widget.formData.reviewerUsername2}",
+                            backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                            titleColor: const Color.fromARGB(255, 151, 204, 197),
+                            showDivider: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                    child: Stack(
+                      children: [
+                        FutureBuilder<String>(
+                          future: widget.formData.profilePicLocation2.isNotEmpty
+                              ? ApiService.fetchPicFile('profile-pic/download', widget.formData.profilePicLocation2)
+                              : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Image.memory(
+                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                fit: BoxFit.cover, // Adjust image to cover the entire space
+                                // width: 120, // Adjust width as needed
+                                height: 60, // Adjust height as needed
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ReviewerSelection3 extends StatefulWidget {
+  final FormData formData;
+
+  const ReviewerSelection3({required this.formData, Key? key}) : super(key: key);
+
+  @override
+  _ReviewerSelection3State createState() => _ReviewerSelection3State();
+}
+
+class _ReviewerSelection3State extends State<ReviewerSelection3> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.22) - (kDefaultPadding * 0.22)),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId3 == 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardBody(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                                  child: FutureBuilder<List<User>>(
+                                    future: ApiService.getAllUsersExceptStudents(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return FormBuilderDropdown<User>(
+                                          name: 'reviewer_3',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Reviewer 3',
+                                            hintText: 'Select Reviewer 3',
+                                            border: OutlineInputBorder(),
+                                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          ),
+                                          // validator: FormBuilderValidators.required(),
+                                          items: snapshot.data!
+                                              .map((user) => DropdownMenuItem<User>(
+                                                    value: user,
+                                                    child: Text(user.getDisplayName()),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (User? user) {
+                                            if (user != null) {
+                                              setState(() {
+                                                widget.formData.profilePicLocation3 = user.profilePicLocation;
+                                                widget.formData.reviewerUserId3 = user.userId;
+                                              });
+
+                                              _formKey.currentState?.save();
+                                            }
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: widget.formData.fetchReviewerUserId3 != 0,
+                  child: SizedBox(
+                    width: ((constraints.maxWidth * 0.50) - (kDefaultPadding * 0.50)),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CardHeader(
+                            title: "Name: ${widget.formData.reviewerFullname3}     | Username: ${widget.formData.reviewerUsername3}",
+                            backgroundColor: const Color.fromARGB(255, 74, 89, 96),
+                            titleColor: const Color.fromARGB(255, 151, 204, 197),
+                            showDivider: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: kDefaultPadding),
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.25) - (kDefaultPadding * 0.25)),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
+                    child: Stack(
+                      children: [
+                        FutureBuilder<String>(
+                          future: widget.formData.profilePicLocation3.isNotEmpty
+                              ? ApiService.fetchPicFile('profile-pic/download', widget.formData.profilePicLocation3)
+                              : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Image.memory(
+                                base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                fit: BoxFit.cover, // Adjust image to cover the entire space
+                                // width: 120, // Adjust width as needed
+                                height: 60, // Adjust height as needed
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
