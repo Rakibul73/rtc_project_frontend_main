@@ -34,6 +34,7 @@ class ApiService {
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -65,6 +66,7 @@ class ApiService {
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -96,6 +98,7 @@ class ApiService {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -130,6 +133,7 @@ class ApiService {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(projectData),
       );
@@ -159,6 +163,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_project_status_specific_project/$projectID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -185,6 +190,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_specific_user_minimum/$userId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -217,6 +223,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -248,6 +255,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -277,6 +285,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -311,6 +320,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(projectIDAndReviewerUserID),
       );
@@ -346,6 +356,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(reviewData),
       );
@@ -378,6 +389,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/check_a_project_reviewed_or_not/$projectID/$userID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -410,6 +422,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -440,6 +453,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -470,6 +484,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_revieweruserid_for_specific_project/$projectId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -502,6 +517,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(reviewer1),
       );
@@ -511,6 +527,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(reviewer2),
       );
@@ -520,6 +537,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(reviewer3),
       );
@@ -554,6 +572,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_specific_notification/$notificationID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -580,6 +599,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/request_project_deletion_to_admin/$projectId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -610,6 +630,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -644,6 +665,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -675,6 +697,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -709,6 +732,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -737,6 +761,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_user_name_of_specific_user/$userId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -769,6 +794,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -799,6 +825,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -833,6 +860,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(userData),
       );
@@ -862,6 +890,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_specific_pending_user/$userId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -894,6 +923,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -920,6 +950,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/approve_temp_user/$userID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -944,6 +975,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/delete_temp_user/$userID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -972,6 +1004,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1036,6 +1069,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(updateProjectData),
       );
@@ -1067,6 +1101,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/projects/$projectId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -1093,6 +1128,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/projects/$projectId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -1123,6 +1159,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1156,6 +1193,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1188,6 +1226,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1216,6 +1255,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1248,6 +1288,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1280,6 +1321,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1314,6 +1356,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(projectData),
       );
@@ -1383,6 +1426,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
@@ -1417,6 +1461,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(userData),
       );
@@ -1443,6 +1488,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode({'new_password': newPassword}),
       );
@@ -1479,6 +1525,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(data),
       );
@@ -1514,6 +1561,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
       Uri.parse('$baseUrl/get_specific_user/$userId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
       },
     );
 
@@ -1552,6 +1600,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(data),
       );
@@ -1598,6 +1647,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json', // Add this line
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
         body: jsonEncode(data),
       );
