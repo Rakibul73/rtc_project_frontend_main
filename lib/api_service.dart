@@ -7,8 +7,8 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // const String baseUrl = 'http://192.168.1.188:5000';
-const String baseUrl = 'http://localhost:5000';
-// const String baseUrl = 'https://rakib73.pythonanywhere.com';
+// const String baseUrl = 'http://localhost:5000';
+const String baseUrl = 'https://rakib73.pythonanywhere.com';
 const storage = FlutterSecureStorage();
 
 class ApiService {
