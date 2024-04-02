@@ -4,7 +4,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenR
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/BillInformationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/BudgetManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
@@ -55,7 +55,7 @@ class RouteUri {
   static const String editprojectadmin = '/editprojectadmin';
   static const String projectreviewtracking = '/projectreviewtracking';
   static const String projectdashboard = '/projectdashboard';
-  static const String billinformation = '/billinformation';
+  static const String budgetmanagement = '/budgetmanagement';
   static const String projectmonitoringreport = '/projectmonitoringreport';
   static const String usermanagementoverview = '/usermanagementoverview';
   static const String viewallusers = '/viewallusers';
@@ -233,10 +233,10 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.billinformation,
+        path: RouteUri.budgetmanagement,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const BillInformationScreen(),
+          child: const BudgetManagementScreen(),
         ),
       ),
       GoRoute(

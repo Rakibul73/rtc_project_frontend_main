@@ -35,14 +35,14 @@ final sidebarMenuConfigs = [
         title: (context) => "Project Review Tracking",
       ),
       SidebarChildMenuConfig(
+        uri: RouteUri.budgetmanagement,
+        icon: Icons.circle_outlined,
+        title: (context) => "Budget Management",
+      ),
+      SidebarChildMenuConfig(
         uri: RouteUri.projectmonitoringreport,
         icon: Icons.circle_outlined,
         title: (context) => "Project Monitoring Report",
-      ),
-      SidebarChildMenuConfig(
-        uri: RouteUri.billinformation,
-        icon: Icons.circle_outlined,
-        title: (context) => "Bill Information",
       ),
     ],
   ),

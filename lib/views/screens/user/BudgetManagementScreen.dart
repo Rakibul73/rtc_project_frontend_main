@@ -9,8 +9,8 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:rtc_project_fronend/views/widgets/public_master_layout/public_master_layout.dart';
 
-class BillInformationScreen extends StatelessWidget {
-  const BillInformationScreen({Key? key}) : super(key: key);
+class BudgetManagementScreen extends StatelessWidget {
+  const BudgetManagementScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
