@@ -29,6 +29,57 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   final List<Widget> ganttfields = [];
   final List<Widget> budgetsummaryfields = [];
 
+  Map<String, dynamic> ganttFormData = {};
+  Map<String, dynamic> budgetFormData = {};
+
+  void _saveGanttFormData() {
+    _formKey.currentState!.save();
+    // Save the main work activity
+    FormData2 mainFormData = FormData2(
+        workActivity: _formKey.currentState!.fields['work_activity']!.value as String,
+        activityStatus: _formKey.currentState!.fields['activity_status']!.value as String,
+        duration: _formKey.currentState!.fields['duration']!.value.toString());
+
+    List<FormData2> ganttFormDataList = [];
+    ganttFormDataList.add(mainFormData);
+    // Save the dynamically added GanttNewTextField data
+    for (var i = 0; i < ganttfields.length; i++) {
+      final fieldState = (ganttfields[i].key as GlobalKey<_GanttNewTextFieldState>).currentState!;
+      final formData2 = fieldState.getFormData();
+      ganttFormDataList.add(formData2);
+    }
+    Map<String, dynamic> consolidatedData = {
+      'formDatas': ganttFormDataList.map((data) => data.toJson()).toList(),
+    };
+    ganttFormData = consolidatedData;
+    print(ganttFormData);
+  }
+
+  void _saveBudgetFormData() {
+    _formKey.currentState!.save();
+    // Save the main work activity
+    FormData3 mainFormData = FormData3(
+        serialNo: _formKey.currentState!.fields['sl_no']!.value as String,
+        item: _formKey.currentState!.fields['item']!.value as String,
+        unitPrice: _formKey.currentState!.fields['unit_price']!.value.toString(),
+        quantity: _formKey.currentState!.fields['quantity']!.value.toString(),
+        totalCostTk: _formKey.currentState!.fields['total_cost_tk']!.value.toString());
+
+    List<FormData3> budgetFormDataList = [];
+    budgetFormDataList.add(mainFormData);
+    // Save the dynamically added GanttNewTextField data
+    for (var i = 0; i < budgetsummaryfields.length; i++) {
+      final fieldState = (budgetsummaryfields[i].key as GlobalKey<_BudgetSummaryFieldsNewTextFieldState>).currentState!;
+      final formData3 = fieldState.getFormData3();
+      budgetFormDataList.add(formData3);
+    }
+    Map<String, dynamic> consolidatedData = {
+      'formDatas': budgetFormDataList.map((data) => data.toJson()).toList(),
+    };
+    budgetFormData = consolidatedData;
+    print(budgetFormData);
+  }
+
   List<PlatformFile>? _methodologyFiles; // Change to List<PlatformFile>?
   // List<PlatformFile>? _creatorUserSignatureFiles; // Change to List<PlatformFile>?
   // List<PlatformFile>? _creatorUserSealFiles; // Change to List<PlatformFile>?
@@ -272,8 +323,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       final responseBody = await ApiService.createProject(createProjectData);
 
       print('createproject.dart ----- responseBody: $responseBody');
+      print('createproject.dart ----- project_id: ${responseBody['project_id']}');
 
-      if (responseBody['statuscode'] == 201) {
+      final responseBodyGantt = await ApiService.createProjectGantt(responseBody['project_id'], ganttFormData);
+
+      final responseBodyBudget = await ApiService.createprojectBudget(responseBody['project_id'], budgetFormData);
+
+      if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 201 && responseBodyBudget['statuscode'] == 201) {
         print('do save');
         final dialog = AwesomeDialog(
           context: context,
@@ -1187,12 +1243,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                         children: <Widget>[
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {
-                                // _formKey.currentState!.saveAndValidate();
-                                // setState(() {
-                                //   savedValue = _formKey.currentState?.value.toString() ?? '';
-                                // });
-                              },
+                              onPressed: _saveGanttFormData,
                               style: appButtonTheme.successElevated,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -1208,10 +1259,27 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           ),
                           const SizedBox(width: 20),
                           Expanded(
+                              child: ElevatedButton(
+                            onPressed: () {},
+                            style: appButtonTheme.infoText,
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(right: kTextPadding),
+                                  child: Icon(Icons.account_circle_rounded),
+                                ),
+                                Text('show values'),
+                              ],
+                            ),
+                          )),
+                          const SizedBox(width: 20),
+                          Expanded(
                             child: ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   ganttfields.add(GanttNewTextField(
+                                    key: GlobalKey<_GanttNewTextFieldState>(),
                                     name: 'name_${ganttfields.length}',
                                     onDelete: () {
                                       setState(() {
@@ -1694,12 +1762,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                         children: <Widget>[
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () {
-                                // _formKey.currentState!.saveAndValidate();
-                                // setState(() {
-                                //   savedValue = _formKey.currentState?.value.toString() ?? '';
-                                // });
-                              },
+                              onPressed: _saveBudgetFormData,
                               style: appButtonTheme.successElevated,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -1719,6 +1782,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                               onPressed: () {
                                 setState(() {
                                   budgetsummaryfields.add(BudgetSummaryFieldsNewTextField(
+                                    key: GlobalKey<_BudgetSummaryFieldsNewTextFieldState>(),
                                     name: 'name_${budgetsummaryfields.length}',
                                     onDelete: () {
                                       setState(() {
@@ -2622,14 +2686,33 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   // }
 }
 
-class GanttNewTextField extends StatelessWidget {
-  const GanttNewTextField({
-    super.key,
-    required this.name,
-    this.onDelete,
-  });
-  final String name;
+class GanttNewTextField extends StatefulWidget {
   final VoidCallback? onDelete;
+  final String name;
+
+  GanttNewTextField({Key? key, this.onDelete, required this.name}) : super(key: key);
+
+  @override
+  State<GanttNewTextField> createState() => _GanttNewTextFieldState();
+}
+
+class _GanttNewTextFieldState extends State<GanttNewTextField> {
+  late String _activityStatus = '';
+  late String _datePickerController = '';
+  late String _workActivityController = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  FormData2 getFormData() {
+    return FormData2(
+      workActivity: _workActivityController,
+      duration: _datePickerController,
+      activityStatus: _activityStatus,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2648,7 +2731,7 @@ class GanttNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'work_activity_$name',
+                  name: 'work_activity_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Work/Activity',
                     hintText: 'Work/Activity',
@@ -2656,29 +2739,30 @@ class GanttNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _workActivityController = value ?? '',
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
               SizedBox(
                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
                 child: FormBuilderDateRangePicker(
-                  name: 'duration_$name',
+                  name: 'duration_${widget.name}',
                   firstDate: DateTime(1970),
                   lastDate: DateTime(2030),
                   format: DateFormat('MMMM d, yyyy'),
-                  onChanged: (value) {},
                   decoration: const InputDecoration(
                     labelText: 'Duration',
                     hintText: 'Duration',
                     border: OutlineInputBorder(),
                   ),
+                  onChanged: (value) => _datePickerController = value.toString(),
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
               SizedBox(
                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
                 child: FormBuilderChoiceChip(
-                  name: 'activity_status_$name',
+                  name: 'activity_status_${widget.name}',
                   spacing: kDefaultPadding * 0.5,
                   runSpacing: kDefaultPadding * 0.2,
                   selectedColor: appColorScheme.warning,
@@ -2690,18 +2774,14 @@ class GanttNewTextField extends StatelessWidget {
                     FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
                     FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
                   ],
-                  // onChanged: (value) {
-                  //   setState(() {}); // Trigger rebuild when choice changes
-                  // },
+                  onChanged: (value) => _activityStatus = value ?? '',
                 ),
               ),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: onDelete,
-                ),
-              )
+              if (widget.onDelete != null)
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
+                  child: IconButton(icon: const Icon(Icons.delete_forever), onPressed: widget.onDelete),
+                )
             ],
           );
         },
@@ -2710,14 +2790,84 @@ class GanttNewTextField extends StatelessWidget {
   }
 }
 
-class BudgetSummaryFieldsNewTextField extends StatelessWidget {
-  const BudgetSummaryFieldsNewTextField({
-    super.key,
-    required this.name,
-    this.onDelete,
+// Define the FormData and WorkActivity classes
+class FormData2 {
+  String workActivity;
+  String duration;
+  String activityStatus;
+
+  FormData2({
+    required this.workActivity,
+    required this.duration,
+    required this.activityStatus,
   });
-  final String name;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'workActivity': workActivity,
+      'duration': duration,
+      'activityStatus': activityStatus,
+    };
+  }
+}
+
+class FormData3 {
+  String totalCostTk;
+  String unitPrice;
+  String quantity;
+  String item;
+  String serialNo;
+
+  FormData3({
+    required this.totalCostTk,
+    required this.unitPrice,
+    required this.quantity,
+    required this.item,
+    required this.serialNo,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'serialNo': serialNo,
+      'item': item,
+      'quantity': quantity,
+      'unitPrice': unitPrice,
+      'totalCostTk': totalCostTk,
+    };
+  }
+}
+
+class BudgetSummaryFieldsNewTextField extends StatefulWidget {
   final VoidCallback? onDelete;
+  final String name;
+
+  BudgetSummaryFieldsNewTextField({Key? key, this.onDelete, required this.name}) : super(key: key);
+
+  @override
+  State<BudgetSummaryFieldsNewTextField> createState() => _BudgetSummaryFieldsNewTextFieldState();
+}
+
+class _BudgetSummaryFieldsNewTextFieldState extends State<BudgetSummaryFieldsNewTextField> {
+  late String _quantity = '';
+  late String _item = '';
+  late String _serialNo = '';
+  late String _unitPrice = '';
+  late String _totalCostTk = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  FormData3 getFormData3() {
+    return FormData3(
+      serialNo: _serialNo,
+      item: _item,
+      quantity: _quantity,
+      unitPrice: _unitPrice,
+      totalCostTk: _totalCostTk,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2733,7 +2883,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'sl_no_$name',
+                  name: 'sl_no_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Sl. No.',
                     hintText: 'Sl. No.',
@@ -2741,6 +2891,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _serialNo = value ?? '',
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
@@ -2749,7 +2900,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'item_$name',
+                  name: 'item_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Item',
                     hintText: 'Item',
@@ -2757,6 +2908,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _item = value ?? '',
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
@@ -2765,7 +2917,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'quantity_$name',
+                  name: 'quantity_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Quantity',
                     hintText: 'Quantity',
@@ -2773,6 +2925,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _quantity = value ?? '',
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
@@ -2781,7 +2934,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'unit_price_$name',
+                  name: 'unit_price_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Unit Price',
                     hintText: '(Taka)',
@@ -2789,6 +2942,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _unitPrice = value ?? '',
                 ),
               ),
               const SizedBox(width: kDefaultPadding),
@@ -2797,7 +2951,7 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                 child: FormBuilderTextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null, // Allow unlimited lines
-                  name: 'total_cost_tk_$name',
+                  name: 'total_cost_tk_${widget.name}',
                   decoration: const InputDecoration(
                     labelText: 'Total cost (Tk)',
                     hintText: '(Taka)',
@@ -2805,15 +2959,17 @@ class BudgetSummaryFieldsNewTextField extends StatelessWidget {
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   // validator: FormBuilderValidators.required(),
+                  onChanged: (value) => _totalCostTk = value ?? '',
                 ),
               ),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: onDelete,
-                ),
-              )
+              if (widget.onDelete != null)
+                SizedBox(
+                  width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
+                  child: IconButton(
+                    icon: const Icon(Icons.delete_forever),
+                    onPressed: widget.onDelete,
+                  ),
+                )
             ],
           );
         },

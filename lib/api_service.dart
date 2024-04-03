@@ -18,6 +18,84 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<Map<String, dynamic>> createprojectBudget(int projectId, Map<String, dynamic> projectBudgetData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_project_budget/$projectId');
+    print("createprojectBudget url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(projectBudgetData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Project created successfully
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to create project Budget: ${responseBody['error']}');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> createProjectGantt(int projectId, Map<String, dynamic> projectGanttData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_project_gantt/$projectId');
+    print("createProjectGantt url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(projectGanttData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        // Project created successfully
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to create project Gantt: ${responseBody['error']}');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+
   static Future<List<dynamic>> fetchProjectsUnassignedReviewer() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
