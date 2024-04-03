@@ -18,6 +18,206 @@ class ApiService {
     // await userDataProvider.loadAsync();
   }
 
+  static Future<List<dynamic>> fetchAllBudgetOfAProjectReview(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_review_project_budget/$projectId');
+    print("fetchAllBudgetOfAProjectReview url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['budget_list'];
+      } else {
+        print("fetchAllBudgetOfAProjectReview = Failed to load projects budget: ${response.statusCode}");
+        throw Exception('Failed to load projects budget: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects budget: $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllGanttOfAProjectReview(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_review_project_gantt/$projectId');
+    print("fetchAllGanttOfAProjectReview url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['gantt_list'];
+      } else {
+        print("fetchAllGanttOfAProjectReview = Failed to load projects gantt: ${response.statusCode}");
+        throw Exception('Failed to load projects gantt: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects gantt: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProjectBudgetDetails(int projectID, List<dynamic> budgetFormDataForUpload) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_project_budget/$projectID');
+    print("updateProjectBudgetDetails url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(budgetFormDataForUpload),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update project budget : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllBudgetOfAProject(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_self_project_budget/$projectId');
+    print("fetchAllBudgetOfAProject url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['budget_list'];
+      } else {
+        print("fetchAllBudgetOfAProject = Failed to load projects budget: ${response.statusCode}");
+        throw Exception('Failed to load projects budget: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects budget: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateProjectGanttDetails(int projectID, List<dynamic> ganttFormDataForUpload) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_project_gantt/$projectID');
+    print("updateProjectGanttDetails url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(ganttFormDataForUpload),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update project gantt : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllGanttOfAProject(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_self_project_gantt/$projectId');
+    print("fetchAllGanttOfAProject url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['gantt_list'];
+      } else {
+        print("fetchAllGanttOfAProject = Failed to load projects gantt: ${response.statusCode}");
+        throw Exception('Failed to load projects gantt: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects gantt: $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> createprojectBudget(int projectId, Map<String, dynamic> projectBudgetData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -231,7 +431,7 @@ class ApiService {
     }
   }
 
-static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectID) async {
+  static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
@@ -457,7 +657,7 @@ static Future<Map<String, dynamic>> getProjectStatusSpecificProject(int projectI
     }
   }
 
-  static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID , int userID) async {
+  static Future<Map<String, dynamic>> checkProjectReviewedOrNot(int projectID, int userID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');

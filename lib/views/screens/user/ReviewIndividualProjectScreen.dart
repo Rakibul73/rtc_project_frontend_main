@@ -32,8 +32,8 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
-  final List<Widget> ganttfields = [];
-  final List<Widget> budgetsummaryfields = [];
+  late List<dynamic> initialProjectGantts = [];
+  late List<dynamic> initialProjectBudget = [];
   Future<bool>? _future;
   bool initialReviewExist = false;
 
@@ -116,6 +116,22 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
 
         _formData.projectStatus = userDetails['project']['ProjectStatus'];
         _formData.projectSoftCopyLocation = userDetails['project']['ProjectSoftCopyLocation'] ?? '';
+
+        final ganttDetails = await ApiService.fetchAllGanttOfAProjectReview(
+          int.parse(_formData.projectID),
+        );
+        if (ganttDetails.isNotEmpty) {
+          initialProjectGantts = ganttDetails;
+        }
+        print("initialProjectGantts: $initialProjectGantts");
+
+        final budgetDetails = await ApiService.fetchAllBudgetOfAProjectReview(
+          int.parse(_formData.projectID),
+        );
+        if (budgetDetails.isNotEmpty) {
+          initialProjectBudget = budgetDetails;
+        }
+        print("initialProjectBudget: $initialProjectBudget");
 
         // read user id
         final userId = await storage.read(key: 'user_id');
@@ -291,7 +307,6 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
   Widget _content(BuildContext context) {
     final themeData = Theme.of(context);
     final appColorScheme = themeData.extension<AppColorScheme>()!;
-    final appButtonTheme = themeData.extension<AppButtonTheme>()!;
     final pageTitle = 'Project - ID: ${widget.projectID.isEmpty ? 'New Project' : widget.projectID}';
 
     return FormBuilder(
@@ -1107,129 +1122,98 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                         padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.workActivity,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'work_activity',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Work/Activity',
-                                      hintText: 'Work/Activity',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    // validator: FormBuilderValidators.requisred(),
-                                    onChanged: (value) => (_formData.workActivity = value ?? ''),
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    shrinkWrap: true, // Ensure the ListView takes only the necessary space
+                                    physics: const NeverScrollableScrollPhysics(), // Disable scrolling of the ListView
+                                    itemCount: initialProjectGantts.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> ganttData = initialProjectGantts[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                                        child: FormBuilder(
+                                          // Use a unique key for each form to manage state separately
+                                          key: GlobalKey<FormBuilderState>(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: ganttData['Activity'], // Use ganttData instead of _formData
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'work_activity',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Work/Activity',
+                                                    hintText: 'Work/Activity',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  onChanged: (value) => (ganttData['Activity'] = value ?? ''), // Update ganttData
+                                                ),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
+                                                child: FormBuilderDateRangePicker(
+                                                    initialValue: DateTimeRange(
+                                                      start: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['StartDate']),
+                                                      end: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['EndDate']),
+                                                    ),
+                                                    name: 'duration',
+                                                    firstDate: DateTime(1970),
+                                                    lastDate: DateTime(2030),
+                                                    format: DateFormat('MMMM d, yyyy'),
+                                                    decoration: const InputDecoration(
+                                                      labelText: 'Duration',
+                                                      hintText: 'Duration',
+                                                      border: OutlineInputBorder(),
+                                                    ),
+                                                    onChanged: (value) {
+                                                      if (value != null) {
+                                                        setState(() {
+                                                          final DateFormat formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
+                                                          ganttData['StartDate'] = formatter.format(value.start);
+                                                          ganttData['EndDate'] = formatter.format(value.end);
+                                                        });
+                                                      }
+                                                    }),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
+                                                child: FormBuilderChoiceChip(
+                                                  initialValue: ganttData['ActivityStatus'],
+                                                  name: 'activity_status',
+                                                  spacing: kDefaultPadding * 0.5,
+                                                  runSpacing: kDefaultPadding * 0.2,
+                                                  selectedColor: appColorScheme.warning,
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Activity Status',
+                                                    border: OutlineInputBorder(),
+                                                  ),
+                                                  options: const [
+                                                    FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
+                                                    FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
+                                                  ],
+                                                  onChanged: (value) => (ganttData['ActivityStatus'] = value ?? ''), // Update ganttData
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
-                                  child: FormBuilderDateRangePicker(
-                                    // initialValue: DateTimeRange(
-                                    //   start: DateTime.parse(_formData.duration.split(' - ')[0].trim()),
-                                    //   end: DateTime.parse(_formData.duration.split(' - ')[1].trim()),
-                                    // ),
-                                    name: 'duration',
-                                    firstDate: DateTime(1970),
-                                    lastDate: DateTime(2030),
-                                    format: DateFormat('MMMM d, yyyy'),
-                                    decoration: const InputDecoration(
-                                      labelText: 'Duration',
-                                      hintText: 'Duration',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    // validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.duration = value.toString()),
-                                  ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
-                                  child: FormBuilderChoiceChip(
-                                    initialValue: _formData.activityStatus,
-                                    name: 'activity_status',
-                                    spacing: kDefaultPadding * 0.5,
-                                    runSpacing: kDefaultPadding * 0.2,
-                                    selectedColor: appColorScheme.warning,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Activity Status',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    options: const [
-                                      FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
-                                      FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
-                                    ],
-                                    // onChanged: (value) {
-                                    //   setState(() {}); // Trigger rebuild when choice changes
-                                    // },
-                                    // validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.activityStatus = value ?? ''),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           },
                         ),
-                      ),
-                      ...ganttfields,
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // _formKey.currentState!.saveAndValidate();
-                                // setState(() {
-                                //   savedValue = _formKey.currentState?.value.toString() ?? '';
-                                // });
-                              },
-                              style: appButtonTheme.successElevated,
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
-                                  ),
-                                  Text('Save'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  ganttfields.add(GanttNewTextField(
-                                    name: 'name_${ganttfields.length}',
-                                    onDelete: () {
-                                      setState(() {
-                                        ganttfields.removeAt(ganttfields.length - 1);
-                                      });
-                                    },
-                                  ));
-                                });
-                              },
-                              style: appButtonTheme.infoElevated,
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
-                                  ),
-                                  Text('Add field'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ])),
                   ],
@@ -1587,156 +1571,124 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                         padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.slNo,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'sl_no',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Sl. No.',
-                                      hintText: 'Sl. No.',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.slNo = value ?? ''),
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                    shrinkWrap: true, // Ensure the ListView takes only the necessary space
+                                    physics: const NeverScrollableScrollPhysics(), // Disable scrolling of the ListView
+                                    itemCount: initialProjectBudget.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> budgetData = initialProjectBudget[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                                        child: FormBuilder(
+                                          // Use a unique key for each form to manage state separately
+                                          key: GlobalKey<FormBuilderState>(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['SerialNo'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'sl_no',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Sl. No.',
+                                                    hintText: 'Sl. No.',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['SerialNo'] = value ?? 0),
+                                                ),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['Item'],
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'item',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Item',
+                                                    hintText: 'Item',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['Item'] = value ?? ''),
+                                                ),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['Quantity'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'quantity',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Quantity',
+                                                    hintText: 'Quantity',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['Quantity'] = value ?? 0),
+                                                ),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['UnitPrice'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'unit_price',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Unit Price',
+                                                    hintText: '(Taka)',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['UnitPrice'] = value ?? 0.0),
+                                                ),
+                                              ),
+                                              const SizedBox(width: kDefaultPadding),
+                                              SizedBox(
+                                                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['TotalCost'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'total_cost_tk',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Total cost (Tk)',
+                                                    hintText: '(Taka)',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                  ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['TotalCost'] = value ?? 0.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.item,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'item',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Item',
-                                      hintText: 'Item',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.item = value ?? ''),
-                                  ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.quantity,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'quantity',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Quantity',
-                                      hintText: 'Quantity',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.quantity = value ?? ''),
-                                  ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.unitPrice,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'unit_price',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Unit Price',
-                                      hintText: '(Taka)',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.unitPrice = value ?? ''),
-                                  ),
-                                ),
-                                const SizedBox(width: kDefaultPadding),
-                                SizedBox(
-                                  width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                  child: FormBuilderTextField(
-                                    initialValue: _formData.totalCostTk,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // Allow unlimited lines
-                                    name: 'total_cost_tk',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Total cost (Tk)',
-                                      hintText: '(Taka)',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    onChanged: (value) => (_formData.totalCostTk = value ?? ''),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           },
                         ),
-                      ),
-                      ...budgetsummaryfields,
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // _formKey.currentState!.saveAndValidate();
-                                // setState(() {
-                                //   savedValue = _formKey.currentState?.value.toString() ?? '';
-                                // });
-                              },
-                              style: appButtonTheme.successElevated,
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
-                                  ),
-                                  Text('Save'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  budgetsummaryfields.add(BudgetSummaryFieldsNewTextField(
-                                    name: 'name_${budgetsummaryfields.length}',
-                                    onDelete: () {
-                                      setState(() {
-                                        budgetsummaryfields.removeAt(budgetsummaryfields.length - 1);
-                                      });
-                                    },
-                                  ));
-                                });
-                              },
-                              style: appButtonTheme.infoElevated,
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
-                                  ),
-                                  Text('Add field'),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                     ])),
                   ],
@@ -2803,94 +2755,6 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
   }
 }
 
-class GanttNewTextField extends StatelessWidget {
-  const GanttNewTextField({
-    super.key,
-    required this.name,
-    this.onDelete,
-  });
-  final String name;
-  final VoidCallback? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
-    final appColorScheme = themeData.extension<AppColorScheme>()!;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'work_activity_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Work/Activity',
-                    hintText: 'Work/Activity',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
-                child: FormBuilderDateRangePicker(
-                  name: 'duration_$name',
-                  firstDate: DateTime(1970),
-                  lastDate: DateTime(2030),
-                  format: DateFormat('MMMM d, yyyy'),
-                  onChanged: (value) {},
-                  decoration: const InputDecoration(
-                    labelText: 'Duration',
-                    hintText: 'Duration',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
-                child: FormBuilderChoiceChip(
-                  name: 'activity_status_$name',
-                  spacing: kDefaultPadding * 0.5,
-                  runSpacing: kDefaultPadding * 0.2,
-                  selectedColor: appColorScheme.warning,
-                  decoration: const InputDecoration(
-                    labelText: 'Activity Status',
-                    border: OutlineInputBorder(),
-                  ),
-                  options: const [
-                    FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
-                    FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
-                  ],
-                  // onChanged: (value) {
-                  //   setState(() {}); // Trigger rebuild when choice changes
-                  // },
-                ),
-              ),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: onDelete,
-                ),
-              )
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
 class ReadMoreText extends StatefulWidget {
   final String text;
   final int maxLength;
@@ -2952,118 +2816,6 @@ class _ReadMoreTextState extends State<ReadMoreText> {
       return widget.text;
     }
     return '${widget.text.substring(0, widget.maxLength)}... ';
-  }
-}
-
-class BudgetSummaryFieldsNewTextField extends StatelessWidget {
-  const BudgetSummaryFieldsNewTextField({
-    super.key,
-    required this.name,
-    this.onDelete,
-  });
-  final String name;
-  final VoidCallback? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'sl_no_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Sl. No.',
-                    hintText: 'Sl. No.',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'item_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Item',
-                    hintText: 'Item',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'quantity_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Quantity',
-                    hintText: 'Quantity',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'unit_price_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Unit Price',
-                    hintText: '(Taka)',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              const SizedBox(width: kDefaultPadding),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null, // Allow unlimited lines
-                  name: 'total_cost_tk_$name',
-                  decoration: const InputDecoration(
-                    labelText: 'Total cost (Tk)',
-                    hintText: '(Taka)',
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  // validator: FormBuilderValidators.required(),
-                ),
-              ),
-              SizedBox(
-                width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: onDelete,
-                ),
-              )
-            ],
-          );
-        },
-      ),
-    );
   }
 }
 
