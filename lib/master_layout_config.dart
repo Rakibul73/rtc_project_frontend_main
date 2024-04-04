@@ -35,9 +35,9 @@ final sidebarMenuConfigs = [
         title: (context) => "Project Review Tracking",
       ),
       SidebarChildMenuConfig(
-        uri: RouteUri.budgetmanagement,
+        uri: RouteUri.projectfundmanagement,
         icon: Icons.circle_outlined,
-        title: (context) => "Budget Management",
+        title: (context) => "Project Fund Management",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projectmonitoringreport,

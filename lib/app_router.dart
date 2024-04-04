@@ -4,7 +4,8 @@ import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenR
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/BudgetManagementScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
@@ -15,6 +16,7 @@ import 'package:rtc_project_fronend/views/screens/admin/PendingUsersScreen.dart'
 import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectHaveToReviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
@@ -34,7 +36,9 @@ import 'package:rtc_project_fronend/views/screens/general/logout_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/MyProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
+import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewRequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
 
 class RouteUri {
@@ -55,7 +59,7 @@ class RouteUri {
   static const String editprojectadmin = '/editprojectadmin';
   static const String projectreviewtracking = '/projectreviewtracking';
   static const String projectdashboard = '/projectdashboard';
-  static const String budgetmanagement = '/budgetmanagement';
+  static const String projectfundmanagement = '/projectfundmanagement';
   static const String projectmonitoringreport = '/projectmonitoringreport';
   static const String usermanagementoverview = '/usermanagementoverview';
   static const String viewallusers = '/viewallusers';
@@ -75,6 +79,10 @@ class RouteUri {
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
   static const String viewreviewoftheproject = '/viewreviewoftheproject';
   static const String viewreviewoftheprojectadmin = '/viewreviewoftheprojectadmin';
+  static const String projecticanapplyforfund = '/projecticanapplyforfund';
+  static const String requestforaprojectfund = '/requestforaprojectfund';
+  static const String viewrequestforaprojectfund = '/viewrequestforaprojectfund';
+  static const String myprojectrecievedfund = '/myprojectrecievedfund';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -208,6 +216,24 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.requestforaprojectfund,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: RequestForAProjectFundScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewrequestforaprojectfund,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewRequestForAProjectFundScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.viewreviewoftheproject,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
@@ -233,10 +259,24 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.budgetmanagement,
+        path: RouteUri.projecticanapplyforfund,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: const BudgetManagementScreen(),
+          child: const ProjectICanApplyForFundScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.myprojectrecievedfund,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MyProjectRecievedFundScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectfundmanagement,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectFundManagementScreen(),
         ),
       ),
       GoRoute(
