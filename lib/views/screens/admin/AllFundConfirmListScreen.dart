@@ -2,6 +2,7 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
@@ -13,14 +14,14 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/theme/theme_extensions/app_data_table_theme.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class MyProjectRecievedFundScreen extends StatefulWidget {
-  const MyProjectRecievedFundScreen({Key? key}) : super(key: key);
+class AllFundConfirmListScreen extends StatefulWidget {
+  const AllFundConfirmListScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyProjectRecievedFundScreen> createState() => _MyProjectRecievedFundScreenState();
+  State<AllFundConfirmListScreen> createState() => _AllFundConfirmListScreenState();
 }
 
-class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScreen> {
+class _AllFundConfirmListScreenState extends State<AllFundConfirmListScreen> {
   final _scrollController = ScrollController();
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -50,7 +51,7 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
 
   void viewAllProjects() async {
     try {
-      _initialProjects = await ApiService.fetchMyFundedProject();
+      _initialProjects = await ApiService.fetchAdminFundConfirmList();
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
@@ -60,30 +61,43 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
     }
   }
 
-  void confirmFundRecieved(int projectID) {
+  void sendFund(int projectID) async {
     AppFocusHelper.instance.requestUnfocus();
 
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.success,
-      title: "Want to confirm fund recieved for this project?",
+      title: "Want to send fund for this project?",
       width: kDialogWidth,
       btnOkText: 'Yes',
-      btnOkOnPress: () async {
-        final result = await ApiService.updateConfirmFundRecieved(projectID);
-        if (result['statuscode'] == 200) {
-          final dialog = AwesomeDialog(
-            context: context,
-            dialogType: DialogType.success,
-            title: "Fund Recieved Confirmation Sent Successfully",
-            width: kDialogWidth,
-            btnOkText: 'OK',
-            btnOkOnPress: () {
-              viewAllProjects();
-            },
-          );
-          dialog.show();
-        }
+      btnOkOnPress: () {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          title: "উক্ত সম্মানীর সমূদয় অর্থ আইটি কর্তন পূর্বক অর্থ ও হিসাব শাখার মাধ্যমে স্ব স্ব ব্যক্তিগত হিসাবে (রুপালী ব্যাংক লিমিটেড, পবিপ্রবি শাখায়) প্রেরণ করতে হবে।",
+          desc: "Please wait. After sending fund, press ok button.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () async {
+            final result = await ApiService.updateFundSendValue(projectID);
+            if (result['statuscode'] == 200) {
+              final dialog = AwesomeDialog(
+                context: context,
+                dialogType: DialogType.success,
+                title: "Fund Sent Successfully",
+                width: kDialogWidth,
+                btnOkText: 'OK',
+                btnOkOnPress: () {
+                  viewAllProjects();
+                },
+              );
+              dialog.show();
+            }
+          },
+          btnCancelText: 'Cancel',
+          btnCancelOnPress: () {},
+        );
+        dialog.show();
       },
       btnCancelText: 'No',
       btnCancelOnPress: () {},
@@ -98,9 +112,9 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
     viewAllProjects();
 
     _dataSource = DataSource(
-      // onSendFundConfirmationButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.requestforaprojectfund}?projectid=${data['ProjectID']}'),
-      onSendFundConfirmationButtonPressed: (data) {
-        confirmFundRecieved(data['ProjectID']);
+      onViewFundButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectfund}?projectid=${data['ProjectID']}'),
+      onSendFundButtonPressed: (data) {
+        sendFund(data['ProjectID']);
       },
       data: [],
     );
@@ -118,12 +132,12 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-        selectedMenuUri: RouteUri.projectfundmanagement,
+        selectedMenuUri: RouteUri.fundmonitoringpanel,
         body: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
             Text(
-              'Funded Projects',
+              'Fund Confirmation List',
               style: themeData.textTheme.headlineMedium,
             ),
             Padding(
@@ -161,10 +175,10 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
                                             child: Padding(
                                               padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
                                               child: FormBuilderTextField(
-                                                name: 'search_project_title',
+                                                name: 'search_project_Title',
                                                 decoration: const InputDecoration(
                                                   labelText: 'Search by Project Title',
-                                                  hintText: 'Enter project title',
+                                                  hintText: 'Enter project Title',
                                                   border: OutlineInputBorder(),
                                                   floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   isDense: true,
@@ -244,7 +258,11 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
                                                 DataColumn(label: Text('ProjectID'), numeric: true),
                                                 DataColumn(label: Text('CodeByRTC')),
                                                 DataColumn(label: Text('ProjectTitle')),
-                                                DataColumn(label: Text('Actions')),
+                                                DataColumn(label: Text('TotalBudget')),
+                                                DataColumn(label: Text('TotalHonorarium')),
+                                                DataColumn(label: Text('HonorariumOfPI')),
+                                                DataColumn(label: Text('HonorariumOfCoPI')),
+                                                // DataColumn(label: Text('Actions')),
                                               ],
                                             );
                                           },
@@ -269,11 +287,13 @@ class _MyProjectRecievedFundScreenState extends State<MyProjectRecievedFundScree
 }
 
 class DataSource extends DataTableSource {
-  final void Function(Map<String, dynamic> data) onSendFundConfirmationButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewFundButtonPressed;
+  final void Function(Map<String, dynamic> data) onSendFundButtonPressed;
   List<dynamic> data;
 
   DataSource({
-    required this.onSendFundConfirmationButtonPressed,
+    required this.onViewFundButtonPressed,
+    required this.onSendFundButtonPressed,
     required this.data,
   });
 
@@ -290,46 +310,56 @@ class DataSource extends DataTableSource {
       DataCell(Text(data['ProjectTitle'].toString().length > maxLength
           ? '${data['ProjectTitle'].toString().substring(0, maxLength)}...' // Display a truncated title with ellipsis
           : data['ProjectTitle'].toString())),
-      DataCell(FutureBuilder<String>(
-        future: getTheProjectFundConfirmationSendOrNot(data['ProjectID']),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Visibility(
-                  visible: snapshot.data == "No",
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: kDefaultPadding),
-                    child: OutlinedButton(
-                      onPressed: () => onSendFundConfirmationButtonPressed.call(data),
-                      style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                      child: const Text("Send Fund Received Confirmation"),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: snapshot.data == "Yes",
-                  child: Padding(
-                      padding: const EdgeInsets.only(right: kDefaultPadding),
-                      child: Tooltip(
-                        message: "Already Send",
-                        child: OutlinedButton(
-                          onPressed: null,
-                          style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
-                          child: const Text("Send Fund Received Confirmation"),
-                        ),
-                      )),
-                ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const Text('Loading...'); // Show a loading indicator while fetching data
-          }
-        },
-      )),
+      DataCell(Text(data['TotalBudget'].toString())),
+      DataCell(Text(data['TotalHonorarium'].toString())),
+      DataCell(Text(data['HonorariumOfPI'].toString())),
+      DataCell(Text(data['HonorariumOfCoPI'].toString())),
+      // DataCell(FutureBuilder<String>(
+      //   future: getTheProjectFundSendOrNot(data['ProjectID']),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) {
+      //       return Row(
+      //         mainAxisSize: MainAxisSize.min,
+      //         children: [
+      //           Padding(
+      //             padding: const EdgeInsets.only(right: kDefaultPadding),
+      //             child: OutlinedButton(
+      //               onPressed: () => onViewFundButtonPressed.call(data),
+      //               style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
+      //               child: const Text("View Fund Details"),
+      //             ),
+      //           ),
+      //           Visibility(
+      //             visible: snapshot.data == "No",
+      //             child: Padding(
+      //               padding: const EdgeInsets.only(right: kDefaultPadding),
+      //               child: OutlinedButton(
+      //                 onPressed: () => onSendFundButtonPressed.call(data),
+      //                 style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
+      //                 child: const Text("Send Fund"),
+      //               ),
+      //             ),
+      //           ),
+      //           Visibility(
+      //             visible: snapshot.data == "Yes",
+      //             child: Padding(
+      //               padding: const EdgeInsets.only(right: kDefaultPadding),
+      //               child: OutlinedButton(
+      //                 onPressed: null,
+      //                 style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
+      //                 child: const Text("Fund Already Send"),
+      //               ),
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     } else if (snapshot.hasError) {
+      //       return Text('Error: ${snapshot.error}');
+      //     } else {
+      //       return const Text('Loading...'); // Show a loading indicator while fetching data
+      //     }
+      //   },
+      // )),
     ]);
   }
 
@@ -342,9 +372,9 @@ class DataSource extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-  Future<String> getTheProjectFundConfirmationSendOrNot(int projectID) async {
-    final responseBody = await ApiService.checkProjectFundConfirmedOrNot(projectID);
-    String projectConfirmFundCheck = responseBody['ProjectConfirmFundCheck'];
-    return projectConfirmFundCheck;
+  Future<String> getTheProjectFundSendOrNot(int projectID) async {
+    final responseBody = await ApiService.checkProjectFundSendOrNot(projectID);
+    String projectFundSendCheck = responseBody['ProjectFundSendCheck'];
+    return projectFundSendCheck;
   }
 }

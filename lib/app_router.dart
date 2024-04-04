@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
+import 'package:rtc_project_fronend/views/screens/admin/AllFundConfirmListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/AllFundRequestQueueListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
@@ -38,7 +41,7 @@ import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
 import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewRequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
 
 class RouteUri {
@@ -83,6 +86,9 @@ class RouteUri {
   static const String requestforaprojectfund = '/requestforaprojectfund';
   static const String viewrequestforaprojectfund = '/viewrequestforaprojectfund';
   static const String myprojectrecievedfund = '/myprojectrecievedfund';
+  static const String fundmonitoringpanel = '/fundmonitoringpanel';
+  static const String allfundrequestqueuelist = '/allfundrequestqueuelist';
+  static const String allfundconfirmlist = '/allfundconfirmlist';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -266,6 +272,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
+        path: RouteUri.fundmonitoringpanel,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const FundMonitoringPanelScreen(),
+        ),
+      ),
+      GoRoute(
         path: RouteUri.myprojectrecievedfund,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -284,6 +297,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectDashboardScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.allfundconfirmlist,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const AllFundConfirmListScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.allfundrequestqueuelist,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const AllFundRequestQueueListScreen(),
         ),
       ),
       GoRoute(

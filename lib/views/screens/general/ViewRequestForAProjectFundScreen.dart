@@ -7,12 +7,14 @@ import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
+import 'package:rtc_project_fronend/constants/values.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewRequestForAProjectFundScreen extends StatefulWidget {
   final String projectID;
@@ -1170,7 +1172,17 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
+                                  // onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
+                                  onPressed: () async {
+                                    final sharedPref = await SharedPreferences.getInstance();
+                                    final roleID = sharedPref.getInt(StorageKeys.roleId) ?? 0;
+                                    if(roleID == 1){
+                                      GoRouter.of(context).go(RouteUri.allfundrequestqueuelist);
+                                    }
+                                    else{
+                                      GoRouter.of(context).go(RouteUri.projecticanapplyforfund);
+                                    }
+                                  },
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
