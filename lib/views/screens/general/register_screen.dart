@@ -70,21 +70,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
           firstName: _formData.firstName,
           lastName: _formData.lastName,
           phone: _formData.phone,
+          facultyName: _formData.facultyName,
           roleID: roleId,
         );
         if (response['statuscode'] == 201) {
-            // User registered successfully
-            print('User registered successfully');
-            onSuccess.call('Your account has been successfully created. Admin will review your account soon.');
-          } else if (response['statuscode'] == 409) {
-            // User or email already exists
-            print('User or email already exists');
-            onError.call('This User or email is already taken.');
-          } else {
-            // Handle registration failure
-            print('Registration failed: ${response['message']}');
-            onError.call('Registration failed: ${response['message']}');
-          }
+          // User registered successfully
+          print('User registered successfully');
+          onSuccess.call('Your account has been successfully created. Admin will review your account soon.');
+        } else if (response['statuscode'] == 409) {
+          // User or email already exists
+          print('User or email already exists');
+          onError.call('This User or email is already taken.');
+        } else {
+          // Handle registration failure
+          print('Registration failed: ${response['message']}');
+          onError.call('Registration failed: ${response['message']}');
+        }
 
         setState(() => _isFormLoading = false);
       });
@@ -151,10 +152,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     Text(
-                      "PSTU RTC Project Management", textAlign: TextAlign.center,
-                      style: themeData.textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 22.0
-                      ),
+                      "PSTU RTC Project Management",
+                      textAlign: TextAlign.center,
+                      style: themeData.textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w600, fontSize: 22.0),
                     ),
                     const SizedBox(height: 5),
                     Padding(
@@ -308,12 +308,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   border: OutlineInputBorder(),
                                   hoverColor: Colors.transparent,
                                   focusColor: Colors.transparent,
-                                  hintText: 'Select',
                                 ),
                                 focusColor: Colors.transparent,
                                 validator: FormBuilderValidators.required(),
                                 items: ['Admin', 'Researcher', 'Reviewer', 'Teacher', 'Student'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
                                 onSaved: (value) => (_formData.roleId = value ?? ''),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                            child: Theme(
+                              data: themeData.copyWith(
+                                // canvasColor: Colors.amber,
+                                splashColor: Colors.amber,
+                              ),
+                              child: FormBuilderDropdown(
+                                name: 'facultyName',
+                                decoration: const InputDecoration(
+                                  labelText: 'Choose Faculty',
+                                  border: OutlineInputBorder(),
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                ),
+                                validator: FormBuilderValidators.required(),
+                                items: [
+                                  'Faculty of Agriculture',
+                                  'Faculty of Computer Science and Engineering',
+                                  'Faculty of Business Administration',
+                                  'Faculty of Animal Science and Veterinary Medicine',
+                                  'Faculty of Fisheries',
+                                  'Faculty of Environmental Science and Disaster Management',
+                                  'Faculty of Nutrition and Food Science',
+                                  'Faculty of Law and Land Administration'
+                                ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                onSaved: (value) => (_formData.facultyName = value ?? ''),
                               ),
                             ),
                           ),
@@ -365,6 +394,6 @@ class FormData {
   String firstName = '';
   String lastName = '';
   String phone = '';
+  String facultyName = '';
   String roleId = '';
-
 }

@@ -2367,6 +2367,7 @@ class ApiService {
     required String firstName,
     required String lastName,
     required String phone,
+    required String facultyName,
     required int roleID,
   }) async {
     final Uri url = Uri.parse('$baseUrl/register');
@@ -2379,6 +2380,7 @@ class ApiService {
       "FirstName": firstName,
       "LastName": lastName,
       "Phone": phone,
+      "FacultyName": facultyName,
       "RoleID": roleID,
     };
 

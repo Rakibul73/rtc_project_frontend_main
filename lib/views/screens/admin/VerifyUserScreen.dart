@@ -33,6 +33,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
   bool editfirstname = false;
   bool editlastname = false;
   bool editphone = false;
+  bool editfacultyname = false;
   bool editrole = false;
   bool initialPendingUserDataChange = false;
 
@@ -107,6 +108,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
         _formData.firstName = userDetails['TempUser']['FirstName'];
         _formData.lastName = userDetails['TempUser']['LastName'];
         _formData.phone = userDetails['TempUser']['Phone'];
+        _formData.facultyName = userDetails['TempUser']['FacultyName'];
         _formData.roleID = getRoleName(userDetails['TempUser']['RoleID']);
       });
     }
@@ -173,6 +175,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
             'LastName': _formData.lastName,
             'Phone': _formData.phone,
             'Email': _formData.email,
+            'FacultyName': _formData.facultyName,
             'RoleID': getRoleId(_formData.roleID),
           };
           final responseBody = await ApiService.updateTempUserDetails(int.parse(widget.pendingUserID), updatedTempUserData);
@@ -1017,6 +1020,137 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
                               },
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.33) - (kDefaultPadding * 0.33)),
+                                      child: const Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CardHeader(
+                                              title: 'Faculty Name :',
+                                              backgroundColor: Color.fromARGB(255, 74, 89, 96),
+                                              titleColor: Color.fromARGB(255, 151, 204, 197),
+                                              showDivider: false,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    Visibility(
+                                      visible: !editfacultyname,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.55) - (kDefaultPadding * 0.55)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              CardHeader(
+                                                title: _formData.facultyName,
+                                                backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                showDivider: false,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: editfacultyname,
+                                      child: SizedBox(
+                                        width: ((constraints.maxWidth * 0.55) - (kDefaultPadding * 0.55)),
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              FormBuilderDropdown(
+                                                name: 'facultyName',
+                                                decoration: const InputDecoration(
+                                                  labelText: 'Faculty Name',
+                                                  hintText: 'facultyName',
+                                                  border: OutlineInputBorder(),
+                                                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                ),
+                                                hint: const Text('Select'),
+                                                initialValue: _formData.facultyName,
+                                                validator: FormBuilderValidators.required(),
+                                                items: [
+                                                  'Faculty of Agriculture',
+                                                  'Faculty of Computer Science and Engineering',
+                                                  'Faculty of Business Administration',
+                                                  'Faculty of Animal Science and Veterinary Medicine',
+                                                  'Faculty of Fisheries',
+                                                  'Faculty of Environmental Science and Disaster Management',
+                                                  'Faculty of Nutrition and Food Science',
+                                                  'Faculty of Law and Land Administration'
+                                                ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                                onSaved: (value) => (_formData.facultyName = value ?? ''),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: kDefaultPadding),
+                                    SizedBox(
+                                      width: ((constraints.maxWidth * 0.10) - (kDefaultPadding * 0.10)),
+                                      child: Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ElevatedButton(
+                                              style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                                              onPressed: () {
+                                                setState(() {
+                                                  editfacultyname = !editfacultyname; // Toggle edit mode
+                                                  if (!editfacultyname) {
+                                                    // Save changes if transitioning from edit mode to view mode
+                                                    _formKey.currentState!.validate();
+                                                    _formKey.currentState!.save();
+                                                    // Change pending user data change to true for re-rendering the Save_changes button
+                                                    initialPendingUserDataChange = true;
+                                                  }
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                    child: Icon(
+                                                      editfacultyname
+                                                          ? Icons.save_outlined // Change icon based on edit mode
+                                                          : Icons.mode_edit_outline_outlined,
+                                                      size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                    ),
+                                                  ),
+                                                  Text(editfacultyname ? "Save" : "Edit"),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: kDefaultPadding),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -1138,4 +1272,5 @@ class FormData {
   String firstName = '';
   String lastName = '';
   String userName = '';
+  String facultyName = '';
 }

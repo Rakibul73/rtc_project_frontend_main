@@ -231,6 +231,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.gender = userDetails['user']['Gender'] ?? '';
       _formData.nid = userDetails['user']['Nid'] ?? '';
       _formData.nidLocation = userDetails['user']['NidLocation'] ?? 'defaultnid.png';
+      _formData.facultyName = userDetails['user']['FacultyName'] ?? '';
+      _formData.departmentName = userDetails['user']['DepartmentName'] ?? '';
       _formData.instituteName = userDetails['user']['InstituteName'] ?? '';
       _formData.instituteLocation = userDetails['user']['InstituteLocation'] ?? '';
       _formData.instituteEmail = userDetails['user']['InstituteEmail'] ?? '';
@@ -316,6 +318,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           'Email': _formData.email,
           'Nid': _formData.nid,
           'NidLocation': _formData.nidLocation,
+          'FacultyName': _formData.facultyName,
+          'DepartmentName': _formData.departmentName,
           'InstituteName': _formData.instituteName,
           'InstituteLocation': _formData.instituteLocation,
           'InstituteEmail': _formData.instituteEmail,
@@ -603,54 +607,63 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.fullNameBangla = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'positionEnglish',
-              decoration: const InputDecoration(
-                labelText: 'Position English',
-                hintText: 'positionEnglish',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'positionEnglish',
+                decoration: const InputDecoration(
+                  labelText: 'Position English',
+                  hintText: 'positionEnglish',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.positionEnglish,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.positionEnglish = value ?? ''),
               ),
-              initialValue: _formData.positionEnglish,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.positionEnglish = value ?? ''),
+            ),
+          ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'positionBangla',
+                decoration: const InputDecoration(
+                  labelText: 'Position Bangla',
+                  hintText: 'positionBangla',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.positionBangla,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.positionBangla = value ?? ''),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'positionHeldSince',
+                decoration: const InputDecoration(
+                  labelText: 'Position Held Since',
+                  hintText: 'positionHeldSince',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.positionHeldSince,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.positionHeldSince = value ?? ''),
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'positionBangla',
-              decoration: const InputDecoration(
-                labelText: 'Position Bangla',
-                hintText: 'positionBangla',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.positionBangla,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.positionBangla = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'positionHeldSince',
-              decoration: const InputDecoration(
-                labelText: 'Position Held Since',
-                hintText: 'positionHeldSince',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              initialValue: _formData.positionHeldSince,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.positionHeldSince = value ?? ''),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
+            child: FormBuilderDropdown(
               name: 'gender',
               decoration: const InputDecoration(
                 labelText: 'Gender',
@@ -658,8 +671,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
               ),
+              hint: const Text('Select'),
               initialValue: _formData.gender,
               validator: FormBuilderValidators.required(),
+              items: ['Male', 'Female'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
               onSaved: (value) => (_formData.gender = value ?? ''),
             ),
           ),
@@ -793,6 +808,47 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderDropdown(
+              name: 'facultyName',
+              decoration: const InputDecoration(
+                labelText: 'Faculty Name',
+                hintText: 'Faculty Name',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              hint: const Text('Select'),
+              initialValue: _formData.facultyName,
+              validator: FormBuilderValidators.required(),
+              items: [
+                'Faculty of Agriculture',
+                'Faculty of Computer Science and Engineering',
+                'Faculty of Business Administration',
+                'Faculty of Animal Science and Veterinary Medicine',
+                'Faculty of Fisheries',
+                'Faculty of Environmental Science and Disaster Management',
+                'Faculty of Nutrition and Food Science',
+                'Faculty of Law and Land Administration'
+              ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+              onSaved: (value) => (_formData.facultyName = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+            child: FormBuilderTextField(
+              name: 'departmentName',
+              decoration: const InputDecoration(
+                labelText: 'Department Name',
+                hintText: 'Department Name',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              initialValue: _formData.departmentName,
+              // validator: FormBuilderValidators.required(),
+              onSaved: (value) => (_formData.departmentName = value ?? ''),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
               name: 'instituteName',
               decoration: const InputDecoration(
@@ -867,138 +923,155 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
           ),
 
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-            child: Stack(
-              children: [
-                FutureBuilder<String>(
-                  future: _formData.signatureLocation.isNotEmpty
-                      ? ApiService.fetchPicFile('signature/download', _formData.signatureLocation)
-                      : Future.value(""), // Check if value is not empty before making the API call
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Image.memory(
-                        base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                        fit: BoxFit.cover, // Adjust image to cover the entire space
-                        // width: 120, // Adjust width as needed
-                        height: 50, // Adjust height as needed
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          FormBuilderFilePicker(
-            name: 'signatureLocation',
-            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-            allowMultiple: false,
-            maxFiles: 1,
-            type: FileType.any,
-            previewImages: true,
-            decoration: const InputDecoration(
-              labelText: 'Select Signature File',
-              hintText: 'signatureLocation',
-              border: OutlineInputBorder(),
-            ),
-            selector: const Row(
-              children: [
-                Icon(Icons.file_upload_rounded),
-                Text('Upload'),
-              ],
-            ),
-            // typeSelectors: [
-            //   TypeSelector(
-            //     type: FileType.custom,
-            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
-            //     selector: Row(
-            //       children: [
-            //         Icon(Icons.file_upload),
-            //         Text('Upload'),
-            //       ],
-            //     ),
-            //   ),
-            // ],
-            onChanged: _onSignatureFileSelected,
-          ),
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-            child: Stack(
-              children: [
-                FutureBuilder<String>(
-                  future:
-                      _formData.sealLocation.isNotEmpty ? ApiService.fetchPicFile('seal/download', _formData.sealLocation) : Future.value(""), // Check if value is not empty before making the API call
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Image.memory(
-                        base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                        fit: BoxFit.cover, // Adjust image to cover the entire space
-                        // width: 120, // Adjust width as needed
-                        height: 50, // Adjust height as needed
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          FormBuilderFilePicker(
-            name: 'sealLocation',
-            // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
-            allowMultiple: false,
-            maxFiles: 1,
-            type: FileType.any,
-            previewImages: true,
-            decoration: const InputDecoration(
-              labelText: 'Select Seal File',
-              hintText: 'sealLocation',
-              border: OutlineInputBorder(),
-            ),
-            selector: const Row(
-              children: [
-                Icon(Icons.file_upload_rounded),
-                Text('Upload'),
-              ],
-            ),
-            // typeSelectors: [
-            //   TypeSelector(
-            //     type: FileType.custom,
-            //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
-            //     selector: Row(
-            //       children: [
-            //         Icon(Icons.file_upload),
-            //         Text('Upload'),
-            //       ],
-            //     ),
-            //   ),
-            // ],
-            onChanged: _onSealFileSelected,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'salaryScale',
-              decoration: const InputDecoration(
-                labelText: 'Salary Scale',
-                hintText: 'salaryScale',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+              child: Stack(
+                children: [
+                  FutureBuilder<String>(
+                    future: _formData.signatureLocation.isNotEmpty
+                        ? ApiService.fetchPicFile('signature/download', _formData.signatureLocation)
+                        : Future.value(""), // Check if value is not empty before making the API call
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Image.memory(
+                          base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                          fit: BoxFit.cover, // Adjust image to cover the entire space
+                          // width: 120, // Adjust width as needed
+                          height: 50, // Adjust height as needed
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
-              initialValue: _formData.salaryScale.toString(),
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.salaryScale = int.parse(value ?? '0')),
             ),
           ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: FormBuilderFilePicker(
+              name: 'signatureLocation',
+              // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+              allowMultiple: false,
+              maxFiles: 1,
+              type: FileType.any,
+              previewImages: true,
+              decoration: const InputDecoration(
+                labelText: 'Select Signature File',
+                hintText: 'signatureLocation',
+                border: OutlineInputBorder(),
+              ),
+              selector: const Row(
+                children: [
+                  Icon(Icons.file_upload_rounded),
+                  Text('Upload'),
+                ],
+              ),
+              // typeSelectors: [
+              //   TypeSelector(
+              //     type: FileType.custom,
+              //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+              //     selector: Row(
+              //       children: [
+              //         Icon(Icons.file_upload),
+              //         Text('Upload'),
+              //       ],
+              //     ),
+              //   ),
+              // ],
+              onChanged: _onSignatureFileSelected,
+            ),
+          ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+              child: Stack(
+                children: [
+                  FutureBuilder<String>(
+                    future: _formData.sealLocation.isNotEmpty
+                        ? ApiService.fetchPicFile('seal/download', _formData.sealLocation)
+                        : Future.value(""), // Check if value is not empty before making the API call
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Image.memory(
+                          base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                          fit: BoxFit.cover, // Adjust image to cover the entire space
+                          // width: 120, // Adjust width as needed
+                          height: 50, // Adjust height as needed
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: FormBuilderFilePicker(
+              name: 'sealLocation',
+              // allowedExtensions: const ['jpg', 'png', 'pdf', 'jpeg'],
+              allowMultiple: false,
+              maxFiles: 1,
+              type: FileType.any,
+              previewImages: true,
+              decoration: const InputDecoration(
+                labelText: 'Select Seal File',
+                hintText: 'sealLocation',
+                border: OutlineInputBorder(),
+              ),
+              selector: const Row(
+                children: [
+                  Icon(Icons.file_upload_rounded),
+                  Text('Upload'),
+                ],
+              ),
+              // typeSelectors: [
+              //   TypeSelector(
+              //     type: FileType.custom,
+              //     allowedExtensions: ['jpg', 'png', 'pdf', 'jpeg'],
+              //     selector: Row(
+              //       children: [
+              //         Icon(Icons.file_upload),
+              //         Text('Upload'),
+              //       ],
+              //     ),
+              //   ),
+              // ],
+              onChanged: _onSealFileSelected,
+            ),
+          ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'salaryScale',
+                decoration: const InputDecoration(
+                  labelText: 'Salary Scale',
+                  hintText: 'salaryScale',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.salaryScale.toString(),
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.salaryScale = int.parse(value ?? '0')),
+              ),
+            ),
+          ),
+
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
             child: FormBuilderTextField(
@@ -1059,49 +1132,58 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.highestAcademicQualificationYear = int.parse(value ?? '0')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'areaOfExpertise',
-              decoration: const InputDecoration(
-                labelText: 'Area Of Expertise',
-                hintText: 'areaOfExpertise',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'areaOfExpertise',
+                decoration: const InputDecoration(
+                  labelText: 'Area Of Expertise',
+                  hintText: 'areaOfExpertise',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.areaOfExpertise,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.areaOfExpertise = value ?? ''),
               ),
-              initialValue: _formData.areaOfExpertise,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.areaOfExpertise = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'experienceInResearch',
-              decoration: const InputDecoration(
-                labelText: 'Experience In Research',
-                hintText: '(Years)',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'experienceInResearch',
+                decoration: const InputDecoration(
+                  labelText: 'Experience In Research',
+                  hintText: '(Years)',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.experienceInResearch.toString(),
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.experienceInResearch = int.parse(value ?? '0')),
               ),
-              initialValue: _formData.experienceInResearch.toString(),
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.experienceInResearch = int.parse(value ?? '0')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'teaching',
-              decoration: const InputDecoration(
-                labelText: 'Teaching Experience',
-                hintText: '(Years)',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'teaching',
+                decoration: const InputDecoration(
+                  labelText: 'Teaching Experience',
+                  hintText: '(Years)',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.teaching.toString(),
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.teaching = int.parse(value ?? '0')),
               ),
-              initialValue: _formData.teaching.toString(),
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.teaching = int.parse(value ?? '0')),
             ),
           ),
 
@@ -1272,6 +1354,8 @@ class FormData {
   String email = '';
   String nid = '';
   String nidLocation = '';
+  String facultyName = '';
+  String departmentName = '';
   String instituteName = '';
   String instituteLocation = '';
   String instituteEmail = '';
