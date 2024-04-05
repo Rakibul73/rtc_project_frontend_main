@@ -60,7 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       // Handle error if needed
     }
   }
-  
+
   void markAllAsRead() async {
     try {
       await ApiService.markAllAsRead();
@@ -149,24 +149,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    SizedBox(
-                                      height: 40.0,
-                                      child: ElevatedButton(
-                                        style: themeData.extension<AppButtonTheme>()!.infoOutlined,
-                                        onPressed: () => GoRouter.of(context).go(RouteUri.viewallnotifications),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                              child: Icon(
-                                                Icons.notification_important_outlined,
-                                                size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                    Visibility(
+                                      visible: roleID == 1,
+                                      child: SizedBox(
+                                        height: 40.0,
+                                        child: ElevatedButton(
+                                          style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                                          onPressed: () => GoRouter.of(context).go(RouteUri.viewallnotifications),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                child: Icon(
+                                                  Icons.notification_important_outlined,
+                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                ),
                                               ),
-                                            ),
-                                            const Text("View All Notifications Table"),
-                                          ],
+                                              const Text("View All Notifications Table"),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

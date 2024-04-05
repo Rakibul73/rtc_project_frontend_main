@@ -1,19 +1,15 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
-import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
 class ViewIndividualNotificationScreen extends StatefulWidget {
@@ -120,8 +116,6 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
 
   Widget _content(BuildContext context) {
     final themeData = Theme.of(context);
-    final appColorScheme = themeData.extension<AppColorScheme>()!;
-    final appButtonTheme = themeData.extension<AppButtonTheme>()!;
     final pageTitle = 'Notification - ID: ${widget.notificationID.isEmpty ? 'No Notification' : widget.notificationID}';
 
     return FormBuilder(

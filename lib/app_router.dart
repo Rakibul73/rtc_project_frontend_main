@@ -14,7 +14,7 @@ import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/NotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/NotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/PendingUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
