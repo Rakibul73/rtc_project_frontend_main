@@ -191,11 +191,19 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         }
         _formData.piName = piUserDetails['user']['FirstName'] + ' ' + piUserDetails['user']['LastName'];
         _formData.piPresentAddress = piUserDetails['user']['PresentAddress'] ?? '';
+        _formData.piPositionEnglish = piUserDetails['user']['PositionEnglish'] ?? '';
+        _formData.piDepartmentName = piUserDetails['user']['DepartmentName'] ?? '';
+        _formData.piFacultyName = piUserDetails['user']['FacultyName'] ?? '';
+        _formData.piInstituteLocation = piUserDetails['user']['InstituteLocation'] ?? '';
+        _formData.piInstituteName = piUserDetails['user']['InstituteName'] ?? '';
         _formData.piPermanentAddress = piUserDetails['user']['PermanentAddress'] ?? '';
         _formData.piEmail = piUserDetails['user']['Email'] ?? '';
         _formData.piPhone = piUserDetails['user']['Phone'] ?? '';
         _formData.piSalaryScale = piUserDetails['user']['SalaryScale'].toString();
         _formData.piHighestAcademicQualification = piUserDetails['user']['HighestAcademicQualification'] ?? '';
+        _formData.piHighestAcademicQualificationUniversity = piUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+        _formData.piHighestAcademicQualificationCountry = piUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
+        // _formData.piHighestAcademicQualificationYear = piUserDetails['user']['HighestAcademicQualificationYear'] ?? '';
         _formData.piAreaOfExpertise = piUserDetails['user']['AreaOfExpertise'] ?? '';
         _formData.piExperienceInResearch = piUserDetails['user']['ExperienceInResearch'].toString();
         _formData.piExperienceInTeaching = piUserDetails['user']['Teaching'].toString();
@@ -220,10 +228,18 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.coPiName = coPiUserDetails['user']['FirstName'] + ' ' + coPiUserDetails['user']['LastName'];
         _formData.coPiPresentAddress = coPiUserDetails['user']['PresentAddress'] ?? '';
         _formData.coPiPermanentAddress = coPiUserDetails['user']['PermanentAddress'] ?? '';
+        _formData.coPiPositionEnglish = coPiUserDetails['user']['PositionEnglish'] ?? '';
+        _formData.coPiDepartmentName = coPiUserDetails['user']['DepartmentName'] ?? '';
+        _formData.coPiFacultyName = coPiUserDetails['user']['FacultyName'] ?? '';
+        _formData.coPiInstituteLocation = coPiUserDetails['user']['InstituteLocation'] ?? '';
+        _formData.coPiInstituteName = coPiUserDetails['user']['InstituteName'] ?? '';
         _formData.coPiEmail = coPiUserDetails['user']['Email'] ?? '';
         _formData.coPiPhone = coPiUserDetails['user']['Phone'] ?? '';
         _formData.coPiSalaryScale = coPiUserDetails['user']['SalaryScale'].toString();
         _formData.coPiHighestAcademicQualification = coPiUserDetails['user']['HighestAcademicQualification'] ?? '';
+        _formData.coPiHighestAcademicQualificationUniversity = piUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+        _formData.coPiHighestAcademicQualificationCountry = piUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
+        // _formData.coPiHighestAcademicQualificationYear = piUserDetails['user']['HighestAcademicQualificationYear'] ?? '';
         _formData.coPiAreaOfExpertise = coPiUserDetails['user']['AreaOfExpertise'] ?? '';
         _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
         _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
@@ -273,7 +289,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       });
     }
 
-    generatePDF(_formData, context , initialProjectGantts);
+    generatePDF(_formData, context , initialProjectGantts , initialProjectBudget);
 
     return true;
   }
@@ -433,7 +449,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
               child: ElevatedButton(
                 style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
                 onPressed: () {
-                  generatePDF(_formData, context , initialProjectGantts);
+                  generatePDF(_formData, context , initialProjectGantts , initialProjectBudget);
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -3154,6 +3170,11 @@ class FormData {
   String coPiPermanentAddress = '';
   String coPiPhone = '';
   String coPiName = '';
+  String coPiPositionEnglish = '';
+  String coPiDepartmentName = '';
+  String coPiFacultyName = '';
+  String coPiInstituteLocation = '';
+  String coPiInstituteName = '';
   int coPiUserID = 0;
 
   String piReferencesOfLatestPublications = '';
@@ -3171,6 +3192,11 @@ class FormData {
   String piPermanentAddress = '';
   String piPhone = '';
   String piName = '';
+  String piPositionEnglish = '';
+  String piDepartmentName = '';
+  String piFacultyName = '';
+  String piInstituteLocation = '';
+  String piInstituteName = '';
   int piUserID = 0;
 
   String projectStatus = '';
