@@ -8,6 +8,7 @@ import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
+import 'package:rtc_project_fronend/views/screens/admin/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -272,6 +273,8 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       });
     }
 
+    generatePDF(_formData, context , initialProjectGantts);
+
     return true;
   }
 
@@ -424,6 +427,29 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
               pageTitle,
               style: themeData.textTheme.headlineMedium,
               textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 40.0,
+              child: ElevatedButton(
+                style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
+                onPressed: () {
+                  generatePDF(_formData, context , initialProjectGantts);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                      child: Icon(
+                        Icons.arrow_circle_left_outlined,
+                        size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                      ),
+                    ),
+                    const Text("pdf"),
+                  ],
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),

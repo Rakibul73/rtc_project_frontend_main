@@ -507,7 +507,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
 
     return FormBuilder(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.always,
+        autovalidateMode: AutovalidateMode.disabled,
         clearValueOnUnregister: false,
         autoFocusOnValidationFailure: true,
         child: ListView(
@@ -1001,8 +1001,8 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                   return 'This field is required.';
                                 } else {
                                   final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 300) {
-                                    _showWordCountExceededDialog(context, 300);
+                                  if (wordCount > 500) {
+                                    _showWordCountExceededDialog(context, 500);
                                     return 'Maximum word count exceeded. (300 words maximum)';
                                   }
                                 }
