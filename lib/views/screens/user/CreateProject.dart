@@ -1169,7 +1169,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 ),
                                 const SizedBox(width: kDefaultPadding),
                                 SizedBox(
-                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
+                                  width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderDateRangePicker(
                                     name: 'duration',
                                     firstDate: DateTime(1970),
@@ -1186,7 +1186,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 ),
                                 const SizedBox(width: kDefaultPadding),
                                 SizedBox(
-                                  width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
+                                  width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
                                   child: FormBuilderChoiceChip(
                                     name: 'activity_status',
                                     spacing: kDefaultPadding * 0.5,
@@ -1218,35 +1218,19 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: _saveGanttFormData,
-                              style: appButtonTheme.successElevated,
+                              style: appButtonTheme.infoOutlined,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
+                                    child: Icon(Icons.save_as),
                                   ),
-                                  Text('Save'),
+                                  Text('Press Here to Save Activity-Plan Data'),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                              child: ElevatedButton(
-                            onPressed: () {},
-                            style: appButtonTheme.infoText,
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(right: kTextPadding),
-                                  child: Icon(Icons.account_circle_rounded),
-                                ),
-                                Text('show values'),
-                              ],
-                            ),
-                          )),
                           const SizedBox(width: 20),
                           Expanded(
                             child: ElevatedButton(
@@ -1263,13 +1247,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   ));
                                 });
                               },
-                              style: appButtonTheme.infoElevated,
+                              style: appButtonTheme.infoText,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
+                                    child: Icon(Icons.add_chart_outlined),
                                   ),
                                   Text('Add field'),
                                 ],
@@ -1724,15 +1708,15 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Expanded(
                             child: ElevatedButton(
                               onPressed: _saveBudgetFormData,
-                              style: appButtonTheme.successElevated,
+                              style: appButtonTheme.infoOutlined,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
+                                    child: Icon(Icons.save_as),
                                   ),
-                                  Text('Save'),
+                                  Text('Press Here to Save Budget-Summary Data'),
                                 ],
                               ),
                             ),
@@ -1753,13 +1737,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   ));
                                 });
                               },
-                              style: appButtonTheme.infoElevated,
+                              style: appButtonTheme.infoText,
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(right: kTextPadding),
-                                    child: Icon(Icons.account_circle_rounded),
+                                    child: Icon(Icons.add_shopping_cart_outlined),
                                   ),
                                   Text('Add field'),
                                 ],
@@ -2702,7 +2686,7 @@ class _GanttNewTextFieldState extends State<GanttNewTextField> {
               ),
               const SizedBox(width: kDefaultPadding),
               SizedBox(
-                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
+                width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                 child: FormBuilderDateRangePicker(
                   name: 'duration_${widget.name}',
                   firstDate: DateTime(1970),
@@ -2718,7 +2702,7 @@ class _GanttNewTextFieldState extends State<GanttNewTextField> {
               ),
               const SizedBox(width: kDefaultPadding),
               SizedBox(
-                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
+                width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
                 child: FormBuilderChoiceChip(
                   name: 'activity_status_${widget.name}',
                   spacing: kDefaultPadding * 0.5,
@@ -2735,11 +2719,15 @@ class _GanttNewTextFieldState extends State<GanttNewTextField> {
                   onChanged: (value) => _activityStatus = value ?? '',
                 ),
               ),
-              if (widget.onDelete != null)
-                SizedBox(
-                  width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                  child: IconButton(icon: const Icon(Icons.delete_forever), onPressed: widget.onDelete),
-                )
+              if (widget.onDelete != null) const SizedBox(width: kDefaultPadding),
+              SizedBox(
+                width: ((constraints.maxWidth * 0.05) - (kDefaultPadding * 0.05)),
+                child: IconButton(
+                  icon: const Icon(Icons.delete_forever),
+                  onPressed: widget.onDelete,
+                  color: appColorScheme.error,
+                ),
+              ),
             ],
           );
         },
@@ -2829,6 +2817,9 @@ class _BudgetSummaryFieldsNewTextFieldState extends State<BudgetSummaryFieldsNew
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
+    
     return Padding(
       padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
       child: LayoutBuilder(
@@ -2922,12 +2913,13 @@ class _BudgetSummaryFieldsNewTextFieldState extends State<BudgetSummaryFieldsNew
               ),
               if (widget.onDelete != null)
                 SizedBox(
-                  width: ((constraints.maxWidth * 0.01) - (kDefaultPadding * 0.01)),
-                  child: IconButton(
-                    icon: const Icon(Icons.delete_forever),
-                    onPressed: widget.onDelete,
-                  ),
-                )
+                width: ((constraints.maxWidth * 0.05) - (kDefaultPadding * 0.05)),
+                child: IconButton(
+                  icon: const Icon(Icons.delete_forever),
+                  onPressed: widget.onDelete,
+                  color: appColorScheme.error,
+                ),
+              ),
             ],
           );
         },
