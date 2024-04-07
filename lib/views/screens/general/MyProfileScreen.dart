@@ -1255,64 +1255,76 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               onSaved: (value) => (_formData.ongoingProjects = int.parse(value ?? '0')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'studentID',
-              decoration: const InputDecoration(
-                labelText: 'Student ID',
-                hintText: 'studentID',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename == 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'studentID',
+                decoration: const InputDecoration(
+                  labelText: 'Student ID',
+                  hintText: 'studentID',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.studentID.toString(),
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.studentID = int.parse(value ?? '0')),
               ),
-              initialValue: _formData.studentID.toString(),
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.studentID = int.parse(value ?? '0')),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'studentRegNo',
-              decoration: const InputDecoration(
-                labelText: 'Student Reg. No.',
-                hintText: 'studentRegNo',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename == 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'studentRegNo',
+                decoration: const InputDecoration(
+                  labelText: 'Student Reg. No.',
+                  hintText: 'studentRegNo',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.studentRegNo,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.studentRegNo = value ?? ''),
               ),
-              initialValue: _formData.studentRegNo,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.studentRegNo = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'firstEnrollmentSemester',
-              decoration: const InputDecoration(
-                labelText: 'First Enrollment Semester',
-                hintText: 'firstEnrollmentSemester',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename == 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'firstEnrollmentSemester',
+                decoration: const InputDecoration(
+                  labelText: 'First Enrollment Semester',
+                  hintText: 'firstEnrollmentSemester',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.firstEnrollmentSemester,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.firstEnrollmentSemester = value ?? ''),
               ),
-              initialValue: _formData.firstEnrollmentSemester,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.firstEnrollmentSemester = value ?? ''),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderTextField(
-              name: 'undergraduateCGPALevel',
-              decoration: const InputDecoration(
-                labelText: 'Undergraduate CGPA Level',
-                hintText: 'undergraduateCGPALevel',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
+          Visibility(
+            visible: _formData.rolename == 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'undergraduateCGPALevel',
+                decoration: const InputDecoration(
+                  labelText: 'Undergraduate CGPA Level',
+                  hintText: 'undergraduateCGPALevel',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.undergraduateCGPALevel,
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.undergraduateCGPALevel = value ?? ''),
               ),
-              initialValue: _formData.undergraduateCGPALevel,
-              // validator: FormBuilderValidators.required(),
-              onSaved: (value) => (_formData.undergraduateCGPALevel = value ?? ''),
             ),
           ),
           Padding(
