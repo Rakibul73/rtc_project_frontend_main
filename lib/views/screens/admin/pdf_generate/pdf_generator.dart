@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -29,7 +27,9 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   final appLogo = await rootBundle.load("images/app_logo_2.png");
   final appLogoImageBytes = appLogo.buffer.asUint8List();
 
-  const String baseUrl = 'http://localhost:5000';
+  // const String baseUrl = 'http://localhost:5000';
+  const String baseUrl = 'http://192.168.1.188:5000';
+
   final accessToken = await storage.read(key: 'jwt_token');
   var picFileMethodology = formData.methodologyFileLocation.isEmpty ? 'defaultprofilepic.png' : formData.methodologyFileLocation;
   final netImage = await networkImage('$baseUrl/methodology/download/$picFileMethodology', headers: {'Authorization': 'Bearer $accessToken'});
@@ -204,7 +204,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
               ),
               child: pw.Center(
                 child: pw.Text(
-                  DateFormat("MMMM d, yyyy").format(DateTime.parse(formData.dateOfReceived)),
+                  formData.dateOfReceived,
                   style: pw.TextStyle(fontSize: 12.0, font: ttfGeneral), // Adjust the font size as needed
                 ),
               ),
@@ -1263,6 +1263,42 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
       ],
     ),
   );
+  final zzzz11 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      children: [
+        pw.SizedBox(width: 130),
+        pw.Container(
+          width: 15,
+          height: 15,
+          color: PdfColors.green,
+        ),
+        pw.Text(
+          " = Completed Task",
+          style: pw.TextStyle(
+            font: ttfBold,
+            fontSize: 11,
+            lineSpacing: 1.5,
+          ),
+        ),
+        pw.SizedBox(width: 15),
+        pw.Container(
+          width: 15,
+          height: 15,
+          color: PdfColors.red,
+        ),
+        pw.Text(
+          " = Ongoing Task",
+          style: pw.TextStyle(
+            font: ttfBold,
+            fontSize: 11,
+            lineSpacing: 1.5,
+          ),
+        ),
+      ],
+    ),
+  );
 
   widgets.add(zzz);
   widgets.add(zzz2);
@@ -1277,6 +1313,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   widgets.add(zzz9);
   widgets.add(zzz10);
   widgets.add(zzz11);
+  widgets.add(zzzz11);
 
   List<Map<String, dynamic>> convertTasks(List<dynamic> initialProjectGanttsBudgets) {
     List<Map<String, dynamic>> convertedTasks = [];
@@ -1517,7 +1554,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
             ),
           ),
         ),
-        pw.Image(netImagePISignature, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
+        if (formData.piSignatureLocation.isNotEmpty) pw.Image(netImagePISignature, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
         // pw.SizedBox(
         //   width: (kDefaultPadding * 29),
         //   child: pw.Image(netImage, width: 240.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
@@ -1546,7 +1583,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
         pw.SizedBox(
           width: (kDefaultPadding * 12.0),
           child: pw.Text(
-            DateFormat("EEEE, MMMM d, yyyy").format(DateTime.parse(formData.piSignatureDate)),
+            formData.piSignatureDate,
             style: pw.TextStyle(
               font: ttfGeneral,
               fontSize: 11,
@@ -1554,7 +1591,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
             ),
           ),
         ),
-        pw.Image(netImagePISeal, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
+        if (formData.piSealLocation.isNotEmpty) pw.Image(netImagePISeal, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
         // pw.SizedBox(
         //   width: (kDefaultPadding * 29),
         //   child: pw.Image(netImage, width: 240.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
@@ -1615,7 +1652,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
             ),
           ),
         ),
-        pw.Image(netImagechairmanSignature, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
+        if (formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty) pw.Image(netImagechairmanSignature, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
       ],
     ),
   );
@@ -1640,7 +1677,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
         pw.SizedBox(
           width: (kDefaultPadding * 12.0),
           child: pw.Text(
-            DateFormat("EEEE, MMMM d, yyyy").format(DateTime.parse(formData.dateOfChairmanOfTheDepartment)),
+            formData.dateOfChairmanOfTheDepartment,
             style: pw.TextStyle(
               font: ttfGeneral,
               fontSize: 11,
@@ -1648,7 +1685,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
             ),
           ),
         ),
-        pw.Image(netImagechairmanSeal, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
+        if (formData.chairmanOfDepartmentSealFileLocation.isNotEmpty) pw.Image(netImagechairmanSeal, width: 200.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
         // pw.SizedBox(
         //   width: (kDefaultPadding * 29),
         //   child: pw.Image(netImage, width: 240.0, height: 40.0, alignment: pw.Alignment.center, fit: pw.BoxFit.contain),
@@ -2602,7 +2639,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
     ),
   );
   widgets.add(zzz46);
-  
+
   final zzz47 = pw.Padding(
     padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
     child: pw.Row(
@@ -2742,13 +2779,17 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   );
 
   // Save the PDF document to a file
+
+  // Save the PDF document to a file
   final bytes = await pdf.save();
   final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
   final url = html.Url.createObjectUrlFromBlob(blob);
-  // const fileName = 'my_custom_name.pdf'; // Provide your custom file name here
-  // final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
-  // html.document.body?.children.add(anchor);
-  // anchor.click();
-  // html.document.body?.children.remove(anchor);
-  html.window.open(url, '_blank');
+  final fileName = 'Project_Proposal_${formData.piName}_ProjectID_${formData.projectID}.pdf';
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+  print("PDF generated and saved successfully!");
+  // html.window.open(url, '_blank');
 }
