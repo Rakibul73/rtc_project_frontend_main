@@ -243,8 +243,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.signatureLocation = userDetails['user']['SignatureLocation'] ?? 'defaultsignature.png';
       print(" Signature Location: ${_formData.signatureLocation}");
       _formData.sealLocation = userDetails['user']['SealLocation'] ?? 'defaultseal.png';
-      _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
-      _formData.basicPay = userDetails['user']['BasicPay'] ?? 0;
+      _formData.salaryScale = userDetails['user']['SalaryScale'] ?? '';
+      _formData.basicPay = userDetails['user']['BasicPay'] ?? 0.0;
       _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
       _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
 
@@ -1067,9 +1067,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   border: OutlineInputBorder(),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
-                initialValue: _formData.salaryScale.toString(),
+                initialValue: _formData.salaryScale,
                 // validator: FormBuilderValidators.required(),
-                onSaved: (value) => (_formData.salaryScale = int.parse(value ?? '0')),
+                onSaved: (value) => (_formData.salaryScale = value ?? ''),
               ),
             ),
           ),
@@ -1087,7 +1087,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 initialValue: _formData.basicPay.toString(),
                 // validator: FormBuilderValidators.required(),
-                onSaved: (value) => (_formData.basicPay = int.parse(value ?? '0')),
+                onSaved: (value) => (_formData.basicPay = double.parse(value ?? '0.0')),
               ),
             ),
           ),
@@ -1384,8 +1384,8 @@ class FormData {
   String profilePicLocation = '';
   String signatureLocation = '';
   String sealLocation = '';
-  int salaryScale = 0;
-  int basicPay = 0;
+  String salaryScale = '';
+  double basicPay = 0.0;
   String highestAcademicQualification = '';
   String highestAcademicQualificationUniversity = '';
   String highestAcademicQualificationCountry = '';
