@@ -64,6 +64,9 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
 
         _formData.rtcCode = userDetails['project']['CodeByRTC'];
         _formData.dateOfReceived = userDetails['project']['DateRecieved'];
+        if (_formData.dateOfReceived != null && _formData.dateOfReceived.isNotEmpty) {
+          _formData.dateOfReceived = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfReceived));
+        }
         // Part I: Research Proposal Identification Data
         _formData.projectTitle = userDetails['project']['ProjectTitle'];
         _formData.natureOfTheResearchProposal = userDetails['project']['NatureOfResearchProposal'];
@@ -383,7 +386,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                                   showDivider: false,
                                                 ),
                                                 CardHeader(
-                                                  title: DateFormat("EEEE, MMMM d, yyyy 'at' h:mm a").format(DateTime.parse(_formData.dateOfReceived)),
+                                                  title: _formData.dateOfReceived,
                                                   backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                                   titleColor: const Color.fromARGB(255, 238, 216, 221),
                                                   showDivider: false,
@@ -660,7 +663,8 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.annualDurationOfResearchProject,
+                                              title:
+                                                  "${DateFormat('dd MMM yyyy').format(DateTime.parse(_formData.annualDurationOfResearchProject.split(" - ")[0].split(" ")[0]))}  To  ${DateFormat('dd MMM yyyy').format(DateTime.parse(_formData.annualDurationOfResearchProject.split(" - ")[1].split(" ")[0]))}",
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -684,7 +688,8 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                               showDivider: false,
                                             ),
                                             CardHeader(
-                                              title: _formData.longTermDurationOfResearchProject,
+                                              title:
+                                                  "${DateFormat('dd MMM yyyy').format(DateTime.parse(_formData.longTermDurationOfResearchProject.split(" - ")[0].split(" ")[0]))}  To  ${DateFormat('dd MMM yyyy').format(DateTime.parse(_formData.longTermDurationOfResearchProject.split(" - ")[1].split(" ")[0]))}",
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -1142,65 +1147,56 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                             children: [
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: ganttData['Activity'], // Use ganttData instead of _formData
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'work_activity',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Work/Activity',
-                                                    hintText: 'Work/Activity',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: ganttData['Activity'],
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  onChanged: (value) => (ganttData['Activity'] = value ?? ''), // Update ganttData
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
-                                                child: FormBuilderDateRangePicker(
-                                                    initialValue: DateTimeRange(
-                                                      start: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['StartDate']),
-                                                      end: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['EndDate']),
-                                                    ),
-                                                    name: 'duration',
-                                                    firstDate: DateTime(1970),
-                                                    lastDate: DateTime(2030),
-                                                    format: DateFormat('MMMM d, yyyy'),
-                                                    decoration: const InputDecoration(
-                                                      labelText: 'Duration',
-                                                      hintText: 'Duration',
-                                                      border: OutlineInputBorder(),
-                                                    ),
-                                                    onChanged: (value) {
-                                                      if (value != null) {
-                                                        setState(() {
-                                                          final DateFormat formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
-                                                          ganttData['StartDate'] = formatter.format(value.start);
-                                                          ganttData['EndDate'] = formatter.format(value.end);
-                                                        });
-                                                      }
-                                                    }),
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title:
+                                                            "${DateFormat("d MMM yyyy").format(DateFormat("E, d MMM yyyy HH:mm:ss 'GMT'").parseUTC(ganttData['StartDate']))}  To  ${DateFormat("d MMM yyyy").format(DateFormat("E, d MMM yyyy HH:mm:ss 'GMT'").parseUTC(ganttData['EndDate']))}",
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
-                                                child: FormBuilderChoiceChip(
-                                                  initialValue: ganttData['ActivityStatus'],
-                                                  name: 'activity_status',
-                                                  spacing: kDefaultPadding * 0.5,
-                                                  runSpacing: kDefaultPadding * 0.2,
-                                                  selectedColor: appColorScheme.warning,
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Activity Status',
-                                                    border: OutlineInputBorder(),
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: ganttData['ActivityStatus'],
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  options: const [
-                                                    FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
-                                                    FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
-                                                  ],
-                                                  onChanged: (value) => (ganttData['ActivityStatus'] = value ?? ''), // Update ganttData
                                                 ),
                                               ),
                                             ],
@@ -1591,91 +1587,91 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                             children: [
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['SerialNo'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'sl_no',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Sl. No.',
-                                                    hintText: 'Sl. No.',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['SerialNo'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['SerialNo'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['Item'],
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'item',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Item',
-                                                    hintText: 'Item',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['Item'],
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['Item'] = value ?? ''),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['Quantity'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'quantity',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Quantity',
-                                                    hintText: 'Quantity',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['Quantity'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['Quantity'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['UnitPrice'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'unit_price',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Unit Price',
-                                                    hintText: '(Taka)',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['UnitPrice'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['UnitPrice'] = value ?? 0.0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['TotalCost'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'total_cost_tk',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Total cost (Tk)',
-                                                    hintText: '(Taka)',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['TotalCost'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['TotalCost'] = value ?? 0.0),
                                                 ),
                                               ),
                                             ],

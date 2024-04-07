@@ -1050,91 +1050,91 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                             children: [
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['SerialNo'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'sl_no',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Sl. No.',
-                                                    hintText: 'Sl. No.',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['SerialNo'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['SerialNo'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['Item'],
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'item',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Item',
-                                                    hintText: 'Item',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['Item'],
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['Item'] = value ?? ''),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['Quantity'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'quantity',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Quantity',
-                                                    hintText: 'Quantity',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['Quantity'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['Quantity'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['UnitPrice'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'unit_price',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Unit Price',
-                                                    hintText: '(Taka)',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['UnitPrice'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['UnitPrice'] = value ?? 0.0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: FormBuilderTextField(
-                                                  initialValue: budgetData['TotalCost'].toString(),
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: null, // Allow unlimited lines
-                                                  name: 'total_cost_tk',
-                                                  decoration: const InputDecoration(
-                                                    labelText: 'Total cost (Tk)',
-                                                    hintText: '(Taka)',
-                                                    border: OutlineInputBorder(),
-                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                child: Card(
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      CardHeader(
+                                                        title: budgetData['TotalCost'].toString(),
+                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                                        showDivider: false,
+                                                      ),
+                                                    ],
                                                   ),
-                                                  validator: FormBuilderValidators.required(),
-                                                  onChanged: (value) => (budgetData['TotalCost'] = value ?? 0.0),
                                                 ),
                                               ),
                                             ],
