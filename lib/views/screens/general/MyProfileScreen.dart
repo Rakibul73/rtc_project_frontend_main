@@ -244,6 +244,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print(" Signature Location: ${_formData.signatureLocation}");
       _formData.sealLocation = userDetails['user']['SealLocation'] ?? 'defaultseal.png';
       _formData.salaryScale = userDetails['user']['SalaryScale'] ?? 0;
+      _formData.basicPay = userDetails['user']['BasicPay'] ?? 0;
       _formData.highestAcademicQualification = userDetails['user']['HighestAcademicQualification'] ?? '';
       _formData.highestAcademicQualificationUniversity = userDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
 
@@ -329,6 +330,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           'SignatureLocation': _formData.signatureLocation,
           'SealLocation': _formData.sealLocation,
           'SalaryScale': _formData.salaryScale,
+          'BasicPay': _formData.basicPay,
           'HighestAcademicQualification': _formData.highestAcademicQualification,
           'HighestAcademicQualificationUniversity': _formData.highestAcademicQualificationUniversity,
           'HighestAcademicQualificationCountry': _formData.highestAcademicQualificationCountry,
@@ -1071,6 +1073,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
           ),
+          Visibility(
+            visible: _formData.rolename != 'Student',
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+              child: FormBuilderTextField(
+                name: 'basicpay',
+                decoration: const InputDecoration(
+                  labelText: 'Basic Pay',
+                  hintText: 'Basic Pay',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                initialValue: _formData.basicPay.toString(),
+                // validator: FormBuilderValidators.required(),
+                onSaved: (value) => (_formData.basicPay = int.parse(value ?? '0')),
+              ),
+            ),
+          ),
 
           Padding(
             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
@@ -1365,6 +1385,7 @@ class FormData {
   String signatureLocation = '';
   String sealLocation = '';
   int salaryScale = 0;
+  int basicPay = 0;
   String highestAcademicQualification = '';
   String highestAcademicQualificationUniversity = '';
   String highestAcademicQualificationCountry = '';

@@ -194,6 +194,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.piPositionEnglish = piUserDetails['user']['PositionEnglish'] ?? '';
         _formData.piDepartmentName = piUserDetails['user']['DepartmentName'] ?? '';
         _formData.piFacultyName = piUserDetails['user']['FacultyName'] ?? '';
+        _formData.piBasicPay = piUserDetails['user']['BasicPay'] ?? '';
         _formData.piInstituteLocation = piUserDetails['user']['InstituteLocation'] ?? '';
         _formData.piInstituteName = piUserDetails['user']['InstituteName'] ?? '';
         _formData.piPermanentAddress = piUserDetails['user']['PermanentAddress'] ?? '';
@@ -231,15 +232,16 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.coPiPositionEnglish = coPiUserDetails['user']['PositionEnglish'] ?? '';
         _formData.coPiDepartmentName = coPiUserDetails['user']['DepartmentName'] ?? '';
         _formData.coPiFacultyName = coPiUserDetails['user']['FacultyName'] ?? '';
+        _formData.coPiBasicPay = coPiUserDetails['user']['BasicPay'] ?? '';
         _formData.coPiInstituteLocation = coPiUserDetails['user']['InstituteLocation'] ?? '';
         _formData.coPiInstituteName = coPiUserDetails['user']['InstituteName'] ?? '';
         _formData.coPiEmail = coPiUserDetails['user']['Email'] ?? '';
         _formData.coPiPhone = coPiUserDetails['user']['Phone'] ?? '';
         _formData.coPiSalaryScale = coPiUserDetails['user']['SalaryScale'].toString();
         _formData.coPiHighestAcademicQualification = coPiUserDetails['user']['HighestAcademicQualification'] ?? '';
-        _formData.coPiHighestAcademicQualificationUniversity = piUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
-        _formData.coPiHighestAcademicQualificationCountry = piUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
-        // _formData.coPiHighestAcademicQualificationYear = piUserDetails['user']['HighestAcademicQualificationYear'] ?? '';
+        _formData.coPiHighestAcademicQualificationUniversity = coPiUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+        _formData.coPiHighestAcademicQualificationCountry = coPiUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
+        // _formData.coPiHighestAcademicQualificationYear = coPiUserDetails['user']['HighestAcademicQualificationYear'] ?? '';
         _formData.coPiAreaOfExpertise = coPiUserDetails['user']['AreaOfExpertise'] ?? '';
         _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
         _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
