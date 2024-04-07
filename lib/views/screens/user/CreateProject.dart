@@ -31,6 +31,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
   Map<String, dynamic> ganttFormData = {};
   Map<String, dynamic> budgetFormData = {};
+  late Future<List<User>> _usersFuture;
+  late Future<List<User>> _studentUsersFuture;
 
   void _saveGanttFormData() {
     _formKey.currentState!.save();
@@ -352,15 +354,16 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         dialog.show();
       }
     } else {
-      final dialog = AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        title: "Input fields are not valid or empty.",
-        width: kDialogWidth,
-        btnOkText: 'OK',
-        btnOkOnPress: () {},
-      );
-      dialog.show();
+      //   final dialog = AwesomeDialog(
+      //     context: context,
+      //     dialogType: DialogType.error,
+      //     title: "Input fields are not valid or empty.",
+      //     width: kDialogWidth,
+      //     btnOkText: 'OK',
+      //     btnOkOnPress: () {},
+      //   );
+      //   dialog.show();
+      print("Input fields are not valid or empty.");
     }
   }
 
@@ -436,6 +439,13 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   // }
 
   @override
+  void initState() {
+    super.initState();
+    _usersFuture = ApiService.getAllUsersExceptStudents();
+    _studentUsersFuture = ApiService.getOnlyStudentUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // final lang = Lang.of(context);
     final themeData = Theme.of(context);
@@ -476,51 +486,47 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           const SizedBox(height: 25),
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  width: (kDefaultPadding * 22),
+                                  child: FormBuilderTextField(
+                                    name: 'RTC_Code',
+                                    decoration: const InputDecoration(
+                                      labelText: 'Code number of the project to be assigned by RTC',
+                                      hintText: 'RTC Code',
+                                      border: OutlineInputBorder(),
+                                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    ),
+                                    validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    onChanged: (value) => (_formData.rtcCode = value ?? ''),
+                                  ),
+                                ),
+                                const SizedBox(width: kDefaultPadding),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: SizedBox(
                                       width: (kDefaultPadding * 22),
-                                      child: FormBuilderTextField(
-                                        name: 'RTC_Code',
+                                      child: FormBuilderDateTimePicker(
+                                        name: 'date_of_received',
+                                        inputType: InputType.date,
                                         decoration: const InputDecoration(
-                                          labelText: 'Code number of the project to be assigned by RTC',
-                                          hintText: 'RTC Code',
+                                          labelText: 'Date of Received',
                                           border: OutlineInputBorder(),
-                                          floatingLabelBehavior: FloatingLabelBehavior.always,
                                         ),
+                                        textAlign: TextAlign.center,
+                                        format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                                         validator: FormBuilderValidators.required(),
                                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                                        onChanged: (value) => (_formData.rtcCode = value ?? ''),
+                                        onChanged: (value) => (_formData.dateOfReceived = value.toString()),
                                       ),
                                     ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: SizedBox(
-                                          width: (kDefaultPadding * 22),
-                                          child: FormBuilderDateTimePicker(
-                                            name: 'date_of_received',
-                                            inputType: InputType.date,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Date of Received',
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            textAlign: TextAlign.center,
-                                            format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-                                            validator: FormBuilderValidators.required(),
-                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                            onChanged: (value) => (_formData.dateOfReceived = value.toString()),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -1782,33 +1788,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   const SizedBox(height: kDefaultPadding),
                                   SizedBox(
                                     width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                      child: Stack(
-                                        children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSignatureLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                                                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
-                                                  height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    child: _buildPIImageWidget(context),
                                   ),
                                 ]),
                                 const SizedBox(width: kDefaultPadding),
@@ -1844,33 +1824,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   const SizedBox(height: kDefaultPadding),
                                   SizedBox(
                                     width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                      child: Stack(
-                                        children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSealLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                                                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
-                                                  height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    child: _buildPISealWidget(context),
                                   ),
                                 ])
                               ],
@@ -2102,7 +2056,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                                       child: FutureBuilder<List<User>>(
-                                        future: ApiService.getAllUsersExceptStudents(),
+                                        future: _usersFuture,
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState == ConnectionState.waiting) {
                                             return const CircularProgressIndicator(); // Show loading indicator while fetching data
@@ -2149,61 +2103,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       const SizedBox(width: kDefaultPadding),
                       SizedBox(
                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CardHeader(
-                                  title: "PART III: B. Co-Principal Investigator (CO-PI)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
-                              CardBody(
-                                // here add dropdown list of co-pi
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                                      child: FutureBuilder<List<User>>(
-                                        future: ApiService.getAllUsersExceptStudents(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                          } else if (snapshot.hasError) {
-                                            return Text('Error: ${snapshot.error}');
-                                          } else {
-                                            return FormBuilderDropdown<User>(
-                                              name: 'co_pi_name',
-                                              decoration: const InputDecoration(
-                                                labelText: 'CO-PI Name',
-                                                hintText: 'Select CO-PI Name',
-                                                border: OutlineInputBorder(),
-                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                              ),
-                                              validator: FormBuilderValidators.required(),
-                                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                                              items: snapshot.data!
-                                                  .map((user) => DropdownMenuItem<User>(
-                                                        value: user,
-                                                        child: Text(user.getDisplayName()),
-                                                      ))
-                                                  .toList(),
-                                              onChanged: (User? user) {
-                                                if (user != null) {
-                                                  setState(() {
-                                                    _formData.coPiUserID = user.userId;
-                                                  });
-                                                }
-                                              },
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: CoPi(
+                          formData: _formData,
+                          usersFuture: _usersFuture,
                         ),
                       ),
                     ],
@@ -2213,62 +2115,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding),
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CardHeader(
-                        title: "PART III: C. Student's Information (For Code: 4829): (MS/PhD)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
-                    CardBody(
-                      // here add dropdown list of co-pi
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 25),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                            child: FutureBuilder<List<User>>(
-                              future: ApiService.getOnlyStudentUser(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  return FormBuilderDropdown<User>(
-                                    name: 'student_name',
-                                    decoration: const InputDecoration(
-                                      labelText: 'Student Name',
-                                      hintText: 'Select Student Name',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                    items: snapshot.data!
-                                        .map((user) => DropdownMenuItem<User>(
-                                              value: user,
-                                              child: Text(user.getDisplayName()),
-                                            ))
-                                        .toList(),
-                                    onChanged: (User? user) {
-                                      if (user != null) {
-                                        setState(() {
-                                          _formData.studentUserID = user.userId;
-                                        });
-                                      }
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              child: Student(
+                formData: _formData,
+                studentUsersFuture: _studentUsersFuture,
               ),
             ),
             Padding(
@@ -2632,6 +2481,66 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   //     ],
   //   );
   // }
+
+  Widget _buildPIImageWidget(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+      child: Stack(
+        children: [
+          FutureBuilder<String>(
+            future: _formData.piSignatureLocation.isNotEmpty
+                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
+                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Image.memory(
+                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                  // width: 120, // Adjust width as needed
+                  height: 50, // Adjust height as needed
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPISealWidget(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+      child: Stack(
+        children: [
+          FutureBuilder<String>(
+            future: _formData.piSealLocation.isNotEmpty
+                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
+                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Image.memory(
+                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                  // width: 120, // Adjust width as needed
+                  height: 50, // Adjust height as needed
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class GanttNewTextField extends StatefulWidget {
@@ -3019,4 +2928,147 @@ class FormData {
   String projectTitle = '';
   String dateOfReceived = '';
   String rtcCode = '';
+}
+
+class CoPi extends StatefulWidget {
+  final Future<List<User>> usersFuture;
+  final FormData formData;
+
+  const CoPi({required this.formData, required this.usersFuture, Key? key}) : super(key: key);
+
+  @override
+  _CoPiState createState() => _CoPiState();
+}
+
+class _CoPiState extends State<CoPi> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CardHeader(title: "PART III: B. Co-Principal Investigator (CO-PI)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
+          CardBody(
+            // here add dropdown list of co-pi
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                  child: FutureBuilder<List<User>>(
+                    future: widget.usersFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return FormBuilderDropdown<User>(
+                          name: 'co_pi_name',
+                          decoration: const InputDecoration(
+                            labelText: 'CO-PI Name',
+                            hintText: 'Select CO-PI Name',
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          items: snapshot.data!
+                              .map((user) => DropdownMenuItem<User>(
+                                    value: user,
+                                    child: Text(user.getDisplayName()),
+                                  ))
+                              .toList(),
+                          onChanged: (User? user) {
+                            if (user != null) {
+                              setState(() {
+                                widget.formData.coPiUserID = user.userId;
+                              });
+                            }
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Student extends StatefulWidget {
+  final Future<List<User>> studentUsersFuture;
+  final FormData formData;
+
+  const Student({required this.formData, required this.studentUsersFuture, Key? key}) : super(key: key);
+
+  @override
+  _StudentState createState() => _StudentState();
+}
+
+class _StudentState extends State<Student> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CardHeader(title: "PART III: C. Student's Information (For Code: 4829): (MS/PhD)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
+          CardBody(
+            // here add dropdown list of co-pi
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 25),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                  child: FutureBuilder<List<User>>(
+                    future: widget.studentUsersFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return FormBuilderDropdown<User>(
+                          name: 'student_name',
+                          decoration: const InputDecoration(
+                            labelText: 'Student Name',
+                            hintText: 'Select Student Name',
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          items: snapshot.data!
+                              .map((user) => DropdownMenuItem<User>(
+                                    value: user,
+                                    child: Text(user.getDisplayName()),
+                                  ))
+                              .toList(),
+                          onChanged: (User? user) {
+                            if (user != null) {
+                              setState(() {
+                                widget.formData.studentUserID = user.userId;
+                              });
+                            }
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
