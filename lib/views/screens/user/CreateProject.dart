@@ -247,11 +247,11 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     AppFocusHelper.instance.requestUnfocus();
 
     print('do save start');
-    print(_formKey.currentState?.validate());
-    print(_formKey.currentState?.value);
+    print(_formKey.currentState?.saveAndValidate());
+    // print(_formKey.currentState?.value.toString());
     print('do save start');
 
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState?.saveAndValidate() == true) {
       _formKey.currentState!.save();
 
       // Call _uploadSealFiles() to upload the selected files
@@ -447,7 +447,9 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         key: _formKey,
         autovalidateMode: AutovalidateMode.disabled,
         clearValueOnUnregister: false,
-        autoFocusOnValidationFailure: true,
+        onChanged: () {
+          _formKey.currentState!.save();
+        },
         child: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
@@ -490,6 +492,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                           floatingLabelBehavior: FloatingLabelBehavior.always,
                                         ),
                                         validator: FormBuilderValidators.required(),
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
                                         onChanged: (value) => (_formData.rtcCode = value ?? ''),
                                       ),
                                     ),
@@ -509,6 +512,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             textAlign: TextAlign.center,
                                             format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                                             validator: FormBuilderValidators.required(),
+                                            autovalidateMode: AutovalidateMode.onUserInteraction,
                                             onChanged: (value) => (_formData.dateOfReceived = value.toString()),
                                           ),
                                         ),
@@ -549,6 +553,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 border: OutlineInputBorder(),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: FormBuilderValidators.required(),
                               onChanged: (value) => (_formData.projectTitle = value ?? ''),
                             ),
@@ -575,6 +580,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                           ),
                                           focusColor: Colors.transparent,
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           items: [
                                             'Faculty of Agriculture',
                                             'Faculty of Computer Science and Engineering',
@@ -600,6 +606,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             floatingLabelBehavior: FloatingLabelBehavior.always,
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.addressOfCollaboratingDepartmentDepartment = value ?? ''),
                                         ),
                                       ),
@@ -617,6 +624,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                           ),
                                           focusColor: Colors.transparent,
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           items: [
                                             'Patuakhali Science & Technology University (PSTU)',
                                             'Faculty of Agriculture',
@@ -643,6 +651,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             floatingLabelBehavior: FloatingLabelBehavior.always,
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.addressOfCollaboratingDepartmentInstitute = value ?? ''),
                                         ),
                                       ),
@@ -666,6 +675,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                           FormBuilderFieldOption(value: 'Interdisciplinary', child: Text('Interdisciplinary')),
                                         ],
                                         validator: FormBuilderValidators.required(),
+                                        autovalidateMode: AutovalidateMode.onUserInteraction,
                                         onChanged: (value) => (_formData.natureOfTheResearchProposal = value.toString()),
                                       ),
                                     ),
@@ -685,6 +695,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.locationOfFieldActivities = value ?? ''),
                             ),
                           ),
@@ -710,6 +721,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             border: OutlineInputBorder(),
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.annualDurationOfResearchProject = value.toString()),
                                         ),
                                       ),
@@ -727,6 +739,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             border: OutlineInputBorder(),
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.longTermDurationOfResearchProject = value.toString()),
                                         ),
                                       ),
@@ -743,6 +756,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             floatingLabelBehavior: FloatingLabelBehavior.always,
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.totalBudgetOfResearchProposal = value ?? ''),
                                         ),
                                       ),
@@ -775,6 +789,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             setState(() {}); // Trigger rebuild when choice changes
                                           },
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           // onSaved: (value) => (_formData.hasThisProposalBeenSubmittedToAnyOtherAgency = value ?? ''),
                                         ),
                                       ),
@@ -838,6 +853,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             setState(() {}); // Trigger rebuild when choice changes
                                           },
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           // onSaved: (value) => (_formData.isThereAnyCommitmentToOtherResearchProjectAsPiTeamLeader = value ?? ''),
                                         ),
                                       ),
@@ -897,31 +913,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 border: OutlineInputBorder(),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
-                              // validator: FormBuilderValidators.maxWordsCount(300),
-                              // validator: FormBuilderValidators.,
-                              // validator: (value) {
-                              //   if (value == null || value.trim().isEmpty) {
-                              //     return 'This field is required.';
-                              //   } else {
-                              //     final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                              //     if (wordCount > 300) {
-                              //       return 'Maximum word count exceeded.';
-                              //     }
-                              //   }
-                              //   return null; // Return null if the input is valid
-                              // },
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'This field is required.';
-                                } else {
-                                  final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 300) {
-                                    _showWordCountExceededDialog(context, 300);
-                                    return 'Maximum word count exceeded. (300 words maximum)';
-                                  }
-                                }
-                                return null; // Return null if the input is valid
-                              },
+                              validator: FormBuilderValidators.maxWordsCount(350),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.introductionResearchProposal = value ?? ''),
                             ),
                           ),
@@ -938,6 +931,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.specificObjectivesProposal = value ?? ''),
                             ),
                           ),
@@ -954,6 +948,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.relevanceStrategicDevelopmentGoals = value ?? ''),
                             ),
                           ),
@@ -969,19 +964,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 border: OutlineInputBorder(),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
-                              // validator: FormBuilderValidators.required(),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'This field is required.';
-                                } else {
-                                  final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 1000) {
-                                    _showWordCountExceededDialog(context, 1000);
-                                    return 'Maximum word count exceeded. (500 words maximum)';
-                                  }
-                                }
-                                return null; // Return null if the input is valid
-                              },
+                              validator: FormBuilderValidators.maxWordsCount(550),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.briefReviewAlreadyPerformedReferences = value ?? ''),
                             ),
                           ),
@@ -1007,6 +991,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                             floatingLabelBehavior: FloatingLabelBehavior.always,
                                           ),
                                           validator: FormBuilderValidators.required(),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
                                           onChanged: (value) => (_formData.methodology = value ?? ''),
                                         ),
                                       ),
@@ -1066,6 +1051,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.expectedOutputs = value ?? ''),
                             ),
                           ),
@@ -1082,6 +1068,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.successIndicators = value ?? ''),
                             ),
                           ),
@@ -1098,6 +1085,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
                               validator: FormBuilderValidators.required(),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               onChanged: (value) => (_formData.beneficiaries = value ?? ''),
                             ),
                           ),
@@ -1354,6 +1342,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.manPowerExisting = value ?? ''),
                                   ),
                                 ),
@@ -1371,6 +1360,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.manPowerRequired = value ?? ''),
                                   ),
                                 ),
@@ -1404,6 +1394,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.smallEquipmentExisting = value ?? ''),
                                   ),
                                 ),
@@ -1421,6 +1412,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.smallEquipmentRequired = value ?? ''),
                                   ),
                                 ),
@@ -1454,6 +1446,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.researchMaterialsExisting = value ?? ''),
                                   ),
                                 ),
@@ -1471,6 +1464,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.researchMaterialsRequired = value ?? ''),
                                   ),
                                 ),
@@ -1504,6 +1498,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.othersExisting = value ?? ''),
                                   ),
                                 ),
@@ -1521,6 +1516,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.othersRequired = value ?? ''),
                                   ),
                                 ),
@@ -1626,6 +1622,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.slNo = value ?? ''),
                                   ),
                                 ),
@@ -1643,6 +1640,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.item = value ?? ''),
                                   ),
                                 ),
@@ -1660,6 +1658,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.quantity = value ?? ''),
                                   ),
                                 ),
@@ -1677,6 +1676,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.unitPrice = value ?? ''),
                                   ),
                                 ),
@@ -1694,6 +1694,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     onChanged: (value) => (_formData.totalCostTk = value ?? ''),
                                   ),
                                 ),
@@ -1829,6 +1830,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       textAlign: TextAlign.center,
                                       format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                                       validator: FormBuilderValidators.required(),
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
                                       onChanged: (value) => (_formData.piSignatureDate = value.toString()),
                                     ),
                                   ),
@@ -1990,6 +1992,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       textAlign: TextAlign.center,
                                       format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                                       validator: FormBuilderValidators.required(),
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
                                       onChanged: (value) => (_formData.dateOfChairmanOfTheDepartment = value.toString()),
                                     ),
                                   ),
@@ -2115,6 +2118,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                                               ),
                                               validator: FormBuilderValidators.required(),
+                                              autovalidateMode: AutovalidateMode.onUserInteraction,
                                               items: snapshot.data!
                                                   .map((user) => DropdownMenuItem<User>(
                                                         value: user,
@@ -2176,6 +2180,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                                               ),
                                               validator: FormBuilderValidators.required(),
+                                              autovalidateMode: AutovalidateMode.onUserInteraction,
                                               items: snapshot.data!
                                                   .map((user) => DropdownMenuItem<User>(
                                                         value: user,
@@ -2240,6 +2245,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
                                     validator: FormBuilderValidators.required(),
+                                    autovalidateMode: AutovalidateMode.onUserInteraction,
                                     items: snapshot.data!
                                         .map((user) => DropdownMenuItem<User>(
                                               value: user,
@@ -2819,7 +2825,7 @@ class _BudgetSummaryFieldsNewTextFieldState extends State<BudgetSummaryFieldsNew
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final appColorScheme = themeData.extension<AppColorScheme>()!;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
       child: LayoutBuilder(
@@ -2913,13 +2919,13 @@ class _BudgetSummaryFieldsNewTextFieldState extends State<BudgetSummaryFieldsNew
               ),
               if (widget.onDelete != null)
                 SizedBox(
-                width: ((constraints.maxWidth * 0.05) - (kDefaultPadding * 0.05)),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_forever),
-                  onPressed: widget.onDelete,
-                  color: appColorScheme.error,
+                  width: ((constraints.maxWidth * 0.05) - (kDefaultPadding * 0.05)),
+                  child: IconButton(
+                    icon: const Icon(Icons.delete_forever),
+                    onPressed: widget.onDelete,
+                    color: appColorScheme.error,
+                  ),
                 ),
-              ),
             ],
           );
         },
