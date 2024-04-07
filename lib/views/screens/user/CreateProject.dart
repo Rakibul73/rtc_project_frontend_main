@@ -445,7 +445,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
     return PortalMasterLayout(
       body: FormBuilder(
         key: _formKey,
-        autovalidateMode: AutovalidateMode.always,
+        autovalidateMode: AutovalidateMode.disabled,
         clearValueOnUnregister: false,
         autoFocusOnValidationFailure: true,
         child: ListView(
@@ -482,7 +482,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                     SizedBox(
                                       width: (kDefaultPadding * 22),
                                       child: FormBuilderTextField(
-                                        initialValue: '465465',
                                         name: 'RTC_Code',
                                         decoration: const InputDecoration(
                                           labelText: 'Code number of the project to be assigned by RTC',
@@ -507,8 +506,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                               labelText: 'Date of Received',
                                               border: OutlineInputBorder(),
                                             ),
-                                            initialTime: const TimeOfDay(hour: 8, minute: 0),
-                                            initialValue: DateTime.now(),
                                             textAlign: TextAlign.center,
                                             format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                                             validator: FormBuilderValidators.required(),
@@ -545,7 +542,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Project Title',
                               name: 'project_title',
                               decoration: const InputDecoration(
                                 labelText: 'Project Title',
@@ -569,7 +565,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDropdown(
-                                          initialValue: 'Faculty of Computer Science and Engineering',
                                           name: 'name_of_collaborating_department',
                                           decoration: const InputDecoration(
                                             labelText: 'Name of Collaborating Department',
@@ -597,7 +592,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: 'PSTU patuakhali',
                                           name: 'address_of_collaborating_department',
                                           decoration: const InputDecoration(
                                             labelText: 'Address of Collaborating Department',
@@ -613,7 +607,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDropdown(
-                                          initialValue: 'Faculty of Computer Science and Engineering',
                                           name: 'name_of_collaborating_institute',
                                           decoration: const InputDecoration(
                                             labelText: 'Name of Collaborating Institute',
@@ -642,7 +635,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: 'PSTU patuakhali',
                                           name: 'address_of_collaborating_institute',
                                           decoration: const InputDecoration(
                                             labelText: 'Address of Collaborating Institute',
@@ -659,7 +651,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                     SizedBox(
                                       width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                       child: FormBuilderRadioGroup<String>(
-                                        initialValue: 'Coordinated',
                                         name: 'checkbox_group_horizontal',
                                         wrapSpacing: kDefaultPadding,
                                         orientation: OptionsOrientation.vertical,
@@ -686,7 +677,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'PSTU patuakhali',
                               name: 'location_of_field_activities',
                               decoration: const InputDecoration(
                                 labelText: 'Location Of Field Activities',
@@ -710,7 +700,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDateRangePicker(
-                                          initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(const Duration(days: 7))),
                                           name: 'annual_duration_of_research_project',
                                           firstDate: DateTime(1970),
                                           lastDate: DateTime(2030),
@@ -728,7 +717,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDateRangePicker(
-                                          initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(const Duration(days: 7))),
                                           name: 'long_term_duration_of_research_project',
                                           firstDate: DateTime(1970),
                                           lastDate: DateTime(2030),
@@ -746,7 +734,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: '1000000',
                                           name: 'total_budget_of_research_proposal',
                                           decoration: const InputDecoration(
                                             prefixText: '৳ ',
@@ -766,7 +753,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderChoiceChip(
-                                          initialValue: 'Not Submitted',
                                           name: 'has_this_proposal_been_submitted_to_any_other_agency',
                                           spacing: kDefaultPadding * 0.5,
                                           runSpacing: kDefaultPadding * 0.5,
@@ -831,7 +817,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderChoiceChip(
-                                          initialValue: 'No',
                                           name: 'is_there_any_commitment_to_other_research_project_as_pi_team_leader',
                                           spacing: kDefaultPadding * 0.5,
                                           runSpacing: kDefaultPadding * 0.5,
@@ -901,7 +886,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Introduction, Identification of Problem & Justification of The Research Proposal',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               // maxLength: 300,
@@ -944,7 +928,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Specific Objectives of The Proposal',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'specific_objectives_of_the_proposal',
@@ -961,7 +944,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Relevance to The Strategic Plan of Pstu & National Development Goals',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'relevance_to_the_strategic_plan_of_pstu_national_development_goals',
@@ -978,7 +960,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Brief Review of Works Already Performed / in Progress Elsewhere With List of References',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'brief_review_of_works_already_performed_in_progress_elsewhere_with_list_of_references',
@@ -1016,7 +997,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: 'Methodology',
                                           keyboardType: TextInputType.multiline,
                                           maxLines: null, // Allow unlimited lines
                                           name: 'methodology',
@@ -1076,7 +1056,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Expected Outputs',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'expected_outputs',
@@ -1093,7 +1072,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Success Indicators',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'success_indicators',
@@ -1110,7 +1088,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                             child: FormBuilderTextField(
-                              initialValue: 'Beneficiaries',
                               keyboardType: TextInputType.multiline,
                               maxLines: null, // Allow unlimited lines
                               name: 'beneficiaries',
@@ -1177,7 +1154,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Work/Activity',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'work_activity',
@@ -1195,7 +1171,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
                                   child: FormBuilderDateRangePicker(
-                                    initialValue: DateTimeRange(start: DateTime.now(), end: DateTime.now().add(const Duration(days: 7))),
                                     name: 'duration',
                                     firstDate: DateTime(1970),
                                     lastDate: DateTime(2030),
@@ -1213,7 +1188,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
                                   child: FormBuilderChoiceChip(
-                                    initialValue: 'Ongoing',
                                     name: 'activity_status',
                                     spacing: kDefaultPadding * 0.5,
                                     runSpacing: kDefaultPadding * 0.2,
@@ -1386,7 +1360,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Existing',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'man_power_existing',
@@ -1404,7 +1377,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Required',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'man_power_required',
@@ -1438,7 +1410,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Existing',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'small_equipment_existing',
@@ -1456,7 +1427,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Required',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'small_equipment_required',
@@ -1490,7 +1460,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Existing',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'research_materials_existing',
@@ -1508,7 +1477,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Required',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'research_materials_required',
@@ -1542,7 +1510,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Existing',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'others_existing',
@@ -1560,13 +1527,12 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Required',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'others_required',
                                     decoration: const InputDecoration(
                                       labelText: 'Others Required',
-                                      hintText: 'Others Required',
+                                      hintText: 'if nothing required, type no',
                                       border: OutlineInputBorder(),
                                       floatingLabelBehavior: FloatingLabelBehavior.always,
                                     ),
@@ -1666,7 +1632,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
                                   child: FormBuilderTextField(
-                                    initialValue: '1',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'sl_no',
@@ -1684,7 +1649,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
                                   child: FormBuilderTextField(
-                                    initialValue: 'Item',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'item',
@@ -1702,7 +1666,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
                                   child: FormBuilderTextField(
-                                    initialValue: '1',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'quantity',
@@ -1720,7 +1683,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
                                   child: FormBuilderTextField(
-                                    initialValue: '50',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'unit_price',
@@ -1738,7 +1700,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                 SizedBox(
                                   width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
                                   child: FormBuilderTextField(
-                                    initialValue: '1000',
                                     keyboardType: TextInputType.multiline,
                                     maxLines: null, // Allow unlimited lines
                                     name: 'total_cost_tk',
@@ -1934,7 +1895,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
                         child: FormBuilderTextField(
-                          initialValue: 'Comments of the Chairman of the Department',
                           keyboardType: TextInputType.multiline,
                           maxLines: null, // Allow unlimited lines
                           name: 'comments_of_the_chairman_of_the_department',
@@ -1944,7 +1904,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                             border: OutlineInputBorder(),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
-                          validator: FormBuilderValidators.required(),
+                          // validator: FormBuilderValidators.required(),
                           onChanged: (value) => (_formData.commentsOfTheChairmanOfTheDepartment = value ?? ''),
                         ),
                       ),
