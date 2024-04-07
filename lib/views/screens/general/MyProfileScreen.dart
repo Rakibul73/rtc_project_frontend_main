@@ -731,7 +731,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
               initialValue: _formData.email,
               keyboardType: TextInputType.emailAddress,
-              validator: FormBuilderValidators.required(),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+                FormBuilderValidators.email(),
+              ]),
               onSaved: (value) => (_formData.email = value ?? ''),
             ),
           ),
