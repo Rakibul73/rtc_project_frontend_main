@@ -28,7 +28,7 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   final appLogoImageBytes = appLogo.buffer.asUint8List();
 
   final accessToken = await storage.read(key: 'jwt_token');
-  var picFileMethodology = formData.methodologyFileLocation.isEmpty ? 'defaultprofilepic.png' : formData.methodologyFileLocation;
+  var picFileMethodology = formData.methodologyFileLocation.isEmpty ? 'defaultmethodology.png' : formData.methodologyFileLocation;
   final netImage = await networkImage('$baseUrl/methodology/download/$picFileMethodology', headers: {'Authorization': 'Bearer $accessToken'});
   var picFilePISignature = formData.piSignatureLocation.isEmpty ? 'defaultsignature.png' : formData.piSignatureLocation;
   final netImagePISignature = await networkImage('$baseUrl/signature/download/$picFilePISignature', headers: {'Authorization': 'Bearer $accessToken'});
