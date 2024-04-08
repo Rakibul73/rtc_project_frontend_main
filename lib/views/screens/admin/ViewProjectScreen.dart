@@ -48,8 +48,9 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
     );
     Future.wait([
       d.show(),
+      Timer(const Duration(seconds: 5), () => d.dismiss()),
       generatePDF(_formData, context, initialProjectGantts, initialProjectBudget),
-    ]).then((_) {
+    ] as Iterable<Future>).then((_) {
       d.dismiss();
     });
   }

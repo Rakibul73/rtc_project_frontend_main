@@ -27,9 +27,6 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   final appLogo = await rootBundle.load("images/app_logo_2.png");
   final appLogoImageBytes = appLogo.buffer.asUint8List();
 
-  // const String baseUrl = 'http://localhost:5000';
-  const String baseUrl = 'http://192.168.1.188:5000';
-
   final accessToken = await storage.read(key: 'jwt_token');
   var picFileMethodology = formData.methodologyFileLocation.isEmpty ? 'defaultprofilepic.png' : formData.methodologyFileLocation;
   final netImage = await networkImage('$baseUrl/methodology/download/$picFileMethodology', headers: {'Authorization': 'Bearer $accessToken'});
@@ -941,171 +938,136 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
         ],
       ),
     ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              textAlign: pw.TextAlign.justify,
-              formData.introductionResearchProposal,
-              style: pw.TextStyle(
-                font: ttfGeneral,
-                fontSize: 11,
-                lineSpacing: 7,
-                wordSpacing: 1.5,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              "10. SPECIFIC OBJECTIVES OF THE PROPOSAL:",
-              style: pw.TextStyle(
-                font: ttfBold,
-                fontSize: 11,
-                lineSpacing: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              textAlign: pw.TextAlign.justify,
-              formData.specificObjectivesProposal,
-              style: pw.TextStyle(
-                font: ttfGeneral,
-                fontSize: 11,
-                lineSpacing: 7,
-                wordSpacing: 1.5,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              "11. RELEVANCE TO THE STRATEGIC PLAN OF PSTU AND NATIONAL DEVELOPMENT GOALS:",
-              style: pw.TextStyle(
-                font: ttfBold,
-                fontSize: 11,
-                lineSpacing: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              textAlign: pw.TextAlign.justify,
-              formData.relevanceStrategicDevelopmentGoals,
-              style: pw.TextStyle(
-                font: ttfGeneral,
-                fontSize: 11,
-                lineSpacing: 7,
-                wordSpacing: 1.5,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              "12. BRIEF REVIEW OF WORKS ALREADY PERFORMED OR IN PROGRESS ELSE WHERE WITH LIST OF REFERENCES: (Maximum 500 Words):",
-              style: pw.TextStyle(
-                font: ttfBold,
-                fontSize: 11,
-                lineSpacing: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              textAlign: pw.TextAlign.justify,
-              formData.briefReviewAlreadyPerformedReferences,
-              style: pw.TextStyle(
-                font: ttfGeneral,
-                fontSize: 11,
-                lineSpacing: 7,
-                wordSpacing: 1.5,
-                letterSpacing: 0.2,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-    pw.Padding(
-      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(
-            width: (kDefaultPadding * 29),
-            child: pw.Text(
-              "13. METHODOLOGY: (Please provide A - Z)",
-              style: pw.TextStyle(
-                font: ttfBold,
-                fontSize: 11,
-                lineSpacing: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
   ]);
+
+  final introductionResearchProposal = pw.Paragraph(
+    textAlign: pw.TextAlign.justify,
+    text: formData.introductionResearchProposal,
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    style: pw.TextStyle(
+      font: ttfGeneral,
+      fontFallback: [ttfSymbola],
+      fontSize: 11,
+      lineSpacing: 7,
+      wordSpacing: 1.5,
+      letterSpacing: 0.2,
+    ),
+  );
+  final specificObjectivesProposaltitle = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "10. SPECIFIC OBJECTIVES OF THE PROPOSAL:",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final specificObjectivesProposal = pw.Paragraph(
+    textAlign: pw.TextAlign.justify,
+    text: formData.specificObjectivesProposal,
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    style: pw.TextStyle(
+      font: ttfGeneral,
+      fontFallback: [ttfSymbola],
+      fontSize: 11,
+      lineSpacing: 7,
+      wordSpacing: 1.5,
+      letterSpacing: 0.2,
+    ),
+  );
+  final relevanceStrategicDevelopmentGoalstitle = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "11. RELEVANCE TO THE STRATEGIC PLAN OF PSTU AND NATIONAL DEVELOPMENT GOALS:",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final relevanceStrategicDevelopmentGoals = pw.Paragraph(
+    textAlign: pw.TextAlign.justify,
+    text: formData.relevanceStrategicDevelopmentGoals,
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    style: pw.TextStyle(
+      font: ttfGeneral,
+      fontFallback: [ttfSymbola],
+      fontSize: 11,
+      lineSpacing: 7,
+      wordSpacing: 1.5,
+      letterSpacing: 0.2,
+    ),
+  );
+  final briefReviewAlreadyPerformedReferencestitle = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "12. BRIEF REVIEW OF WORKS ALREADY PERFORMED OR IN PROGRESS ELSE WHERE WITH LIST OF REFERENCES: (Maximum 500 Words):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final briefReviewAlreadyPerformedReferences = pw.Paragraph(
+    textAlign: pw.TextAlign.justify,
+    text: formData.briefReviewAlreadyPerformedReferences,
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    style: pw.TextStyle(
+      font: ttfGeneral,
+      fontFallback: [ttfSymbola],
+      fontSize: 11,
+      lineSpacing: 7,
+      wordSpacing: 1.5,
+      letterSpacing: 0.2,
+    ),
+  );
+  final methodologytitle = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "13. METHODOLOGY: (Please provide A - Z)",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   final zzz2 = pw.Paragraph(
     textAlign: pw.TextAlign.justify,
@@ -1301,6 +1263,14 @@ Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> 
   );
 
   widgets.add(zzz);
+  widgets.add(introductionResearchProposal);
+  widgets.add(specificObjectivesProposaltitle);
+  widgets.add(specificObjectivesProposal);
+  widgets.add(relevanceStrategicDevelopmentGoalstitle);
+  widgets.add(relevanceStrategicDevelopmentGoals);
+  widgets.add(briefReviewAlreadyPerformedReferencestitle);
+  widgets.add(briefReviewAlreadyPerformedReferences);
+  widgets.add(methodologytitle);
   widgets.add(zzz2);
   if (formData.methodologyFileLocation.isNotEmpty) {
     widgets.add(methodologyImage);
