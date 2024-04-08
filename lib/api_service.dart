@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,13 +10,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 const String baseUrl = 'https://rakib73.pythonanywhere.com';
 const storage = FlutterSecureStorage();
 
-class ApiService {
-  static Future<String?> getAccessToken() async {
-    print("getAccessToken called");
-    return await storage.read(key: 'jwt_token');
-    // await userDataProvider.loadAsync();
-  }
+Future<String?> getAccessToken() async {
+  print("getAccessToken called");
+  return await storage.read(key: 'jwt_token');
+  // await userDataProvider.loadAsync();
+}
 
+class ApiService {
   static Future<List<dynamic>> fetchAdminFundConfirmList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

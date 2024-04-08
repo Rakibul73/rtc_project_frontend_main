@@ -42,6 +42,7 @@ import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart
 import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
 
 class RouteUri {
@@ -58,6 +59,7 @@ class RouteUri {
   static const String searchproject = '/searchproject';
   static const String myprojects = '/myprojects';
   static const String viewprojectadmin = '/viewprojectadmin';
+  static const String viewproject = '/viewproject';
   static const String editproject = '/editproject';
   static const String editprojectadmin = '/editprojectadmin';
   static const String projectreviewtracking = '/projectreviewtracking';
@@ -173,6 +175,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewProjectScreenAdmin(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewproject,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),

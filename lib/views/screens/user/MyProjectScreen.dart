@@ -158,6 +158,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
     viewAllProjects();
 
     _dataSource = DataSource(
+      onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
       onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editproject}?projectid=${data['ProjectID']}'),
       onDeleteButtonPressed: (data) {
         deleteProject(data['ProjectID']);
@@ -383,11 +384,13 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
 }
 
 class DataSource extends DataTableSource {
+  final void Function(Map<String, dynamic> data) onViewButtonPressed;
   final void Function(Map<String, dynamic> data) onEditButtonPressed;
   final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
   List<dynamic> data;
 
   DataSource({
+    required this.onViewButtonPressed,
     required this.onEditButtonPressed,
     required this.onDeleteButtonPressed,
     required this.data,
@@ -415,16 +418,24 @@ class DataSource extends DataTableSource {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding),
-                child: OutlinedButton(
-                  onPressed: () => onEditButtonPressed.call(data),
-                  style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                  child: const Text("View & Edit"),
+                child: ElevatedButton(
+                  onPressed: () => onViewButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.infoText,
+                  child: const Text("View" , style: TextStyle(fontWeight : FontWeight.bold),),
                 ),
               ),
-              OutlinedButton(
+              Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding),
+                child: ElevatedButton(
+                  onPressed: () => onEditButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.secondaryText,
+                  child: const Text("Edit" , style: TextStyle(fontWeight : FontWeight.bold),),
+                ),
+              ),
+              ElevatedButton(
                 onPressed: () => onDeleteButtonPressed.call(data),
-                style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
-                child: const Text("Delete"),
+                style: Theme.of(context).extension<AppButtonTheme>()!.errorText,
+                child: const Text("Delete" , style: TextStyle(fontWeight : FontWeight.bold),),
               ),
             ],
           );
