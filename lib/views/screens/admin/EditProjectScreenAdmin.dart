@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +44,15 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
   late List<dynamic> budgetFormDataForUpload = [];
   late List<dynamic> initialProjectGantts = [];
   late List<dynamic> initialProjectBudget = [];
+
+  Uint8List? _methodologyFileBytes;
+  Uint8List? _piSignatureFileBytes;
+  Uint8List? _piSealFileBytes;
+  Uint8List? _chairmanSignatureFileBytes;
+  Uint8List? _chairmanSealFileBytes;
+
+  late Future<List<User>> _usersFuture;
+  late Future<List<User>> _studentUsersFuture;
 
   void _onProjectSoftCopyFileSelected(List<PlatformFile>? files) {
     setState(() {
@@ -138,18 +148,6 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
     }
   }
 
-  void _showWordCountExceededDialog(BuildContext context, int wordCount) {
-    final dialog = AwesomeDialog(
-      context: context,
-      dialogType: DialogType.info,
-      title: "Maximum word count exceeded. Please enter less than $wordCount words.",
-      width: kDialogWidth,
-      btnOkText: 'OK',
-      btnOkOnPress: () {},
-    );
-    dialog.show();
-  }
-
   void _downloadProjectSoftCopy(String fileName) async {
     final responseBody = await ApiService.downloadProjectSoftCopy('project_softcopy/download', fileName);
     // print(responseBody);
@@ -221,6 +219,13 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
         // // Part II: Outline of The Research Proposal
         _formData.introductionResearchProposal = userDetails['project']['ProjectDescription'];
         _formData.methodologyFileLocation = userDetails['project']['MethodologyFileLocation'];
+        String methodologyfilePath = _formData.methodologyFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
+            : await ApiService.fetchPicFile('methodology/download', "defaultmethodology.png"); // Check if value is not empty before making the API call
+        if (methodologyfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(methodologyfilePath);
+          _methodologyFileBytes = fileBytes;
+        }
         _formData.specificObjectivesProposal = userDetails['project']['ProjectObjective'];
         _formData.relevanceStrategicDevelopmentGoals = userDetails['project']['PstuNationalGoal'];
         _formData.briefReviewAlreadyPerformedReferences = userDetails['project']['PriorResearchOverview'];
@@ -243,12 +248,40 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
         _formData.studentUserID = userDetails['project']['StudentUserID'];
 
         _formData.piSealLocation = userDetails['project']['CreatorUserSealLocation'];
+        String piSealfilePath = _formData.piSealLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
+            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (piSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSealfilePath);
+          _piSealFileBytes = fileBytes;
+        }
         _formData.piSignatureLocation = userDetails['project']['CreatorUserSignatureLocation'];
+        String piSignaturefilePath = _formData.piSignatureLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
+            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (piSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSignaturefilePath);
+          _piSignatureFileBytes = fileBytes;
+        }
         _formData.piSignatureDate = userDetails['project']['CreatorUserSignatureDate'];
 
         _formData.commentsOfTheChairmanOfTheDepartment = userDetails['project']['ChairmanOfDepartmentComment'];
         _formData.chairmanOfDepartmentSealFileLocation = userDetails['project']['ChairmanOfDepartmentSealLocation'];
+        String chairmanSealfilePath = _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
+            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (chairmanSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSealfilePath);
+          _chairmanSealFileBytes = fileBytes;
+        }
         _formData.chairmanOfDepartmentSignatureFileLocation = userDetails['project']['ChairmanOfDepartmentSignatureLocation'];
+        String chairmanSignaturefilePath = _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
+            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (chairmanSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSignaturefilePath);
+          _chairmanSignatureFileBytes = fileBytes;
+        }
         _formData.dateOfChairmanOfTheDepartment = userDetails['project']['ChairmanOfDepartmentSignatureDate'];
 
         _formData.projectStatus = userDetails['project']['ProjectStatus'];
@@ -468,6 +501,13 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _usersFuture = ApiService.getAllUsersExceptStudents();
+    _studentUsersFuture = ApiService.getOnlyStudentUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
 
@@ -629,7 +669,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDropdown(
-                                          initialValue: 'Faculty of Computer Science and Engineering',
+                                          initialValue: _formData.nameOfCollaboratingDepartmentDepartment,
                                           name: 'name_of_collaborating_department',
                                           decoration: const InputDecoration(
                                             labelText: 'Name of Collaborating Department',
@@ -641,14 +681,61 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                           focusColor: Colors.transparent,
                                           validator: FormBuilderValidators.required(),
                                           items: [
-                                            'Faculty of Agriculture',
-                                            'Faculty of Computer Science and Engineering',
-                                            'Faculty of Business Administration',
-                                            'Faculty of Animal Science and Veterinary Medicine',
-                                            'Faculty of Fisheries',
-                                            'Faculty of Environmental Science and Disaster Management',
-                                            'Faculty of Nutrition and Food Science',
-                                            'Faculty of Law and Land Administration'
+                                            'Department of Computer Science and Information Technology',
+                                            'Department of Computer and Communication Engineering',
+                                            'Department of Electrical and Electronics Engineering',
+                                            'Department of Physics and Mechanical Engineering',
+                                            'Department of Mathematics',
+                                            'Department of Marine Fisheries and Oceanography',
+                                            'Department of Genetics and Animal Breeding',
+                                            'Department of Fisheries Technology',
+                                            'Department of Human Nutrition and Dietetics',
+                                            'Department of Biochemistry and Food Analysis',
+                                            'Department of Environmental Sanitation',
+                                            'Department of Food Microbiology',
+                                            'Department of Food Technology and Engineering',
+                                            'Department of Post Harvest Technology and Marketing',
+                                            'Department of Dairy Science',
+                                            'Department of Animal Products and By-Products Technology',
+                                            'Department of Basic Science',
+                                            'Department of General Animal Science and Animal Nutrition',
+                                            'Department of Microbiology and Public Health',
+                                            'Department of Pathology and Parasitology',
+                                            'Department of Physiology and Pharmacology',
+                                            'Department of Poultry Science',
+                                            'Department of Disaster Risk Management',
+                                            'Department of Law and Land Administration',
+                                            'Department of Anatomy and Histology',
+                                            'Department of Fisheries Biology and Genetics',
+                                            'Department of Aquaculture',
+                                            'Department of Marketing',
+                                            'Department of Management Studies',
+                                            'Department of Language and Communication',
+                                            'Department of Finance and Banking',
+                                            'Department of Economics and Sociology',
+                                            'Department of Agricultural Botany',
+                                            'Department of Accounting and Information Systems',
+                                            'Department of Fisheries Management',
+                                            'Department of Agricultural Chemistry',
+                                            'Department of Disaster Resilience and Engineering',
+                                            'Department of Medicine Surgery and Obstetrics',
+                                            'Department of Agricultural Engineering',
+                                            'Department of Emergency Management',
+                                            'Department of Agricultural Extension and Rural Development',
+                                            'Department of Environmental Science',
+                                            'Department of Geo Information Science and Earth Observation',
+                                            'Department of Agroforestry',
+                                            'Department of Agronomy',
+                                            'Department of Animal Science',
+                                            'Department of Community Health and Hygiene',
+                                            'Department of Biotechnology',
+                                            'Department of Entomology',
+                                            'Department of Genetics and Plant Breeding',
+                                            'Department of Horticulture',
+                                            'Department of Plant Pathology',
+                                            'Department of Soil Science',
+                                            'Department of Statistics',
+                                            'Department of Climate Smart Agricultured',
                                           ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
                                           onChanged: (value) => (_formData.nameOfCollaboratingDepartmentDepartment = value ?? ''),
                                         ),
@@ -657,7 +744,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: 'PSTU patuakhali',
+                                          initialValue: _formData.addressOfCollaboratingDepartmentDepartment,
                                           name: 'address_of_collaborating_department',
                                           decoration: const InputDecoration(
                                             labelText: 'Address of Collaborating Department',
@@ -673,7 +760,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderDropdown(
-                                          initialValue: 'Faculty of Computer Science and Engineering',
+                                          initialValue: _formData.nameOfCollaboratingDepartmentInstitute,
                                           name: 'name_of_collaborating_institute',
                                           decoration: const InputDecoration(
                                             labelText: 'Name of Collaborating Institute',
@@ -686,14 +773,6 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                           validator: FormBuilderValidators.required(),
                                           items: [
                                             'Patuakhali Science & Technology University (PSTU)',
-                                            'Faculty of Agriculture',
-                                            'Faculty of Computer Science and Engineering',
-                                            'Faculty of Business Administration',
-                                            'Faculty of Animal Science and Veterinary Medicine',
-                                            'Faculty of Fisheries',
-                                            'Faculty of Environmental Science and Disaster Management',
-                                            'Faculty of Nutrition and Food Science',
-                                            'Faculty of Law and Land Administration'
                                           ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
                                           onChanged: (value) => (_formData.nameOfCollaboratingDepartmentInstitute = value ?? ''),
                                         ),
@@ -702,7 +781,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       SizedBox(
                                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
                                         child: FormBuilderTextField(
-                                          initialValue: 'PSTU patuakhali',
+                                          initialValue: _formData.addressOfCollaboratingDepartmentInstitute,
                                           name: 'address_of_collaborating_institute',
                                           decoration: const InputDecoration(
                                             labelText: 'Address of Collaborating Institute',
@@ -983,31 +1062,10 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                 border: OutlineInputBorder(),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
-                              // validator: FormBuilderValidators.maxWordsCount(300),
-                              // validator: FormBuilderValidators.,
-                              // validator: (value) {
-                              //   if (value == null || value.trim().isEmpty) {
-                              //     return 'This field is required.';
-                              //   } else {
-                              //     final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                              //     if (wordCount > 300) {
-                              //       return 'Maximum word count exceeded.';
-                              //     }
-                              //   }
-                              //   return null; // Return null if the input is valid
-                              // },
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'This field is required.';
-                                } else {
-                                  final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 500) {
-                                    _showWordCountExceededDialog(context, 500);
-                                    return 'Maximum word count exceeded. (300 words maximum)';
-                                  }
-                                }
-                                return null; // Return null if the input is valid
-                              },
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.maxWordsCount(350),
+                              ]),
                               onChanged: (value) => (_formData.introductionResearchProposal = value ?? ''),
                             ),
                           ),
@@ -1058,19 +1116,10 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                 border: OutlineInputBorder(),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
                               ),
-                              // validator: FormBuilderValidators.required(),
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return 'This field is required.';
-                                } else {
-                                  final wordCount = value.trim().split(RegExp(r'\s+')).length;
-                                  if (wordCount > 500) {
-                                    _showWordCountExceededDialog(context, 500);
-                                    return 'Maximum word count exceeded. (500 words maximum)';
-                                  }
-                                }
-                                return null; // Return null if the input is valid
-                              },
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required(),
+                                FormBuilderValidators.maxWordsCount(550),
+                              ]),
                               onChanged: (value) => (_formData.briefReviewAlreadyPerformedReferences = value ?? ''),
                             ),
                           ),
@@ -1132,25 +1181,14 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                         padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                         child: Stack(
                                           children: [
-                                            FutureBuilder<String>(
-                                              future: _formData.methodologyFileLocation.isNotEmpty
-                                                  ? ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
-                                                  : Future.value(""), // Check if value is not empty before making the API call
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else {
-                                                  return Image.memory(
-                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                            _methodologyFileBytes != null
+                                                ? Image.memory(
+                                                    _methodologyFileBytes!,
                                                     fit: BoxFit.cover, // Adjust image to cover the entire space
                                                     width: 150, // Adjust width as needed
                                                     // height: 50, // Adjust height as needed
-                                                  );
-                                                }
-                                              },
-                                            ),
+                                                  )
+                                                : const CircularProgressIndicator(),
                                           ],
                                         ),
                                       ),
@@ -1860,25 +1898,14 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSignatureLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                                                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _piSignatureFileBytes != null
+                                              ? Image.memory(
+                                                  _piSignatureFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -1922,25 +1949,14 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSealLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                                                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _piSealFileBytes != null
+                                              ? Image.memory(
+                                                  _piSealFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -1988,25 +2004,14 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
-                                                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _chairmanSignatureFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSignatureFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -2085,25 +2090,14 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
-                                                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _chairmanSealFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSealFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -2229,66 +2223,9 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
                       const SizedBox(width: kDefaultPadding),
                       SizedBox(
                         width: ((constraints.maxWidth * 0.5) - (kDefaultPadding * 0.5)),
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CardHeader(
-                                  title: "PART III: B. Co-Principal Investigator (CO-PI)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
-                              CardBody(
-                                // here add dropdown list of co-pi
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                                      child: FutureBuilder<List<User>>(
-                                        future: ApiService.getAllUsersExceptStudents(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                          } else if (snapshot.hasError) {
-                                            return Text('Error: ${snapshot.error}');
-                                          } else {
-                                            // Find the user with coPiUserID and set it as the selectedUser
-                                            User? selectedUser = snapshot.data?.firstWhere(
-                                              (user) => user.userId == _formData.coPiUserID,
-                                              orElse: () => snapshot.data!.first,
-                                            );
-                                            return FormBuilderDropdown<User>(
-                                              name: 'co_pi_name',
-                                              initialValue: selectedUser,
-                                              decoration: const InputDecoration(
-                                                labelText: 'CO-PI Name',
-                                                hintText: 'Select CO-PI Name',
-                                                border: OutlineInputBorder(),
-                                                floatingLabelBehavior: FloatingLabelBehavior.always,
-                                              ),
-                                              validator: FormBuilderValidators.required(),
-                                              items: snapshot.data!
-                                                  .map((user) => DropdownMenuItem<User>(
-                                                        value: user,
-                                                        child: Text(user.getDisplayName()),
-                                                      ))
-                                                  .toList(),
-                                              onChanged: (User? user) {
-                                                if (user != null) {
-                                                  setState(() {
-                                                    _formData.coPiUserID = user.userId;
-                                                  });
-                                                }
-                                              },
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        child: CoPi(
+                          formData: _formData,
+                          usersFuture: _usersFuture,
                         ),
                       ),
                     ],
@@ -2298,67 +2235,9 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: kDefaultPadding),
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CardHeader(
-                        title: "PART III: C. Student's Information (For Code: 4829): (MS/PhD)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
-                    CardBody(
-                      // here add dropdown list of co-pi
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 25),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                            child: FutureBuilder<List<User>>(
-                              future: ApiService.getOnlyStudentUser(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const CircularProgressIndicator(); // Show loading indicator while fetching data
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  // Find the user with studentUserID and set it as the selectedUser
-                                  User? selectedUser = snapshot.data?.firstWhere(
-                                    (user) => user.userId == _formData.studentUserID,
-                                    orElse: () => snapshot.data!.first,
-                                  );
-                                  return FormBuilderDropdown<User>(
-                                    name: 'student_name',
-                                    initialValue: selectedUser,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Student Name',
-                                      hintText: 'Select Student Name',
-                                      border: OutlineInputBorder(),
-                                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                                    ),
-                                    validator: FormBuilderValidators.required(),
-                                    items: snapshot.data!
-                                        .map((user) => DropdownMenuItem<User>(
-                                              value: user,
-                                              child: Text(user.getDisplayName()),
-                                            ))
-                                        .toList(),
-                                    onChanged: (User? user) {
-                                      if (user != null) {
-                                        setState(() {
-                                          _formData.studentUserID = user.userId;
-                                        });
-                                      }
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              child: Student(
+                formData: _formData,
+                studentUsersFuture: _studentUsersFuture,
               ),
             ),
             Padding(
@@ -2695,4 +2574,182 @@ class FormData {
   String projectTitle = '';
   String dateOfReceived = '';
   String rtcCode = '';
+}
+
+class CoPi extends StatefulWidget {
+  final Future<List<User>> usersFuture;
+  final FormData formData;
+
+  const CoPi({required this.formData, required this.usersFuture, Key? key}) : super(key: key);
+
+  @override
+  _CoPiState createState() => _CoPiState();
+}
+
+class _CoPiState extends State<CoPi> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CardHeader(title: "PART III: B. Co-Principal Investigator (CO-PI)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
+          CardBody(
+            // here add dropdown list of co-pi
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                  child: FutureBuilder<List<User>>(
+                    future: widget.usersFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        User? selectedUser = snapshot.data?.firstWhere(
+                          (user) => user.userId == widget.formData.coPiUserID,
+                          orElse: () => snapshot.data!.first,
+                        );
+                        return FormBuilderDropdown<User>(
+                          name: 'co_pi_name',
+                          initialValue: selectedUser,
+                          decoration: const InputDecoration(
+                            labelText: 'CO-PI Name',
+                            hintText: 'Select CO-PI Name',
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          items: snapshot.data!
+                              .map((user) => DropdownMenuItem<User>(
+                                    value: user,
+                                    child: Text(user.getDisplayName()),
+                                  ))
+                              .toList(),
+                          onChanged: (User? user) {
+                            if (user != null) {
+                              setState(() {
+                                widget.formData.coPiUserID = user.userId;
+                              });
+                            }
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Student extends StatefulWidget {
+  final Future<List<User>> studentUsersFuture;
+  final FormData formData;
+
+  const Student({required this.formData, required this.studentUsersFuture, Key? key}) : super(key: key);
+
+  @override
+  _StudentState createState() => _StudentState();
+}
+
+class _StudentState extends State<Student> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CardHeader(title: "PART III: C. Student's Information (For Code: 4829): (MS/PhD)", backgroundColor: Color.fromARGB(255, 139, 161, 168), titleColor: Color.fromARGB(255, 50, 39, 42)),
+          CardBody(
+            // here add dropdown list of co-pi
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 25),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                  child: FutureBuilder<List<User>>(
+                    future: widget.studentUsersFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Show loading indicator while fetching data
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        User? selectedUser = snapshot.data?.firstWhere(
+                          (user) => user.userId == widget.formData.studentUserID,
+                          orElse: () => snapshot.data!.first,
+                        );
+                        return FormBuilderDropdown<User>(
+                          name: 'student_name',
+                          initialValue: selectedUser,
+                          decoration: const InputDecoration(
+                            labelText: 'Student Name',
+                            hintText: 'Select Student Name',
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          items: snapshot.data!
+                              .map((user) => DropdownMenuItem<User>(
+                                    value: user,
+                                    child: Text(user.getDisplayName()),
+                                  ))
+                              .toList(),
+                          onChanged: (User? user) {
+                            if (user != null) {
+                              setState(() {
+                                widget.formData.studentUserID = user.userId;
+                              });
+                            }
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AwesomeLoadingDialog extends StatelessWidget {
+  final BuildContext context;
+
+  const AwesomeLoadingDialog({
+    required this.context,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dialog = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      title: "Please wait...",
+      desc: "Data is loading from the server....",
+      width: kDialogWidth,
+    );
+
+    // Call show method to display the dialog
+    dialog.show();
+
+    // Return an empty container because AwesomeDialog will handle the UI
+    return Container();
+  }
 }
