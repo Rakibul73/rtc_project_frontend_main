@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -36,6 +37,11 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
   late List<dynamic> initialProjectGantts = [];
   late List<dynamic> initialProjectBudget = [];
   Future<bool>? _future;
+  Uint8List? _methodologyFileBytes;
+  Uint8List? _piSignatureFileBytes;
+  Uint8List? _piSealFileBytes;
+  Uint8List? _chairmanSignatureFileBytes;
+  Uint8List? _chairmanSealFileBytes;
 
   void _pdfHandleButtonPress() {
     final d = AwesomeDialog(
@@ -50,7 +56,8 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
       d.show(),
       Timer(const Duration(seconds: 5), () => d.dismiss()),
       generatePDF(_formData, context, initialProjectGantts, initialProjectBudget),
-    ] as Iterable<Future>).then((_) {
+    ] as Iterable<Future>)
+        .then((_) {
       d.dismiss();
     });
   }
@@ -112,17 +119,24 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.nameOfCollaboratingDepartmentInstitute = userDetails['project']['NameOfCollaboratingInstitutes'];
         _formData.addressOfCollaboratingDepartmentInstitute = userDetails['project']['AddressOfCollaboratingInstitutes'];
         _formData.locationOfFieldActivities = userDetails['project']['LocationOfFieldActivities'];
-        _formData.annualDurationOfResearchProject = userDetails['project']['DurationOfResearchProjectAnnual'];
-        _formData.longTermDurationOfResearchProject = userDetails['project']['DurationOfResearchProjectLongTerm'];
+        _formData.annualDurationOfResearchProject = userDetails['project']['DurationOfResearchProjectAnnual'] ?? "";
+        _formData.longTermDurationOfResearchProject = userDetails['project']['DurationOfResearchProjectLongTerm'] ?? "";
         _formData.totalBudgetOfResearchProposal = userDetails['project']['TotalBudgetOfResearchProposalTK'].toString();
         _formData.hasThisProposalBeenSubmittedToAnyOtherAgency = userDetails['project']['ExternalAgencyFundingSource'];
         _formData.nameOfTheAgency = userDetails['project']['ExternalAgencyFundingSourcesName'];
-        _formData.dateOfSubmission = userDetails['project']['ExternalAgencyFundingSourcesSubmissionDate'];
+        _formData.dateOfSubmission = userDetails['project']['ExternalAgencyFundingSourcesSubmissionDate'] ?? "";
         _formData.isThereAnyCommitmentToOtherResearchProjectAsPiTeamLeader = userDetails['project']['CommitmentOtherResearchProject'];
         _formData.nameOfTheProject = userDetails['project']['CommitmentOtherResearchProjectName'];
         // // Part II: Outline of The Research Proposal
         _formData.introductionResearchProposal = userDetails['project']['ProjectDescription'];
         _formData.methodologyFileLocation = userDetails['project']['MethodologyFileLocation'];
+        String methodologyfilePath = _formData.methodologyFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
+            : await ApiService.fetchPicFile('methodology/download', "defaultmethodology.png"); // Check if value is not empty before making the API call
+        if (methodologyfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(methodologyfilePath);
+          _methodologyFileBytes = fileBytes;
+        }
         _formData.specificObjectivesProposal = userDetails['project']['ProjectObjective'];
         _formData.relevanceStrategicDevelopmentGoals = userDetails['project']['PstuNationalGoal'];
         _formData.briefReviewAlreadyPerformedReferences = userDetails['project']['PriorResearchOverview'];
@@ -145,7 +159,21 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         _formData.studentUserID = userDetails['project']['StudentUserID'];
 
         _formData.piSealLocation = userDetails['project']['CreatorUserSealLocation'];
+        String piSealfilePath = _formData.piSealLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
+            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (piSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSealfilePath);
+          _piSealFileBytes = fileBytes;
+        }
         _formData.piSignatureLocation = userDetails['project']['CreatorUserSignatureLocation'];
+        String piSignaturefilePath = _formData.piSignatureLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
+            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (piSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSignaturefilePath);
+          _piSignatureFileBytes = fileBytes;
+        }
         _formData.piSignatureDate = userDetails['project']['CreatorUserSignatureDate'];
         if (_formData.piSignatureDate != null && _formData.piSignatureDate.isNotEmpty) {
           _formData.piSignatureDate = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.piSignatureDate));
@@ -153,7 +181,21 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
 
         _formData.commentsOfTheChairmanOfTheDepartment = userDetails['project']['ChairmanOfDepartmentComment'];
         _formData.chairmanOfDepartmentSealFileLocation = userDetails['project']['ChairmanOfDepartmentSealLocation'];
+        String chairmanSealfilePath = _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
+            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (chairmanSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSealfilePath);
+          _chairmanSealFileBytes = fileBytes;
+        }
         _formData.chairmanOfDepartmentSignatureFileLocation = userDetails['project']['ChairmanOfDepartmentSignatureLocation'];
+        String chairmanSignaturefilePath = _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
+            ? await ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
+            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (chairmanSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSignaturefilePath);
+          _chairmanSignatureFileBytes = fileBytes;
+        }
         _formData.dateOfChairmanOfTheDepartment = userDetails['project']['ChairmanOfDepartmentSignatureDate'];
         if (_formData.dateOfChairmanOfTheDepartment != null && _formData.dateOfChairmanOfTheDepartment.isNotEmpty) {
           _formData.dateOfChairmanOfTheDepartment = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment));
@@ -1209,25 +1251,14 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                         padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                         child: Stack(
                                           children: [
-                                            FutureBuilder<String>(
-                                              future: _formData.methodologyFileLocation.isNotEmpty
-                                                  ? ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
-                                                  : Future.value(""), // Check if value is not empty before making the API call
-                                              builder: (context, snapshot) {
-                                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                                  return const CircularProgressIndicator();
-                                                } else if (snapshot.hasError) {
-                                                  return Text('Error: ${snapshot.error}');
-                                                } else {
-                                                  return Image.memory(
-                                                    base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                            _methodologyFileBytes != null
+                                                ? Image.memory(
+                                                    _methodologyFileBytes!,
                                                     fit: BoxFit.cover, // Adjust image to cover the entire space
                                                     width: 150, // Adjust width as needed
                                                     // height: 50, // Adjust height as needed
-                                                  );
-                                                }
-                                              },
-                                            ),
+                                                  )
+                                                : const CircularProgressIndicator(),
                                           ],
                                         ),
                                       ),
@@ -1940,25 +1971,14 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSignatureLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                                                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _piSignatureFileBytes != null
+                                              ? Image.memory(
+                                                  _piSignatureFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -2004,25 +2024,14 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.piSealLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                                                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _piSealFileBytes != null
+                                              ? Image.memory(
+                                                  _piSealFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -2076,25 +2085,14 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
-                                                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _chairmanSignatureFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSignatureFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -2140,25 +2138,14 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                       padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                       child: Stack(
                                         children: [
-                                          FutureBuilder<String>(
-                                            future: _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
-                                                ? ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
-                                                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return const CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.memory(
-                                                  base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                          _chairmanSealFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSealFileBytes!,
                                                   fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                  // width: 120, // Adjust width as needed
+                                                  // width: 150, // Adjust width as needed
                                                   height: 50, // Adjust height as needed
-                                                );
-                                              }
-                                            },
-                                          ),
+                                                )
+                                              : const CircularProgressIndicator(),
                                         ],
                                       ),
                                     ),
@@ -3299,6 +3286,10 @@ class _ReviewerSelection1State extends State<ReviewerSelection1> {
     return FormBuilder(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
+      onChanged: () {
+        _formKey.currentState!.save();
+      },
+      clearValueOnUnregister: false,
       child: Padding(
         padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
         child: LayoutBuilder(
@@ -3448,6 +3439,7 @@ class _ReviewerSelection2State extends State<ReviewerSelection2> {
     return FormBuilder(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
+      clearValueOnUnregister: false,
       child: Padding(
         padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
         child: LayoutBuilder(
@@ -3611,6 +3603,7 @@ class _ReviewerSelection3State extends State<ReviewerSelection3> {
     return FormBuilder(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
+      clearValueOnUnregister: false,
       child: Padding(
         padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.0),
         child: LayoutBuilder(
