@@ -19,19 +19,19 @@ import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
 
-class ViewProjectScreenAdmin extends StatefulWidget {
+class ViewProjectScreen extends StatefulWidget {
   final String projectID;
 
-  const ViewProjectScreenAdmin({
+  const ViewProjectScreen({
     Key? key,
     required this.projectID,
   }) : super(key: key);
 
   @override
-  State<ViewProjectScreenAdmin> createState() => _ViewProjectScreenAdminState();
+  State<ViewProjectScreen> createState() => _ViewProjectScreenState();
 }
 
-class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
+class _ViewProjectScreenState extends State<ViewProjectScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
@@ -57,7 +57,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
     Future.wait([
       d.show(),
       Timer(const Duration(seconds: 5), () => d.dismiss()),
-      generatePDF(_formData, context, initialProjectGantts, initialProjectBudget),
+      // generatePDF(_formData, context, initialProjectGantts, initialProjectBudget),
     ] as Iterable<Future>)
         .then((_) {
       d.dismiss();

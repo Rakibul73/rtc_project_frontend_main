@@ -853,8 +853,8 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                                             children: [
                                               FutureBuilder<String>(
                                                 future: _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-                                                    ? ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
-                                                    : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
+                                                    ? ApiService.downloadFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
+                                                    : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                     return const CircularProgressIndicator();
@@ -900,8 +900,8 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                                             children: [
                                               FutureBuilder<String>(
                                                 future: _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
-                                                    ? ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
-                                                    : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
+                                                    ? ApiService.downloadFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
+                                                    : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                     return const CircularProgressIndicator();
@@ -936,8 +936,8 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                                                 children: [
                                                   FutureBuilder<String>(
                                                     future: _formData.piSignatureLocation.isNotEmpty
-                                                        ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                                                        : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
+                                                        ? ApiService.downloadFile('signature/download', _formData.piSignatureLocation)
+                                                        : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
                                                     builder: (context, snapshot) {
                                                       if (snapshot.connectionState == ConnectionState.waiting) {
                                                         return const CircularProgressIndicator();
@@ -983,8 +983,8 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                                                 children: [
                                                   FutureBuilder<String>(
                                                     future: _formData.piSealLocation.isNotEmpty
-                                                        ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                                                        : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
+                                                        ? ApiService.downloadFile('seal/download', _formData.piSealLocation)
+                                                        : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
                                                     builder: (context, snapshot) {
                                                       if (snapshot.connectionState == ConnectionState.waiting) {
                                                         return const CircularProgressIndicator();

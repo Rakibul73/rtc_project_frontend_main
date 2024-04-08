@@ -255,8 +255,8 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
                                             children: [
                                               FutureBuilder<String>(
                                                 future: _formData.reviewerProfilePicLocation1.isNotEmpty
-                                                    ? ApiService.fetchPicFile('profile-pic/download', _formData.reviewerProfilePicLocation1)
-                                                    : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                                    ? ApiService.downloadFile('profile-pic/download', _formData.reviewerProfilePicLocation1)
+                                                    : ApiService.downloadFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                     return const CircularProgressIndicator();
@@ -398,8 +398,8 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
                                             children: [
                                               FutureBuilder<String>(
                                                 future: _formData.reviewerProfilePicLocation2.isNotEmpty
-                                                    ? ApiService.fetchPicFile('profile-pic/download', _formData.reviewerProfilePicLocation2)
-                                                    : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                                    ? ApiService.downloadFile('profile-pic/download', _formData.reviewerProfilePicLocation2)
+                                                    : ApiService.downloadFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                     return const CircularProgressIndicator();
@@ -541,8 +541,8 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
                                             children: [
                                               FutureBuilder<String>(
                                                 future: _formData.reviewerProfilePicLocation3.isNotEmpty
-                                                    ? ApiService.fetchPicFile('profile-pic/download', _formData.reviewerProfilePicLocation3)
-                                                    : ApiService.fetchPicFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
+                                                    ? ApiService.downloadFile('profile-pic/download', _formData.reviewerProfilePicLocation3)
+                                                    : ApiService.downloadFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
                                                 builder: (context, snapshot) {
                                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                                     return const CircularProgressIndicator();

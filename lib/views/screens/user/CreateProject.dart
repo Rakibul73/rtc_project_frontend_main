@@ -1917,7 +1917,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   //       children: [
                                   //         FutureBuilder<String>(
                                   //           future: chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-                                  //               ? ApiService.fetchPicFile('signature/download', chairmanOfDepartmentSignatureFileLocation)
+                                  //               ? ApiService.downloadFile('signature/download', chairmanOfDepartmentSignatureFileLocation)
                                   //               : Future.value(""), // Check if value is not empty before making the API call
                                   //           builder: (context, snapshot) {
                                   //             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -2014,7 +2014,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
                                   //       children: [
                                   //         FutureBuilder<String>(
                                   //           future: chairmanOfDepartmentSealFileLocation.isNotEmpty
-                                  //               ? ApiService.fetchPicFile('seal/download', chairmanOfDepartmentSealFileLocation)
+                                  //               ? ApiService.downloadFile('seal/download', chairmanOfDepartmentSealFileLocation)
                                   //               : Future.value(""), // Check if value is not empty before making the API call
                                   //           builder: (context, snapshot) {
                                   //             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -2537,8 +2537,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         children: [
           FutureBuilder<String>(
             future: _formData.piSignatureLocation.isNotEmpty
-                ? ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-                : ApiService.fetchPicFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
+                ? ApiService.downloadFile('signature/download', _formData.piSignatureLocation)
+                : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -2567,8 +2567,8 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         children: [
           FutureBuilder<String>(
             future: _formData.piSealLocation.isNotEmpty
-                ? ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-                : ApiService.fetchPicFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
+                ? ApiService.downloadFile('seal/download', _formData.piSealLocation)
+                : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();

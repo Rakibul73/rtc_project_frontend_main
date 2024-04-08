@@ -273,7 +273,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       print("/////////////////////////////");
     });
 
-    // final profilePic = await ApiService.fetchPicFile(_formData.profilePicLocation);
+    // final profilePic = await ApiService.downloadFile(_formData.profilePicLocation);
     print("Student ID: ${_formData.studentID}");
 
     return true;
@@ -498,7 +498,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               children: [
                 FutureBuilder<String>(
                   future: _formData.profilePicLocation.isNotEmpty
-                      ? ApiService.fetchPicFile('profile-pic/download', _formData.profilePicLocation)
+                      ? ApiService.downloadFile('profile-pic/download', _formData.profilePicLocation)
                       : Future.value(""), // Check if value is not empty before making the API call
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -760,7 +760,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               children: [
                 FutureBuilder<String>(
                   future:
-                      _formData.nidLocation.isNotEmpty ? ApiService.fetchPicFile('nid/download', _formData.nidLocation) : Future.value(""), // Check if value is not empty before making the API call
+                      _formData.nidLocation.isNotEmpty ? ApiService.downloadFile('nid/download', _formData.nidLocation) : Future.value(""), // Check if value is not empty before making the API call
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -937,7 +937,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 children: [
                   FutureBuilder<String>(
                     future: _formData.signatureLocation.isNotEmpty
-                        ? ApiService.fetchPicFile('signature/download', _formData.signatureLocation)
+                        ? ApiService.downloadFile('signature/download', _formData.signatureLocation)
                         : Future.value(""), // Check if value is not empty before making the API call
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -1002,7 +1002,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 children: [
                   FutureBuilder<String>(
                     future: _formData.sealLocation.isNotEmpty
-                        ? ApiService.fetchPicFile('seal/download', _formData.sealLocation)
+                        ? ApiService.downloadFile('seal/download', _formData.sealLocation)
                         : Future.value(""), // Check if value is not empty before making the API call
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {

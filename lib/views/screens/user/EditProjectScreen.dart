@@ -20,6 +20,7 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
 
 class EditProjectScreen extends StatefulWidget {
   final String projectID;
@@ -53,6 +54,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   Uint8List? _piSealFileBytes;
   Uint8List? _chairmanSignatureFileBytes;
   Uint8List? _chairmanSealFileBytes;
+  Uint8List? _downloadProjectFileBytes;
 
   late Future<List<User>> _usersFuture;
   late Future<List<User>> _studentUsersFuture;
@@ -154,11 +156,16 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   }
 
   void _downloadProjectSoftCopy(String fileName) async {
-    final responseBody = await ApiService.downloadProjectSoftCopy('project_softcopy/download', fileName);
-    // print(responseBody);
-    if (responseBody['statuscode'] == 200) {
-      print('File downloaded successfully');
+    String downloadProjectReport = await ApiService.downloadFile('project_softcopy/download', fileName);
+    if (downloadProjectReport.isNotEmpty) {
+      Uint8List fileBytes = base64Decode(downloadProjectReport);
+      _downloadProjectFileBytes = fileBytes;
     }
+    final blob = html.Blob([_downloadProjectFileBytes], 'application/octet-stream');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final html.AnchorElement anchor = html.AnchorElement(href: url);
+    anchor.download = fileName; // Specify the filename for the downloaded file
+    anchor.click(); // Trigger the download
   }
 
   Future<bool> _getDataAsync() async {
@@ -225,8 +232,8 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         _formData.introductionResearchProposal = userDetails['project']['ProjectDescription'];
         _formData.methodologyFileLocation = userDetails['project']['MethodologyFileLocation'];
         String methodologyfilePath = _formData.methodologyFileLocation.isNotEmpty
-            ? await ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
-            : await ApiService.fetchPicFile('methodology/download', "defaultmethodology.png"); // Check if value is not empty before making the API call
+            ? await ApiService.downloadFile('methodology/download', _formData.methodologyFileLocation)
+            : await ApiService.downloadFile('methodology/download', "defaultmethodology.png"); // Check if value is not empty before making the API call
         if (methodologyfilePath.isNotEmpty) {
           Uint8List fileBytes = base64Decode(methodologyfilePath);
           _methodologyFileBytes = fileBytes;
@@ -258,16 +265,16 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
 
         _formData.piSealLocation = userDetails['project']['CreatorUserSealLocation'];
         String piSealfilePath = _formData.piSealLocation.isNotEmpty
-            ? await ApiService.fetchPicFile('seal/download', _formData.piSealLocation)
-            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+            ? await ApiService.downloadFile('seal/download', _formData.piSealLocation)
+            : await ApiService.downloadFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
         if (piSealfilePath.isNotEmpty) {
           Uint8List fileBytes = base64Decode(piSealfilePath);
           _piSealFileBytes = fileBytes;
         }
         _formData.piSignatureLocation = userDetails['project']['CreatorUserSignatureLocation'];
         String piSignaturefilePath = _formData.piSignatureLocation.isNotEmpty
-            ? await ApiService.fetchPicFile('signature/download', _formData.piSignatureLocation)
-            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+            ? await ApiService.downloadFile('signature/download', _formData.piSignatureLocation)
+            : await ApiService.downloadFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
         if (piSignaturefilePath.isNotEmpty) {
           Uint8List fileBytes = base64Decode(piSignaturefilePath);
           _piSignatureFileBytes = fileBytes;
@@ -277,16 +284,16 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         _formData.commentsOfTheChairmanOfTheDepartment = userDetails['project']['ChairmanOfDepartmentComment'];
         _formData.chairmanOfDepartmentSealFileLocation = userDetails['project']['ChairmanOfDepartmentSealLocation'];
         String chairmanSealfilePath = _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
-            ? await ApiService.fetchPicFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
-            : await ApiService.fetchPicFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+            ? await ApiService.downloadFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
+            : await ApiService.downloadFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
         if (chairmanSealfilePath.isNotEmpty) {
           Uint8List fileBytes = base64Decode(chairmanSealfilePath);
           _chairmanSealFileBytes = fileBytes;
         }
         _formData.chairmanOfDepartmentSignatureFileLocation = userDetails['project']['ChairmanOfDepartmentSignatureLocation'];
         String chairmanSignaturefilePath = _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-            ? await ApiService.fetchPicFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
-            : await ApiService.fetchPicFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+            ? await ApiService.downloadFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
+            : await ApiService.downloadFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
         if (chairmanSignaturefilePath.isNotEmpty) {
           Uint8List fileBytes = base64Decode(chairmanSignaturefilePath);
           _chairmanSignatureFileBytes = fileBytes;

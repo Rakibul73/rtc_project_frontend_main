@@ -7,8 +7,8 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // const String baseUrl = 'http://192.168.1.188:5000';
-const String baseUrl = 'http://localhost:5000';
-// const String baseUrl = 'https://rakib73.pythonanywhere.com';
+// const String baseUrl = 'http://localhost:5000';
+const String baseUrl = 'https://rakib73.pythonanywhere.com';
 const storage = FlutterSecureStorage();
 
 class ApiService {
@@ -731,6 +731,8 @@ class ApiService {
 
     final Uri url = Uri.parse('$baseUrl/create_project_gantt/$projectId');
     print("createProjectGantt url: $url");
+
+    print(projectGanttData);
 
     try {
       final http.Response response = await http.post(
@@ -1767,36 +1769,6 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, Object>> downloadProjectSoftCopy(String endpoint, String filename) async {
-    final accessToken = await getAccessToken();
-    if (accessToken == null) {
-      throw Exception('JWT token not found');
-    }
-    final String downloadUrl = '$baseUrl/$endpoint/$filename';
-    try {
-      // Create an anchor element to trigger the download
-      final html.AnchorElement anchor = html.AnchorElement(href: downloadUrl);
-      // Set the authorization header with the access token
-      // anchor.headers['Authorization'] = 'Bearer $accessToken';
-      anchor.download = filename; // Specify the filename for the downloaded file
-      anchor.click(); // Trigger the download
-
-      print("ooooooooooooooooooooooooooooo");
-
-      // Wait for the download to complete
-      // await Future.delayed(const Duration(seconds: 10));
-      return {
-        'statuscode': 200,
-        'message': 'File downloaded successfully',
-      };
-
-      // Note: This approach works for web, but does not save the file locally on the device.
-      // The file is downloaded by the browser and saved in the user's Downloads folder.
-    } catch (e) {
-      throw Exception('Error downloading file: $e');
-    }
-  }
-
   static Future<Map<String, dynamic>> updateProjectDetails(int projectId, Map<String, dynamic> updateProjectData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1954,14 +1926,14 @@ class ApiService {
     }
   }
 
-  static Future<String> fetchPicFile(String endpoint, String filename) async {
+  static Future<String> downloadFile(String endpoint, String filename) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
     }
 
     final Uri url = Uri.parse('$baseUrl/$endpoint/$filename');
-    print("fetchPicFile url: $url");
+    print("downloadFile url: $url");
 
     try {
       final http.Response response = await http.get(
@@ -1975,9 +1947,9 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return base64Encode(response.bodyBytes); // Convert image bytes to base64 string
+        return base64Encode(response.bodyBytes); // Convert file bytes to base64 string
       } else {
-        print("fetchPicFile = Failed to fetch $endpoint: ${response.statusCode} $filename");
+        print("downloadFile = Failed to fetch $endpoint: ${response.statusCode} $filename");
         throw Exception('Failed to fetch $endpoint: ${response.statusCode}');
       }
     } catch (e) {
@@ -2025,6 +1997,7 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/get_only_student_users');
+    print("getOnlyStudentUser url: $url");
     try {
       final http.Response response = await http.get(
         url,
@@ -2058,6 +2031,7 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/get_all_users_except_students');
+    print("getAllUsersExceptStudents url: $url");
     try {
       final http.Response response = await http.get(
         url,

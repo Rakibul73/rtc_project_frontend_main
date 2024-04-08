@@ -988,7 +988,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                           children: [
                                             FutureBuilder<String>(
                                               future: _formData.methodologyFileLocation.isNotEmpty
-                                                  ? ApiService.fetchPicFile('methodology/download', _formData.methodologyFileLocation)
+                                                  ? ApiService.downloadFile('methodology/download', _formData.methodologyFileLocation)
                                                   : Future.value(""), // Check if value is not empty before making the API call
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState == ConnectionState.waiting) {

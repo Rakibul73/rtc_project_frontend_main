@@ -338,7 +338,7 @@ class SidebarHeader extends StatelessWidget {
               selector: (context, provider) => provider.profilePicLocation,
               builder: (context, value, child) {
                 return FutureBuilder<String>(
-                  future: ApiService.fetchPicFile('profile-pic/download', value), // Check if value is not empty before making the API call(value),
+                  future: ApiService.downloadFile('profile-pic/download', value), // Check if value is not empty before making the API call(value),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
