@@ -7,7 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart';
 import 'dart:html' as html;
 
 Future<void> generatePDF(FormData formData, BuildContext context, List<dynamic> initialProjectGantts, List<dynamic> initialProjectBudget) async {

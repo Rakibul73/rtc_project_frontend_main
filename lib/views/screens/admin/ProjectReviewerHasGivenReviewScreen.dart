@@ -87,7 +87,7 @@ class _ProjectReviewerHasGivenReviewScreenState extends State<ProjectReviewerHas
     viewAllProjectsReviewerGivenReview();
 
     _dataSource = DataSource(
-      onViewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onViewProjectButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewprojectadmin}?projectid=${data['ProjectID']}'),
       onViewReviewsButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewreviewoftheprojectadmin}?projectid=${data['ProjectID']}'),
       data: [],
     );

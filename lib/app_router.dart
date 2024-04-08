@@ -30,7 +30,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ViewAllUsersScreen.dart'
 import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewIndividualNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/general/dashboard_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/error_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/forgot_pass.dart';
@@ -57,7 +57,7 @@ class RouteUri {
   static const String createproject = '/createproject';
   static const String searchproject = '/searchproject';
   static const String myprojects = '/myprojects';
-  static const String viewproject = '/viewproject';
+  static const String viewprojectadmin = '/viewprojectadmin';
   static const String editproject = '/editproject';
   static const String editprojectadmin = '/editprojectadmin';
   static const String projectreviewtracking = '/projectreviewtracking';
@@ -168,11 +168,11 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.viewproject,
+        path: RouteUri.viewprojectadmin,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
             key: state.pageKey,
-            child: ViewProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+            child: ViewProjectScreenAdmin(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),

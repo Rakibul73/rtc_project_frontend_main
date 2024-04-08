@@ -18,19 +18,19 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class ViewProjectScreen extends StatefulWidget {
+class ViewProjectScreenAdmin extends StatefulWidget {
   final String projectID;
 
-  const ViewProjectScreen({
+  const ViewProjectScreenAdmin({
     Key? key,
     required this.projectID,
   }) : super(key: key);
 
   @override
-  State<ViewProjectScreen> createState() => _ViewProjectScreenState();
+  State<ViewProjectScreenAdmin> createState() => _ViewProjectScreenAdminState();
 }
 
-class _ViewProjectScreenState extends State<ViewProjectScreen> {
+class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 

@@ -87,7 +87,7 @@ class _ProjectYouHaveToAssignReviewerScreenState extends State<ProjectYouHaveToA
     viewProjectsUnassignedReviewer();
 
     _dataSource = DataSource(
-      onAssignReviewerButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewproject}?projectid=${data['ProjectID']}'),
+      onAssignReviewerButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewprojectadmin}?projectid=${data['ProjectID']}'),
       data: [],
     );
   }
