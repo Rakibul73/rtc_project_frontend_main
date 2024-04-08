@@ -418,7 +418,7 @@ class DataSource extends DataTableSource {
                 child: OutlinedButton(
                   onPressed: () => onEditButtonPressed.call(data),
                   style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                  child: const Text("Edit"),
+                  child: const Text("View & Edit"),
                 ),
               ),
               OutlinedButton(
