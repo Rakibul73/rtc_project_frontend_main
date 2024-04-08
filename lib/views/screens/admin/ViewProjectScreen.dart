@@ -10,7 +10,7 @@ import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
-import 'package:rtc_project_fronend/views/screens/admin/pdf_generate/pdf_generator.dart';
+import 'package:rtc_project_fronend/views/screens/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
