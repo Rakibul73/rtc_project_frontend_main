@@ -57,7 +57,8 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
     Future.wait([
       d.show(),
       Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
-      generateProjectProposalPDFAdmin(_formData, context, initialProjectGantts, initialProjectBudget),
+      generateProjectProposalPDFAdmin(
+          _formData, context, _methodologyFileBytes, _piSignatureFileBytes, _piSealFileBytes, _chairmanSignatureFileBytes, _chairmanSealFileBytes, initialProjectGantts, initialProjectBudget),
     ]).then((_) {
       d.dismiss();
     });
