@@ -6,7 +6,7 @@ import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScree
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/VerifiedUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/UserProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
@@ -71,7 +71,7 @@ class RouteUri {
   static const String pendingusers = '/pendingusers';
   static const String verifiedusers = '/verifiedusers';
   static const String verifyuser = '/verifyuser';
-  static const String verifieduser = '/verifieduser';
+  static const String userprofile = '/userprofile';
   static const String projectoverview = '/projectoverview';
   static const String deleteuser = '/deleteuser';
   static const String notification = '/notification';
@@ -216,11 +216,11 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
-        path: RouteUri.verifieduser,
+        path: RouteUri.userprofile,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
             key: state.pageKey,
-            child: VerifiedUserScreen(userID: state.queryParameters['userid'] ?? ''),
+            child: UserProfileScreen(userID: state.queryParameters['userid'] ?? ''),
           );
         },
       ),

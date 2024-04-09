@@ -4,7 +4,6 @@ import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 // ignore_for_file: avoid_print, use_build_context_synchronously
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'dart:math';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -119,7 +118,7 @@ class _VerifiedUsersScreenState extends State<VerifiedUsersScreen> {
     viewAllVerifiedUsers();
 
     _dataSource = DataSource(
-      onViewUserButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.verifieduser}?userid=${data['UserID']}'),
+      onViewUserButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.userprofile}?userid=${data['UserID']}'),
       data: [],
     );
   }
