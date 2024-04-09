@@ -101,6 +101,7 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
     final themeData = Theme.of(context);
     final appColorScheme = Theme.of(context).extension<AppColorScheme>()!;
     // final appDataTableTheme = Theme.of(context).extension<AppDataTableTheme>()!;
+    final appButtonTheme = themeData.extension<AppButtonTheme>()!;
     final size = MediaQuery.of(context).size;
     final summaryCardCrossAxisCount = (size.width >= kScreenWidthLg ? 4 : 2);
 
@@ -130,10 +131,11 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                       spacing: kDefaultPadding,
                       runSpacing: kDefaultPadding,
                       children: [
+                        // SizedBox(height: 120, width: summaryCardWidth,),
                         SummaryCard(
                           title: "Total Verified Users",
                           value: snapshot.data!['total_users'].toString(),
-                          icon: Icons.people_rounded,
+                          icon: Icons.verified_user_rounded,
                           backgroundColor: appColorScheme.success,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
@@ -142,8 +144,8 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                         SummaryCard(
                           title: "Total Pending Users",
                           value: snapshot.data!['total_pending_users'].toString(),
-                          icon: Icons.article_outlined,
-                          backgroundColor: const Color.fromARGB(255, 255, 162, 68),
+                          icon: Icons.person_add_alt_1,
+                          backgroundColor: appColorScheme.warning,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
@@ -151,8 +153,8 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                         SummaryCard(
                           title: "Total Admins",
                           value: snapshot.data!['total_admin'].toString(),
-                          icon: Icons.group_add_rounded,
-                          backgroundColor: appColorScheme.warning,
+                          icon: Icons.people_rounded,
+                          backgroundColor: const Color.fromARGB(255, 173, 91, 241),
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
@@ -193,7 +195,7 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                         SummaryCard(
                           title: "Total Researchers",
                           value: snapshot.data!['total_researcher'].toString(),
-                          icon: Icons.article_outlined,
+                          icon: Icons.people_rounded,
                           backgroundColor: appColorScheme.info,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
@@ -202,7 +204,7 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                         SummaryCard(
                           title: "Total Reviewers",
                           value: snapshot.data!['total_reviewer'].toString(),
-                          icon: Icons.group_add_rounded,
+                          icon: Icons.people_rounded,
                           backgroundColor: appColorScheme.secondary,
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
@@ -211,7 +213,7 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                         SummaryCard(
                           title: "Total Students",
                           value: snapshot.data!['total_student'].toString(),
-                          icon: Icons.attach_file_rounded,
+                          icon: Icons.people_rounded,
                           backgroundColor: const Color.fromARGB(255, 116, 43, 218),
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
@@ -230,36 +232,41 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CardBody(
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          spacing: kDefaultPadding * 5.0,
-                          runSpacing: kDefaultPadding * 2.0,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                height: 40.0,
-                                child: ElevatedButton(
-                                  style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go(RouteUri.pendingusers),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                        child: Icon(
-                                          color: Colors.black,
-                                          Icons.verified_user_outlined,
-                                          size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                        ),
-                                      ),
-                                      const Text("Pending Users List", style: TextStyle(color: Colors.black),)
-                                    ],
-                                  ),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.verifiedusers),
+                                style: appButtonTheme.successText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.people_outline_rounded),
+                                    ),
+                                    Text('Verified Users List'),
+                                  ],
                                 ),
                               ),
-                            )
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.pendingusers),
+                                style: appButtonTheme.warningText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.person_add_alt_1_outlined),
+                                    ),
+                                    Text('Pending Users List'),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

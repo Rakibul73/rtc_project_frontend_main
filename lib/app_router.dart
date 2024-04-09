@@ -6,6 +6,7 @@ import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScree
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
@@ -26,7 +27,6 @@ import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart
 import 'package:rtc_project_fronend/views/screens/admin/UserManagementOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/VerifyUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewAllNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewAllUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewIndividualNotificationScreen.dart';
@@ -67,8 +67,8 @@ class RouteUri {
   static const String projectfundmanagement = '/projectfundmanagement';
   static const String projectmonitoringreport = '/projectmonitoringreport';
   static const String usermanagementoverview = '/usermanagementoverview';
-  static const String viewallusers = '/viewallusers';
   static const String pendingusers = '/pendingusers';
+  static const String verifiedusers = '/verifiedusers';
   static const String verifyuser = '/verifyuser';
   static const String projectoverview = '/projectoverview';
   static const String deleteuser = '/deleteuser';
@@ -105,7 +105,6 @@ const List<String> publicRoutes = [
   RouteUri.register, // Enable this line for actual authentication flow.
   RouteUri.forgotpass,
   RouteUri.resetpassscreen,
-  
 ];
 
 GoRouter appRouter(UserDataProvider userDataProvider) {
@@ -374,13 +373,6 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
-        path: RouteUri.viewallusers,
-        pageBuilder: (context, state) => NoTransitionPage<void>(
-          key: state.pageKey,
-          child: const ViewAllUsersScreen(),
-        ),
-      ),
-      GoRoute(
         path: RouteUri.projectoverview,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -399,6 +391,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const PendingUsersScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.verifiedusers,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const VerifiedUsersScreen(),
         ),
       ),
       GoRoute(
