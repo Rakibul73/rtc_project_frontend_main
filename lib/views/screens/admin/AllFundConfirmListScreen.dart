@@ -112,10 +112,7 @@ class _AllFundConfirmListScreenState extends State<AllFundConfirmListScreen> {
     viewAllProjects();
 
     _dataSource = DataSource(
-      onViewFundButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectfund}?projectid=${data['ProjectID']}'),
-      onSendFundButtonPressed: (data) {
-        sendFund(data['ProjectID']);
-      },
+      onViewDetailsButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectfund}?projectid=${data['ProjectID']}'),
       data: [],
     );
   }
@@ -247,7 +244,6 @@ class _AllFundConfirmListScreenState extends State<AllFundConfirmListScreen> {
                                         ),
                                         child: Builder(
                                           builder: (context) {
-                                            // Return the PaginatedDataTable with _dataSource
                                             return PaginatedDataTable(
                                               key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
                                               source: _dataSource,
@@ -260,9 +256,7 @@ class _AllFundConfirmListScreenState extends State<AllFundConfirmListScreen> {
                                                 DataColumn(label: Text('ProjectTitle')),
                                                 DataColumn(label: Text('TotalBudget')),
                                                 DataColumn(label: Text('TotalHonorarium')),
-                                                DataColumn(label: Text('HonorariumOfPI')),
-                                                DataColumn(label: Text('HonorariumOfCoPI')),
-                                                // DataColumn(label: Text('Actions')),
+                                                DataColumn(label: Text('Actions')),
                                               ],
                                             );
                                           },
@@ -287,13 +281,11 @@ class _AllFundConfirmListScreenState extends State<AllFundConfirmListScreen> {
 }
 
 class DataSource extends DataTableSource {
-  final void Function(Map<String, dynamic> data) onViewFundButtonPressed;
-  final void Function(Map<String, dynamic> data) onSendFundButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewDetailsButtonPressed;
   List<dynamic> data;
 
   DataSource({
-    required this.onViewFundButtonPressed,
-    required this.onSendFundButtonPressed,
+    required this.onViewDetailsButtonPressed,
     required this.data,
   });
 
@@ -312,54 +304,21 @@ class DataSource extends DataTableSource {
           : data['ProjectTitle'].toString())),
       DataCell(Text(data['TotalBudget'].toString())),
       DataCell(Text(data['TotalHonorarium'].toString())),
-      DataCell(Text(data['HonorariumOfPI'].toString())),
-      DataCell(Text(data['HonorariumOfCoPI'].toString())),
-      // DataCell(FutureBuilder<String>(
-      //   future: getTheProjectFundSendOrNot(data['ProjectID']),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasData) {
-      //       return Row(
-      //         mainAxisSize: MainAxisSize.min,
-      //         children: [
-      //           Padding(
-      //             padding: const EdgeInsets.only(right: kDefaultPadding),
-      //             child: OutlinedButton(
-      //               onPressed: () => onViewFundButtonPressed.call(data),
-      //               style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-      //               child: const Text("View Fund Details"),
-      //             ),
-      //           ),
-      //           Visibility(
-      //             visible: snapshot.data == "No",
-      //             child: Padding(
-      //               padding: const EdgeInsets.only(right: kDefaultPadding),
-      //               child: OutlinedButton(
-      //                 onPressed: () => onSendFundButtonPressed.call(data),
-      //                 style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-      //                 child: const Text("Send Fund"),
-      //               ),
-      //             ),
-      //           ),
-      //           Visibility(
-      //             visible: snapshot.data == "Yes",
-      //             child: Padding(
-      //               padding: const EdgeInsets.only(right: kDefaultPadding),
-      //               child: OutlinedButton(
-      //                 onPressed: null,
-      //                 style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-      //                 child: const Text("Fund Already Send"),
-      //               ),
-      //             ),
-      //           ),
-      //         ],
-      //       );
-      //     } else if (snapshot.hasError) {
-      //       return Text('Error: ${snapshot.error}');
-      //     } else {
-      //       return const Text('Loading...'); // Show a loading indicator while fetching data
-      //     }
-      //   },
-      // )),
+      DataCell(Builder(builder: (context) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: kDefaultPadding),
+              child: OutlinedButton(
+                onPressed: () => onViewDetailsButtonPressed.call(data),
+                style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
+                child: const Text("View Request"),
+              ),
+            ),
+          ],
+        );
+      })),
     ]);
   }
 
