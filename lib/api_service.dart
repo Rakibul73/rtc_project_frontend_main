@@ -17,6 +17,38 @@ Future<String?> getAccessToken() async {
 }
 
 class ApiService {
+
+  static Future<List<dynamic>> fetchAllVerifiedUsers() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_users_minimum_user_management_overview');
+    print("fetchAllVerifiedUsers url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['Users'];
+      } else {
+        print("fetchAllVerifiedUsers = Failed to load verified users: ${response.statusCode}");
+        throw Exception('Failed to load verified users: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load verified users : $e');
+    }
+  }
   static Future<List<dynamic>> fetchAdminFundConfirmList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
