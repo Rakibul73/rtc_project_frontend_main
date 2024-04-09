@@ -81,7 +81,7 @@ class _VerifiedUsersScreenState extends State<VerifiedUsersScreen> {
       });
     }
   }
-  
+
   void filterUserFaculty(String searchText) {
     List<dynamic> updatedUsers = [];
     if (searchText.isEmpty) {
@@ -119,7 +119,7 @@ class _VerifiedUsersScreenState extends State<VerifiedUsersScreen> {
     viewAllVerifiedUsers();
 
     _dataSource = DataSource(
-      onViewUserButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.verifyuser}?pendinguserid=${data['UserID']}'),
+      onViewUserButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.verifieduser}?userid=${data['UserID']}'),
       data: [],
     );
   }
