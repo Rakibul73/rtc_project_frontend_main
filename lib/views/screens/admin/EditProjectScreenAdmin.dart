@@ -452,7 +452,7 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
               title: "Project Updated Successfully",
               width: kDialogWidth,
               btnOkText: 'OK',
-              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.myprojects),
+              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.searchproject),
             );
             d.show();
           }
