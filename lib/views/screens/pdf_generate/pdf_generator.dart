@@ -8,11 +8,12 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart' as admin;
 import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart' as user;
+import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart' as viewfund;
 import 'dart:html' as html;
 
 Future<pw.Widget> generateImageWidget(Uint8List? fileBytes, width, height) async {
   final image = pw.MemoryImage(fileBytes!);
-  return pw.Image(image, width: width, height: height, alignment: pw.Alignment.center, fit: pw.BoxFit.contain);
+  return pw.Image(image, width: width, height: height, alignment: pw.Alignment.center, fit: pw.BoxFit.fill);
 }
 
 Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildContext context, Uint8List? methodologyFileBytes, Uint8List? piSignatureFileBytes, Uint8List? piSealFileBytes,
@@ -1407,7 +1408,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
       children: [
         pw.SizedBox(
           width: (kDefaultPadding * 29),
-          child: pw.Table.fromTextArray(
+          child: pw.TableHelper.fromTextArray(
             cellAlignment: pw.Alignment.center,
             headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
             cellStyle: pw.TextStyle(font: ttfGeneral, fontSize: 11, lineSpacing: 1.5),
@@ -1450,7 +1451,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
       children: [
         pw.SizedBox(
           width: (kDefaultPadding * 29),
-          child: pw.Table.fromTextArray(
+          child: pw.TableHelper.fromTextArray(
             cellAlignment: pw.Alignment.center,
             columnWidths: {0: const pw.FixedColumnWidth(30), 1: const pw.FixedColumnWidth(200), 2: const pw.FixedColumnWidth(50), 3: const pw.FixedColumnWidth(75), 4: const pw.FixedColumnWidth(75)},
             headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
@@ -1510,7 +1511,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
           ),
         ),
         pw.SizedBox(
-          width: (kDefaultPadding * 12.0),
+          width: (kDefaultPadding * 7.0),
           child: pw.Text(
             formData.piSignatureDate,
             style: pw.TextStyle(
@@ -1562,7 +1563,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.SizedBox(
-          width: (kDefaultPadding * 16.0),
+          width: (kDefaultPadding * 14.0),
           child: pw.Text(
             "Signature of the Chairman of the Department: ",
             style: pw.TextStyle(
@@ -1593,7 +1594,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
           ),
         ),
         pw.SizedBox(
-          width: (kDefaultPadding * 12.0),
+          width: (kDefaultPadding * 7.0),
           child: pw.Text(
             formData.dateOfChairmanOfTheDepartment,
             style: pw.TextStyle(
@@ -2710,8 +2711,6 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
   );
 
   // Save the PDF document to a file
-
-  // Save the PDF document to a file
   final bytes = await pdf.save();
   final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
   final url = html.Url.createObjectUrlFromBlob(blob);
@@ -2730,14 +2729,12 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
   // Create a PDF document
   final pdf = pw.Document();
   final fontGeneral = await rootBundle.load("fonts/times-new-roman.ttf");
-  // final fontBoldItalic = await rootBundle.load("fonts/times-new-roman-bold-italic.ttf");
   final fontBold = await rootBundle.load("fonts/times-new-roman-bold.ttf");
   final fontItalic = await rootBundle.load("fonts/times-new-roman-italic.ttf");
   final fontSymbola = await rootBundle.load("fonts/Symbola.ttf");
   final ttfGeneral = pw.Font.ttf(fontGeneral);
   final ttfItalic = pw.Font.ttf(fontItalic);
   final ttfBold = pw.Font.ttf(fontBold);
-  // final ttfBoldItalic = pw.Font.ttf(fontBoldItalic);
   final ttfSymbola = pw.Font.ttf(fontSymbola);
 
   final appLogo = await rootBundle.load("images/app_logo_2.png");
@@ -4117,7 +4114,7 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
       children: [
         pw.SizedBox(
           width: (kDefaultPadding * 29),
-          child: pw.Table.fromTextArray(
+          child: pw.TableHelper.fromTextArray(
             cellAlignment: pw.Alignment.center,
             headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
             cellStyle: pw.TextStyle(font: ttfGeneral, fontSize: 11, lineSpacing: 1.5),
@@ -4160,7 +4157,7 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
       children: [
         pw.SizedBox(
           width: (kDefaultPadding * 29),
-          child: pw.Table.fromTextArray(
+          child: pw.TableHelper.fromTextArray(
             cellAlignment: pw.Alignment.center,
             columnWidths: {0: const pw.FixedColumnWidth(30), 1: const pw.FixedColumnWidth(200), 2: const pw.FixedColumnWidth(50), 3: const pw.FixedColumnWidth(75), 4: const pw.FixedColumnWidth(75)},
             headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
@@ -4220,7 +4217,7 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
           ),
         ),
         pw.SizedBox(
-          width: (kDefaultPadding * 12.0),
+          width: (kDefaultPadding * 7.0),
           child: pw.Text(
             formData.piSignatureDate,
             style: pw.TextStyle(
@@ -4272,7 +4269,7 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.SizedBox(
-          width: (kDefaultPadding * 16.0),
+          width: (kDefaultPadding * 14.0),
           child: pw.Text(
             "Signature of the Chairman of the Department: ",
             style: pw.TextStyle(
@@ -4303,7 +4300,7 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
           ),
         ),
         pw.SizedBox(
-          width: (kDefaultPadding * 12.0),
+          width: (kDefaultPadding * 7.0),
           child: pw.Text(
             formData.dateOfChairmanOfTheDepartment,
             style: pw.TextStyle(
@@ -5420,8 +5417,6 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
   );
 
   // Save the PDF document to a file
-
-  // Save the PDF document to a file
   final bytes = await pdf.save();
   final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
   final url = html.Url.createObjectUrlFromBlob(blob);
@@ -5432,5 +5427,684 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
   print("PDF generated and saved successfully!");
-  // html.window.open(url, '_blank');
+}
+
+Future<void> generateRequestForhonorariumPDF(viewfund.FormData formData, BuildContext context, Uint8List? piSignatureFileBytes, Uint8List? piSealFileBytes, Uint8List? chairmanSignatureFileBytes,
+    Uint8List? chairmanSealFileBytes, List<dynamic> initialProjectBudget) async {
+  // Create a PDF document
+  final pdf = pw.Document();
+  final fontGeneral = await rootBundle.load("fonts/times-new-roman.ttf");
+  final fontBold = await rootBundle.load("fonts/times-new-roman-bold.ttf");
+  final ttfGeneral = pw.Font.ttf(fontGeneral);
+  final ttfBold = pw.Font.ttf(fontBold);
+
+  final appLogo = await rootBundle.load("images/app_logo_2.png");
+  final appLogoImageBytes = appLogo.buffer.asUint8List();
+
+  final piSignatureimage = await generateImageWidget(piSignatureFileBytes, 200.0, 40.0);
+  final piSealimage = await generateImageWidget(piSealFileBytes, 200.0, 40.0);
+  final chairmanSignatureimage = await generateImageWidget(chairmanSignatureFileBytes, 200.0, 40.0);
+  final chairmanSealimage = await generateImageWidget(chairmanSealFileBytes, 200.0, 40.0);
+
+  List<pw.Widget> widgets = [];
+
+  final zzz = pw.ListView(padding: const pw.EdgeInsets.all(5.0), children: [
+    pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Container(
+              alignment: pw.Alignment.center,
+              padding: const pw.EdgeInsets.only(left: kDefaultPadding * 4.0, right: kDefaultPadding * 3.0),
+              child: pw.Stack(
+                children: [
+                  pw.Image(pw.MemoryImage(appLogoImageBytes), width: 80, height: 95),
+                ],
+              ),
+            ),
+          ],
+        ),
+        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+          pw.Text(
+            "Research and Training Centre",
+            style: pw.TextStyle(font: ttfBold, fontSize: 20, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Patuakhali Science and Technology University",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13, letterSpacing: 0.2),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Dumki, Patuakhali-8602, Bangladesh",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Email: rtc@pstu.ac.bd",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+        ]),
+      ],
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 1.5, top: kDefaultPadding),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 0.0),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Text(
+            "Request for Honorarium of Research Project",
+            style: pw.TextStyle(font: ttfBold, fontSize: 14, letterSpacing: 0.3, decoration: pw.TextDecoration.underline, decorationThickness: 2.5),
+            textAlign: pw.TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+  ]);
+
+  final zzz1 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Research code: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            formData.rtcCode,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz2 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Faculty: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            formData.piFacultyName,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz3 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: 'Title of Project:  ',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+                pw.TextSpan(
+                  text: formData.projectTitle,
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz4 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Name of the PI: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            formData.piName,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz5 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "Office address of the PI including phone & e-mail",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+              letterSpacing: 0.2,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz6 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.6, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28.0),
+          child: pw.Text(
+            formData.piInstituteName,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28.0),
+          child: pw.Text(
+            formData.piInstituteAddress,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+        pw.Row(children: [
+          pw.SizedBox(
+            // width: (15),
+            child: pw.Text(
+              "Email:  ",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 11,
+                lineSpacing: 1.5,
+              ),
+            ),
+          ),
+          pw.SizedBox(
+            // width: (15),
+            child: pw.Text(
+              formData.piEmail,
+              style: pw.TextStyle(
+                color: PdfColors.blue900,
+                font: ttfGeneral,
+                decoration: pw.TextDecoration.underline,
+                fontSize: 11,
+                lineSpacing: 1.5,
+              ),
+            ),
+          ),
+        ]),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28.0),
+          child: pw.Text(
+            "Mobile:  ${formData.piPhone}",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz7 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Total budget: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            formData.totalBudget,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz8 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Requested amount (Tk.) for honorarium of PI: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "${formData.requestedHonorariumOfPI.toString()}/=",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz9 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.3, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Requested amount (Tk.) for honorarium of CO-PI: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "${formData.requestedHonorariumOfCoPI.toString()}/=",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz10 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.5, left: kDefaultPadding * 4.0, right: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Total honorarium of PI / Co-PI: ",
+            style: pw.TextStyle(font: ttfBold, fontSize: 11, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "${formData.totalHonorarium.toString()}/=",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final zzz11 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 4, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Container(
+          width: 150.0,
+          height: 40.0,
+          child: pw.FittedBox(
+            fit: pw.BoxFit.contain,
+            child: chairmanSignatureimage,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 8),
+        ),
+        pw.Container(
+          width: 150.0,
+          height: 40.0,
+          child: pw.FittedBox(
+            fit: pw.BoxFit.contain,
+            child: piSignatureimage,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz12 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.3, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 0.0),
+            child: pw.Container(
+              width: 150,
+              height: 1.0, // Adjust the height of the line as needed
+              color: const PdfColor.fromInt(0xff000000), // Color of the line
+            ),
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 8),
+        ),
+        pw.SizedBox(
+          child: pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 0.0),
+            child: pw.Container(
+              width: 150,
+              height: 1.0, // Adjust the height of the line as needed
+              color: const PdfColor.fromInt(0xff000000), // Color of the line
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz13 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: 0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Signature of the Dean/Chairman",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 10),
+        ),
+        pw.SizedBox(
+          child: pw.Text(
+            "Signature of the PI",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz14 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          child: pw.Text(
+            "Date & Seal: ",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          child: pw.Text(
+            formData.dateOfChairmanOfTheDepartment,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 10),
+        ),
+        pw.SizedBox(
+          child: pw.Text(
+            "Date & Seal: ",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          child: pw.Text(
+            formData.piSignatureDate,
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz15 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Container(
+          width: 150.0,
+          height: 40.0,
+          child: pw.FittedBox(
+            fit: pw.BoxFit.contain,
+            child: chairmanSealimage,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 8),
+        ),
+        pw.Container(
+          width: 150.0,
+          height: 40.0,
+          child: pw.FittedBox(
+            fit: pw.BoxFit.contain,
+            child: piSealimage,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  List<Map<String, dynamic>> convertTasks(List<dynamic> initialProjectGanttsBudgets) {
+    List<Map<String, dynamic>> convertedTasks = [];
+    for (var item in initialProjectGanttsBudgets) {
+      if (item is Map<String, dynamic>) {
+        convertedTasks.add(item);
+      }
+    }
+    return convertedTasks;
+  }
+
+  final zzz99 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "BUDGET SUMMARY (ANNUAL BASIS):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  final convertedBudget = convertTasks(initialProjectBudget);
+  // Calculate the Grand Total by summing up the 'TotalCost' column values
+  double grandTotal = convertedBudget.map((item) => item['TotalCost'] as double).fold(0, (a, b) => a + b);
+  final budget = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.TableHelper.fromTextArray(
+            cellAlignment: pw.Alignment.center,
+            columnWidths: {0: const pw.FixedColumnWidth(30), 1: const pw.FixedColumnWidth(200), 2: const pw.FixedColumnWidth(50), 3: const pw.FixedColumnWidth(75), 4: const pw.FixedColumnWidth(75)},
+            headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
+            cellStyle: pw.TextStyle(font: ttfGeneral, fontSize: 11, lineSpacing: 1.5),
+            cellAlignments: {0: pw.Alignment.topLeft, 1: pw.Alignment.topLeft, 2: pw.Alignment.center, 3: pw.Alignment.center, 4: pw.Alignment.center},
+            border: pw.TableBorder.all(),
+            headers: ['Sl. No.', 'Item', 'Quantity', 'Unit Price', 'Total Cost (Tk)'],
+            data: convertedBudget
+                .map((row) => [
+                      '${row['SerialNo']}',
+                      row['Item'],
+                      '${row['Quantity']}',
+                      '${row['UnitPrice']}',
+                      '${row['TotalCost']}',
+                    ])
+                .toList()
+              ..add(['', pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold)), '', '', pw.Text((grandTotal.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold))]),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz);
+  widgets.add(zzz1);
+  widgets.add(zzz2);
+  widgets.add(zzz3);
+  widgets.add(zzz4);
+  widgets.add(zzz5);
+  widgets.add(zzz6);
+  widgets.add(zzz7);
+  widgets.add(zzz8);
+  widgets.add(zzz9);
+  widgets.add(zzz10);
+  widgets.add(zzz11);
+  widgets.add(zzz12);
+  widgets.add(zzz13);
+  widgets.add(zzz14);
+  widgets.add(zzz15);
+
+  widgets.add(pw.SizedBox(
+    height: 35.0,
+  )); // Added a placeholder widget to force a new page before zzz99
+  widgets.add(zzz99);
+  widgets.add(budget);
+
+  // Add content to the PDF document
+  // USE Paragraph FOR TEXT TO AUTO SPAN TO MULTIPLE LINES & PAGES
+  pdf.addPage(
+    pw.MultiPage(
+        pageTheme: const pw.PageTheme(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.only(top: 13.0, left: 0.0, right: 0.0, bottom: 40.0),
+        ),
+        build: (pw.Context context) => widgets),
+  );
+
+  // Save the PDF document to a file
+  final bytes = await pdf.save();
+  final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final fileName = 'Request_For_Honorarium_${formData.piName}_ProjectID_${formData.projectID}.pdf';
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+  print("PDF generated and saved successfully!");
 }

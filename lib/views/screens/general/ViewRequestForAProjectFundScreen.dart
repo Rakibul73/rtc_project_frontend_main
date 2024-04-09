@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/constants/values.dart';
+import 'package:rtc_project_fronend/views/screens/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -34,6 +36,29 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
   late List<dynamic> initialProjectBudget = [];
   Future<bool>? _future;
 
+  Uint8List? _piSignatureFileBytes;
+  Uint8List? _piSealFileBytes;
+  Uint8List? _chairmanSignatureFileBytes;
+  Uint8List? _chairmanSealFileBytes;
+
+  void _pdfHandleButtonPress() {
+    final d = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      title: "Pdf Generating.....",
+      desc: "Please wait...5 seconds",
+      width: kDialogWidth,
+      headerAnimationLoop: true,
+    );
+    Future.wait([
+      d.show(),
+      Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
+      generateRequestForhonorariumPDF(_formData, context, _piSignatureFileBytes, _piSealFileBytes, _chairmanSignatureFileBytes, _chairmanSealFileBytes, initialProjectBudget),
+    ]).then((_) {
+      d.dismiss();
+    });
+  }
+
   Future<bool> _getDataAsync() async {
     print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
@@ -59,21 +84,45 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
           dialog.show();
         }
 
-        final userId = await storage.read(key: 'user_id');
-        int userid = int.parse(userId!);
-
         print(projectDetailForFundSelf['project']);
 
         _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
         _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
         _formData.totalBudget = projectDetailForFundSelf['project']['TotalBudgetOfResearchProposalTK'].toString();
 
-        _formData.piUserID = userid;
+        _formData.piUserID = projectDetailForFundSelf['project']['CreatorUserID'];
         _formData.piSealLocation = projectDetailForFundSelf['project']['CreatorUserSealLocation'];
+        String piSealfilePath = _formData.piSealLocation.isNotEmpty
+            ? await ApiService.downloadFile('seal/download', _formData.piSealLocation)
+            : await ApiService.downloadFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (piSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSealfilePath);
+          _piSealFileBytes = fileBytes;
+        }
         _formData.piSignatureLocation = projectDetailForFundSelf['project']['CreatorUserSignatureLocation'];
-
+        String piSignaturefilePath = _formData.piSignatureLocation.isNotEmpty
+            ? await ApiService.downloadFile('signature/download', _formData.piSignatureLocation)
+            : await ApiService.downloadFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (piSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(piSignaturefilePath);
+          _piSignatureFileBytes = fileBytes;
+        }
         _formData.chairmanOfDepartmentSealFileLocation = projectDetailForFundSelf['project']['ChairmanOfDepartmentSealLocation'];
+        String chairmanSealfilePath = _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
+            ? await ApiService.downloadFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
+            : await ApiService.downloadFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+        if (chairmanSealfilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSealfilePath);
+          _chairmanSealFileBytes = fileBytes;
+        }
         _formData.chairmanOfDepartmentSignatureFileLocation = projectDetailForFundSelf['project']['ChairmanOfDepartmentSignatureLocation'];
+        String chairmanSignaturefilePath = _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
+            ? await ApiService.downloadFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
+            : await ApiService.downloadFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+        if (chairmanSignaturefilePath.isNotEmpty) {
+          Uint8List fileBytes = base64Decode(chairmanSignaturefilePath);
+          _chairmanSignatureFileBytes = fileBytes;
+        }
 
         final budgetDetails = await ApiService.fetchAllBudgetOfAProject(
           int.parse(_formData.projectID),
@@ -90,6 +139,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         _formData.piEmail = userDetailsForFundApply['user']['Email'] ?? '';
         _formData.piPhone = userDetailsForFundApply['user']['Phone'] ?? '';
         _formData.piInstituteName = userDetailsForFundApply['user']['InstituteName'] ?? '';
+        _formData.piFacultyName = userDetailsForFundApply['user']['FacultyName'] ?? '';
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
 
@@ -100,7 +150,13 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         _formData.requestedHonorariumOfPI = fundDetails['fund']['HonorariumOfPI'] ?? '';
         _formData.requestedHonorariumOfCoPI = fundDetails['fund']['HonorariumOfCoPI'] ?? '';
         _formData.piSignatureDate = fundDetails['fund']['PiSignatureDate'] ?? '';
+        if (_formData.piSignatureDate != null && _formData.piSignatureDate.isNotEmpty) {
+          _formData.piSignatureDate = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.piSignatureDate));
+        }
         _formData.dateOfChairmanOfTheDepartment = fundDetails['fund']['ChairmanOfDepartmentSignatureDate'] ?? '';
+        if (_formData.dateOfChairmanOfTheDepartment != null && _formData.dateOfChairmanOfTheDepartment.isNotEmpty) {
+          _formData.dateOfChairmanOfTheDepartment = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment));
+        }
         _formData.totalHonorarium = fundDetails['fund']['TotalHonorarium'] ?? '';
 
         print("==========**E      N      D*****===========");
@@ -756,12 +812,79 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                           const SizedBox(height: 25),
                           Padding(
                             padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  SizedBox(
+                                    width: (kDefaultPadding * 22),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                      child: Stack(
+                                        children: [
+                                          _chairmanSignatureFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSignatureFileBytes!,
+                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                  // width: 150, // Adjust width as needed
+                                                  height: 50, // Adjust height as needed
+                                                )
+                                              : const CircularProgressIndicator(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: (kDefaultPadding * 22),
+                                    child: Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const CardHeader(
+                                            title: 'Chairman Signature Date :',
+                                            backgroundColor: Color.fromARGB(255, 74, 89, 96),
+                                            titleColor: Color.fromARGB(255, 151, 204, 197),
+                                            showDivider: false,
+                                          ),
+                                          CardHeader(
+                                            title: _formData.dateOfChairmanOfTheDepartment,
+                                            backgroundColor: const Color.fromARGB(255, 51, 55, 56),
+                                            titleColor: const Color.fromARGB(255, 238, 216, 221),
+                                            showDivider: false,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: kDefaultPadding),
+                                  SizedBox(
+                                    width: (kDefaultPadding * 22),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                                      child: Stack(
+                                        children: [
+                                          _chairmanSealFileBytes != null
+                                              ? Image.memory(
+                                                  _chairmanSealFileBytes!,
+                                                  fit: BoxFit.cover, // Adjust image to cover the entire space
+                                                  // width: 150, // Adjust width as needed
+                                                  height: 50, // Adjust height as needed
+                                                )
+                                              : const CircularProgressIndicator(),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                                const SizedBox(width: kDefaultPadding),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                       SizedBox(
                                         width: (kDefaultPadding * 22),
                                         child: Container(
@@ -769,25 +892,14 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                           padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                           child: Stack(
                                             children: [
-                                              FutureBuilder<String>(
-                                                future: _formData.chairmanOfDepartmentSignatureFileLocation.isNotEmpty
-                                                    ? ApiService.downloadFile('signature/download', _formData.chairmanOfDepartmentSignatureFileLocation)
-                                                    : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                                    return const CircularProgressIndicator();
-                                                  } else if (snapshot.hasError) {
-                                                    return Text('Error: ${snapshot.error}');
-                                                  } else {
-                                                    return Image.memory(
-                                                      base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                              _piSignatureFileBytes != null
+                                                  ? Image.memory(
+                                                      _piSignatureFileBytes!,
                                                       fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                      // width: 120, // Adjust width as needed
+                                                      // width: 150, // Adjust width as needed
                                                       height: 50, // Adjust height as needed
-                                                    );
-                                                  }
-                                                },
-                                              ),
+                                                    )
+                                                  : const CircularProgressIndicator(),
                                             ],
                                           ),
                                         ),
@@ -801,13 +913,13 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               const CardHeader(
-                                                title: 'Chairman Signature Date :',
+                                                title: 'PI Signature Date :',
                                                 backgroundColor: Color.fromARGB(255, 74, 89, 96),
                                                 titleColor: Color.fromARGB(255, 151, 204, 197),
                                                 showDivider: false,
                                               ),
                                               CardHeader(
-                                                title: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment)),
+                                                title: _formData.piSignatureDate,
                                                 backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                                 titleColor: const Color.fromARGB(255, 238, 216, 221),
                                                 showDivider: false,
@@ -824,126 +936,22 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                           padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
                                           child: Stack(
                                             children: [
-                                              FutureBuilder<String>(
-                                                future: _formData.chairmanOfDepartmentSealFileLocation.isNotEmpty
-                                                    ? ApiService.downloadFile('seal/download', _formData.chairmanOfDepartmentSealFileLocation)
-                                                    : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                                    return const CircularProgressIndicator();
-                                                  } else if (snapshot.hasError) {
-                                                    return Text('Error: ${snapshot.error}');
-                                                  } else {
-                                                    return Image.memory(
-                                                      base64Decode(snapshot.data!), // Convert base64 string to image bytes
+                                              _piSealFileBytes != null
+                                                  ? Image.memory(
+                                                      _piSealFileBytes!,
                                                       fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                      // width: 120, // Adjust width as needed
+                                                      // width: 150, // Adjust width as needed
                                                       height: 50, // Adjust height as needed
-                                                    );
-                                                  }
-                                                },
-                                              ),
+                                                    )
+                                                  : const CircularProgressIndicator(),
                                             ],
                                           ),
                                         ),
                                       ),
                                     ]),
-                                    const SizedBox(width: kDefaultPadding),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                          SizedBox(
-                                            width: (kDefaultPadding * 22),
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                              child: Stack(
-                                                children: [
-                                                  FutureBuilder<String>(
-                                                    future: _formData.piSignatureLocation.isNotEmpty
-                                                        ? ApiService.downloadFile('signature/download', _formData.piSignatureLocation)
-                                                        : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
-                                                    builder: (context, snapshot) {
-                                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return const CircularProgressIndicator();
-                                                      } else if (snapshot.hasError) {
-                                                        return Text('Error: ${snapshot.error}');
-                                                      } else {
-                                                        return Image.memory(
-                                                          base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                          fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                          // width: 120, // Adjust width as needed
-                                                          height: 50, // Adjust height as needed
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: kDefaultPadding),
-                                          SizedBox(
-                                            width: (kDefaultPadding * 22),
-                                            child: Card(
-                                              clipBehavior: Clip.antiAlias,
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  const CardHeader(
-                                                    title: 'PI Signature Date :',
-                                                    backgroundColor: Color.fromARGB(255, 74, 89, 96),
-                                                    titleColor: Color.fromARGB(255, 151, 204, 197),
-                                                    showDivider: false,
-                                                  ),
-                                                  CardHeader(
-                                                    title: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma").format(DateTime.parse(_formData.piSignatureDate)),
-                                                    backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                    titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                    showDivider: false,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(height: kDefaultPadding),
-                                          SizedBox(
-                                            width: (kDefaultPadding * 22),
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                                              child: Stack(
-                                                children: [
-                                                  FutureBuilder<String>(
-                                                    future: _formData.piSealLocation.isNotEmpty
-                                                        ? ApiService.downloadFile('seal/download', _formData.piSealLocation)
-                                                        : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
-                                                    builder: (context, snapshot) {
-                                                      if (snapshot.connectionState == ConnectionState.waiting) {
-                                                        return const CircularProgressIndicator();
-                                                      } else if (snapshot.hasError) {
-                                                        return Text('Error: ${snapshot.error}');
-                                                      } else {
-                                                        return Image.memory(
-                                                          base64Decode(snapshot.data!), // Convert base64 string to image bytes
-                                                          fit: BoxFit.cover, // Adjust image to cover the entire space
-                                                          // width: 120, // Adjust width as needed
-                                                          height: 50, // Adjust height as needed
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -1171,7 +1179,6 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  // onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
                                   onPressed: () async {
                                     final sharedPref = await SharedPreferences.getInstance();
                                     final roleID = sharedPref.getInt(StorageKeys.roleId) ?? 0;
@@ -1194,6 +1201,33 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                       ),
                                       const Text("Back"),
                                     ],
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Padding(
+                                padding: const EdgeInsets.only(right: kDefaultPadding),
+                                child: SizedBox(
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    style: themeData.extension<AppButtonTheme>()!.successText,
+                                    onPressed: () {
+                                      _pdfHandleButtonPress();
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                          child: Icon(
+                                            Icons.download_for_offline_outlined,
+                                            size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                          ),
+                                        ),
+                                        const Text("Download PDF"),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
