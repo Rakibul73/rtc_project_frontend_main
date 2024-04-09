@@ -2798,7 +2798,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go(RouteUri.searchproject),
+                                  onPressed: () => GoRouter.of(context).go(RouteUri.myprojects),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
