@@ -281,6 +281,5 @@ class UserDataProvider extends ChangeNotifier {
 
   bool isUserLoggedIn() {
     return _username.isNotEmpty;
-    // implement to check if user is logged in with api
   }
 }
