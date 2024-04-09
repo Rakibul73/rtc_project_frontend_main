@@ -142,7 +142,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SummaryCard(
                           title: "Total Users",
                           value: snapshot.data!['total_users'].toString(),
-                          icon: Icons.people_rounded,
+                          icon: Icons.verified_user_rounded,
                           backgroundColor: const Color.fromARGB(255, 255, 162, 68),
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
@@ -160,7 +160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SummaryCard(
                           title: "Total Admins",
                           value: snapshot.data!['total_admin'].toString(),
-                          icon: Icons.group_add_rounded,
+                          icon: Icons.people_rounded,
                           backgroundColor: appColorScheme.warning,
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
@@ -203,7 +203,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SummaryCard(
                           title: "Total Researchers",
                           value: snapshot.data!['total_researcher'].toString(),
-                          icon: Icons.article_outlined,
+                          icon: Icons.people_rounded,
                           backgroundColor: appColorScheme.info,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
@@ -212,7 +212,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SummaryCard(
                           title: "Total Reviewers",
                           value: snapshot.data!['total_reviewer'].toString(),
-                          icon: Icons.group_add_rounded,
+                          icon: Icons.people_rounded,
                           backgroundColor: appColorScheme.secondary,
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
@@ -221,7 +221,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SummaryCard(
                           title: "Total Students",
                           value: snapshot.data!['total_student'].toString(),
-                          icon: Icons.attach_file_rounded,
+                          icon: Icons.people_rounded,
                           backgroundColor: const Color.fromARGB(255, 116, 43, 218),
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,

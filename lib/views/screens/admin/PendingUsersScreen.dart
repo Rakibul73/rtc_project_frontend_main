@@ -170,6 +170,7 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
+      selectedMenuUri: RouteUri.usermanagementoverview,
         body: ListView(
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [
