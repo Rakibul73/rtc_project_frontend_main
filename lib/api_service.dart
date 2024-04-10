@@ -18,6 +18,42 @@ Future<String?> getAccessToken() async {
 
 class ApiService {
 
+  static Future<Map<String, dynamic>> updateUserDetailsAdminMode(int userId, Map<String, dynamic> userData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_user_admin_mode/$userId');
+    print("updateUserDetailsAdminMode url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(userData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update user: ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+
   static Future<List<dynamic>> fetchAllVerifiedUsers() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
