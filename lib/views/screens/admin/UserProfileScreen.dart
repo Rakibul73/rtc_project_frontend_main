@@ -2023,6 +2023,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 initialValue: _formData.departmentName,
                                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                                 items: [
+                                                  '',
                                                   'Department of Computer Science and Information Technology',
                                                   'Department of Computer and Communication Engineering',
                                                   'Department of Electrical and Electronics Engineering',
@@ -2200,6 +2201,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 initialValue: _formData.facultyName,
                                                 validator: FormBuilderValidators.required(),
                                                 items: [
+                                                  '',
                                                   'Faculty of Agriculture',
                                                   'Faculty of Computer Science and Engineering',
                                                   'Faculty of Business Administration',
@@ -2331,9 +2333,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 validator: FormBuilderValidators.required(),
                                                 initialValue: _formData.instituteName,
                                                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                items: [
-                                                  'Patuakhali Science & Technology University (PSTU)',
-                                                ].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                                                items: const [
+                                                  DropdownMenuItem(
+                                                    value: '',
+                                                    child: Text('Select'),
+                                                  ),
+                                                  DropdownMenuItem(
+                                                    value: 'Patuakhali Science & Technology University (PSTU)',
+                                                    child: Text('Patuakhali Science & Technology University (PSTU)'),
+                                                  ),
+                                                  // Add more DropdownMenuItem as needed with unique values
+                                                ],
                                                 onChanged: (value) => (_formData.instituteName = value ?? ''),
                                               ),
                                             ],
