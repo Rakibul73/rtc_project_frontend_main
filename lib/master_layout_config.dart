@@ -57,6 +57,11 @@ final sidebarMenuConfigs = [
     title: (context) => "Admin Panel",
     children: [
       SidebarChildMenuConfig(
+        uri: RouteUri.circularnotice,
+        icon: Icons.circle_outlined,
+        title: (context) => "Circular Notice",
+      ),
+      SidebarChildMenuConfig(
         uri: RouteUri.usermanagementoverview,
         icon: Icons.circle_outlined,
         title: (context) => "User Management Overview",
