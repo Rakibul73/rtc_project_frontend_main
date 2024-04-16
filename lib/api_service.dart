@@ -18,6 +18,107 @@ Future<String?> getAccessToken() async {
 
 class ApiService {
 
+  static Future<List<dynamic>> fetchANotice(int noticeID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_notice/$noticeID');
+    print("fetchANotice url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['notice'];
+      } else {
+        print("fetchANotice = Failed to load notice: ${response.statusCode}");
+        throw Exception('Failed to load notice: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load notice : $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> createNotice(Map<String, dynamic> createNoticeData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_notice');
+    print("createNotice url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(createNoticeData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to create notice: ${responseBody['error']}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  static Future<List<dynamic>> fetchAllNotice() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/notices');
+    print("fetchAllNotice url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['notices'];
+      } else {
+        print("fetchAllNotice = Failed to load notices: ${response.statusCode}");
+        throw Exception('Failed to load notices: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load notices : $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> updateUserDetailsAdminMode(int userId, Map<String, dynamic> userData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/screens/admin/AllFundConfirmListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/AllFundRequestQueueListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/CreateCircularNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/EditNoticeAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
@@ -9,6 +11,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScree
 import 'package:rtc_project_fronend/views/screens/admin/UserProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
@@ -93,6 +96,9 @@ class RouteUri {
   static const String fundmonitoringpanel = '/fundmonitoringpanel';
   static const String allfundrequestqueuelist = '/allfundrequestqueuelist';
   static const String allfundconfirmlist = '/allfundconfirmlist';
+  static const String circularnotice = '/circularnotice';
+  static const String createcircularnotice = '/createcircularnotice';
+  static const String editnoticeadmin = '/editnoticeadmin';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -243,6 +249,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.editnoticeadmin,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: EditNoticeAdminScreen(noticeID: state.queryParameters['noticeid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.requestforaprojectfund,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
@@ -304,6 +319,20 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const MyProjectRecievedFundScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.circularnotice,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const CircularNoticeScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.createcircularnotice,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const CreateCircularNoticeScreen(),
         ),
       ),
       GoRoute(
