@@ -61,9 +61,9 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
     }
   }
 
-  Future<void> deletingProject(int projectID) async {
+  Future<void> deletingNotice(int noticeID) async {
     try {
-      final responseBody = await ApiService.deleteProject(projectID);
+      final responseBody = await ApiService.deleteNotice(noticeID);
       print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
@@ -76,8 +76,7 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Project deleted successfully');
-        // Refresh the initial projects list
+        print('Notices deleted successfully');
         viewAllNotice();
       }
     } catch (e) {
@@ -86,16 +85,16 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
   }
 
   // function to delete a project with data['ProjectID']
-  void deleteProject(int projectID) {
+  void deleteNotice(int noticeID) {
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.warning,
-      title: "Delete this project?",
-      desc: "Project Id $projectID will be deleted. This action cannot be undone.",
+      title: "Delete this Notice?",
+      desc: "Notice Id $noticeID will be deleted. This action cannot be undone.",
       width: kDialogWidth,
       btnOkText: 'Delete This',
       btnOkOnPress: () {
-        deletingProject(projectID);
+        deletingNotice(noticeID);
       },
       btnCancelOnPress: () {},
     );
@@ -108,10 +107,10 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
     viewAllNotice();
 
     _dataSource = DataSource(
-      onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewprojectadmin}?noticeid=${data['NoticeID']}'),
+      onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewnotice}?noticeid=${data['NoticeID']}'),
       onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editnoticeadmin}?noticeid=${data['NoticeID']}'),
       onDeleteButtonPressed: (data) {
-        deleteProject(data['NoticeID']);
+        deleteNotice(data['NoticeID']);
       },
       data: [],
     );
@@ -325,7 +324,8 @@ class DataSource extends DataTableSource {
 
     // Determine the maximum length of the project title to be displayed without scrolling
     const maxLength = 20; // Adjust this value as needed
-    DateTime utcDateTime = DateFormat('E, dd MMM yyyy HH:mm').parseUTC(data['DatePublished'].toString());
+    DateTime utcDateTime = DateFormat('E, dd MMM yyyy HH:mm a').parseUTC(data['DatePublished'].toString());
+    print("utcDateTime : , $utcDateTime");
     String formattedTime = DateFormat('E, dd MMM yyyy hh:mm a').format(utcDateTime);
 
     return DataRow.byIndex(index: index, cells: [

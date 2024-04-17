@@ -181,7 +181,7 @@ class _CreateCircularNoticeScreenState extends State<CreateCircularNoticeScreen>
                               selector: const Row(
                                 children: [
                                   Icon(Icons.file_upload_rounded),
-                                  Text('Upload Notice Doc/Pdf'),
+                                  Text('Upload Notice Doc/Pdf/PNG/JPG/JPEG File'),
                                 ],
                               ),
                               onChanged: _onNoticeFileSelected,

@@ -6108,3 +6108,22 @@ Future<void> generateRequestForhonorariumPDF(viewfund.FormData formData, BuildCo
   html.Url.revokeObjectUrl(url);
   print("PDF generated and saved successfully!");
 }
+
+Future<void> viewDOC(Uint8List noticeFileBytes, String datePublished) async {
+  final blob = html.Blob([Uint8List.fromList(noticeFileBytes)], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final anchor = html.AnchorElement(href: url);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+}
+
+Future<void> downloadImage(Uint8List noticeFileBytes, String fileName) async {
+  final blob = html.Blob([noticeFileBytes], 'application/octet-stream');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+}

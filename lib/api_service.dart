@@ -6,8 +6,8 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // const String baseUrl = 'http://192.168.1.188:5000';
-// const String baseUrl = 'http://localhost:5000';
-const String baseUrl = 'https://rakib73.pythonanywhere.com';
+const String baseUrl = 'http://localhost:5000';
+// const String baseUrl = 'https://rakib73.pythonanywhere.com';
 const storage = FlutterSecureStorage();
 
 Future<String?> getAccessToken() async {
@@ -17,6 +17,67 @@ Future<String?> getAccessToken() async {
 }
 
 class ApiService {
+
+  static Future<Map<String, dynamic>> deleteNotice(int noticeID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/notice/$noticeID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    print("deleteNotice response: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      return {'message': 'Notice with id $noticeID deleted successfully', 'statusCode': 200};
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
+      throw Exception('Failed to delete notice. errors: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateNotice(Map<String, dynamic> updateNoticeData , int noticeID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_notice/$noticeID');
+    print("updateNotice url: $url");
+
+    try {
+      final http.Response response = await http.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(updateNoticeData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update notice: ${responseBody['error']}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   static Future<List<dynamic>> fetchANotice(int noticeID) async {
     final accessToken = await getAccessToken();

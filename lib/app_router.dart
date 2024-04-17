@@ -12,6 +12,7 @@ import 'package:rtc_project_fronend/views/screens/admin/UserProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/ViewNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
@@ -99,6 +100,7 @@ class RouteUri {
   static const String circularnotice = '/circularnotice';
   static const String createcircularnotice = '/createcircularnotice';
   static const String editnoticeadmin = '/editnoticeadmin';
+  static const String viewnotice = '/viewnotice';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -272,6 +274,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewRequestForAProjectFundScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewnotice,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewNoticeScreen(noticeID: state.queryParameters['noticeid'] ?? ''),
           );
         },
       ),
