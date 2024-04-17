@@ -16,32 +16,32 @@ final sidebarMenuConfigs = [
     children: [
       SidebarChildMenuConfig(
         uri: RouteUri.projectdashboard,
-        icon: Icons.circle_outlined,
+        icon: Icons.dashboard_customize_outlined,
         title: (context) => "Project Dashboard",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.createproject,
-        icon: Icons.circle_outlined,
+        icon: Icons.create,
         title: (context) => "Create Project",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.myprojects,
-        icon: Icons.circle_outlined,
+        icon: Icons.my_library_books_outlined,
         title: (context) => "My Projects",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projectreviewtracking,
-        icon: Icons.circle_outlined,
+        icon: Icons.reviews_outlined,
         title: (context) => "Project Review Tracking",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projectfundmanagement,
-        icon: Icons.circle_outlined,
+        icon: Icons.monetization_on_outlined,
         title: (context) => "Project Fund Management",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projectmonitoringreport,
-        icon: Icons.circle_outlined,
+        icon: Icons.monitor_heart_outlined,
         title: (context) => "Project Monitoring Report",
       ),
     ],
@@ -58,42 +58,42 @@ final sidebarMenuConfigs = [
     children: [
       SidebarChildMenuConfig(
         uri: RouteUri.circularnotice,
-        icon: Icons.circle_outlined,
+        icon: Icons.notification_important_outlined,
         title: (context) => "Notice Board Management",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.usermanagementoverview,
-        icon: Icons.circle_outlined,
+        icon: Icons.supervised_user_circle_outlined,
         title: (context) => "User Management Overview",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.projectoverview,
-        icon: Icons.circle_outlined,
+        icon: Icons.dashboard_customize_outlined,
         title: (context) => "Projects Overview",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.searchproject,
-        icon: Icons.circle_outlined,
+        icon: Icons.format_list_numbered_rtl_outlined,
         title: (context) => "View All Project",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.reviewpaneloverview,
-        icon: Icons.circle_outlined,
+        icon: Icons.reviews_outlined,
         title: (context) => "Review Panel Overview",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.fundmonitoringpanel,
-        icon: Icons.circle_outlined,
+        icon: Icons.monetization_on_outlined,
         title: (context) => "Fund Monitoring Panel",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.viewallnotifications,
-        icon: Icons.circle_outlined,
+        icon: Icons.notifications_outlined,
         title: (context) => "View All Notifications",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.deleteuser,
-        icon: Icons.circle_outlined,
+        icon: Icons.delete_outline_outlined,
         title: (context) => "Delete User",
       ),
     ],
