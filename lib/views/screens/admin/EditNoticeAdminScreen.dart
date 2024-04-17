@@ -141,6 +141,7 @@ class _EditNoticeAdminScreenState extends State<EditNoticeAdminScreen> {
         if (noticeDetails.isNotEmpty) {
           _formData.noticeID = noticeDetails[0]['NoticeID'].toString();
           _formData.datePublished = noticeDetails[0]['DatePublished'];
+          // ignore: unnecessary_null_comparison
           if (_formData.datePublished != null && _formData.datePublished.isNotEmpty) {
             DateTime utcDateTime = DateFormat('E, dd MMM yyyy HH:mm a').parseUTC(_formData.datePublished);
             _formData.datePublished = DateFormat('E, dd MMM yyyy hh:mm a').format(utcDateTime);

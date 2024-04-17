@@ -62,6 +62,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
 
         _formData.rtcCode = userDetails['project']['CodeByRTC'];
         _formData.dateOfReceived = userDetails['project']['DateRecieved'];
+        // ignore: unnecessary_null_comparison
         if (_formData.dateOfReceived != null && _formData.dateOfReceived.isNotEmpty) {
           _formData.dateOfReceived = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfReceived));
         }

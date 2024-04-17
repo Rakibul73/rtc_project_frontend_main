@@ -150,10 +150,12 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         _formData.requestedHonorariumOfPI = fundDetails['fund']['HonorariumOfPI'] ?? '';
         _formData.requestedHonorariumOfCoPI = fundDetails['fund']['HonorariumOfCoPI'] ?? '';
         _formData.piSignatureDate = fundDetails['fund']['PiSignatureDate'] ?? '';
+        // ignore: unnecessary_null_comparison
         if (_formData.piSignatureDate != null && _formData.piSignatureDate.isNotEmpty) {
           _formData.piSignatureDate = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.piSignatureDate));
         }
         _formData.dateOfChairmanOfTheDepartment = fundDetails['fund']['ChairmanOfDepartmentSignatureDate'] ?? '';
+        // ignore: unnecessary_null_comparison
         if (_formData.dateOfChairmanOfTheDepartment != null && _formData.dateOfChairmanOfTheDepartment.isNotEmpty) {
           _formData.dateOfChairmanOfTheDepartment = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment));
         }
