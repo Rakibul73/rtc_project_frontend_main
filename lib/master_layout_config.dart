@@ -10,6 +10,11 @@ final sidebarMenuConfigs = [
     title: (context) => "Dashboard",
   ),
   SidebarMenuConfig(
+    uri: RouteUri.circularnotice,
+    icon: Icons.dashboard_rounded,
+    title: (context) => "Notice Board",
+  ),
+  SidebarMenuConfig(
     uri: '',
     icon: Icons.article_outlined,
     title: (context) => "Project",
@@ -59,7 +64,7 @@ final sidebarMenuConfigs = [
       SidebarChildMenuConfig(
         uri: RouteUri.circularnotice,
         icon: Icons.circle_outlined,
-        title: (context) => "Circular Notice",
+        title: (context) => "Notice Board Management",
       ),
       SidebarChildMenuConfig(
         uri: RouteUri.usermanagementoverview,
