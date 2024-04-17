@@ -8,12 +8,16 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
   final ButtonStyle successElevated;
   final ButtonStyle infoElevated;
   final ButtonStyle warningElevated;
+  final ButtonStyle violetElevated;
+  final ButtonStyle tiaElevated;
   final ButtonStyle primaryOutlined;
   final ButtonStyle secondaryOutlined;
   final ButtonStyle errorOutlined;
   final ButtonStyle successOutlined;
   final ButtonStyle infoOutlined;
   final ButtonStyle warningOutlined;
+  final ButtonStyle violetOutlined;
+  final ButtonStyle tiaOutlined;
 
   final ButtonStyle primaryText;
   final ButtonStyle secondaryText;
@@ -21,6 +25,8 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
   final ButtonStyle successText;
   final ButtonStyle infoText;
   final ButtonStyle warningText;
+  final ButtonStyle tiaText;
+  final ButtonStyle violetText;
 
   const AppButtonTheme({
     required this.primaryElevated,
@@ -29,18 +35,24 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
     required this.successElevated,
     required this.infoElevated,
     required this.warningElevated,
+    required this.violetElevated,
+    required this.tiaElevated,
     required this.primaryOutlined,
     required this.secondaryOutlined,
     required this.errorOutlined,
     required this.successOutlined,
     required this.infoOutlined,
     required this.warningOutlined,
+    required this.tiaOutlined,
+    required this.violetOutlined,
     required this.primaryText,
     required this.secondaryText,
     required this.errorText,
     required this.successText,
     required this.infoText,
     required this.warningText,
+    required this.tiaText,
+    required this.violetText,
   });
 
   factory AppButtonTheme.fromAppColorScheme(AppColorScheme appColorScheme) {
@@ -79,6 +91,20 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
       warningElevated: ElevatedButton.styleFrom(
         backgroundColor: appColorScheme.warning,
         disabledForegroundColor: appColorScheme.warning,
+      ).withCommonButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.buttonTextBlack,
+      ),
+      violetElevated: ElevatedButton.styleFrom(
+        backgroundColor: appColorScheme.violet,
+        disabledForegroundColor: appColorScheme.violet,
+      ).withCommonButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.buttonTextBlack,
+      ),
+      tiaElevated: ElevatedButton.styleFrom(
+        backgroundColor: appColorScheme.tia,
+        disabledForegroundColor: appColorScheme.tia,
       ).withCommonButtonStyle(
         appColorScheme: appColorScheme,
         normalButtonTextColor: appColorScheme.buttonTextBlack,
@@ -125,6 +151,20 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
         appColorScheme: appColorScheme,
         normalButtonTextColor: appColorScheme.warning,
       ),
+      violetOutlined: OutlinedButton.styleFrom(
+        foregroundColor: appColorScheme.violet,
+        disabledForegroundColor: appColorScheme.violet,
+      ).withCommonOutlinedButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.violet,
+      ),
+      tiaOutlined: OutlinedButton.styleFrom(
+        foregroundColor: appColorScheme.tia,
+        disabledForegroundColor: appColorScheme.tia,
+      ).withCommonOutlinedButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.tia,
+      ),
       primaryText: TextButton.styleFrom(
         foregroundColor: appColorScheme.primary,
         disabledForegroundColor: appColorScheme.primary,
@@ -162,6 +202,20 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
         appColorScheme: appColorScheme,
         normalButtonTextColor: appColorScheme.buttonTextBlack,
       ),
+      tiaText: TextButton.styleFrom(
+        foregroundColor: appColorScheme.tia,
+        disabledForegroundColor: appColorScheme.tia,
+      ).withCommonTextButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.buttonTextBlack,
+      ),
+      violetText: TextButton.styleFrom(
+        foregroundColor: appColorScheme.violet,
+        disabledForegroundColor: appColorScheme.violet,
+      ).withCommonTextButtonStyle(
+        appColorScheme: appColorScheme,
+        normalButtonTextColor: appColorScheme.buttonTextBlack,
+      ),
     );
   }
 
@@ -173,18 +227,24 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
     ButtonStyle? successElevated,
     ButtonStyle? infoElevated,
     ButtonStyle? warningElevated,
+    ButtonStyle? violetElevated,
+    ButtonStyle? tiaElevated,
     ButtonStyle? primaryOutlined,
     ButtonStyle? secondaryOutlined,
     ButtonStyle? errorOutlined,
     ButtonStyle? successOutlined,
     ButtonStyle? infoOutlined,
     ButtonStyle? warningOutlined,
+    ButtonStyle? violetOutlined,
+    ButtonStyle? tiaOutlined,
     ButtonStyle? primaryText,
     ButtonStyle? secondaryText,
     ButtonStyle? errorText,
     ButtonStyle? successText,
     ButtonStyle? infoText,
     ButtonStyle? warningText,
+    ButtonStyle? violetText,
+    ButtonStyle? tiaText,
   }) {
     return AppButtonTheme(
       primaryElevated: primaryElevated ?? this.primaryElevated,
@@ -193,18 +253,24 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
       successElevated: successElevated ?? this.successElevated,
       infoElevated: infoElevated ?? this.infoElevated,
       warningElevated: warningElevated ?? this.warningElevated,
+      tiaElevated: tiaElevated ?? this.tiaElevated,
+      violetElevated: violetElevated ?? this.violetElevated,
       primaryOutlined: primaryOutlined ?? this.primaryOutlined,
       secondaryOutlined: secondaryOutlined ?? this.secondaryOutlined,
       errorOutlined: errorOutlined ?? this.errorOutlined,
       successOutlined: successOutlined ?? this.successOutlined,
       infoOutlined: infoOutlined ?? this.infoOutlined,
       warningOutlined: warningOutlined ?? this.warningOutlined,
+      tiaOutlined: tiaOutlined ?? this.tiaOutlined,
+      violetOutlined: violetOutlined ?? this.violetOutlined,
       primaryText: primaryText ?? this.primaryText,
       secondaryText: secondaryText ?? this.secondaryText,
       errorText: errorText ?? this.errorText,
       successText: successText ?? this.successText,
       infoText: infoText ?? this.infoText,
       warningText: warningText ?? this.warningText,
+      tiaText: tiaText ?? this.tiaText,
+      violetText: violetText ?? this.violetText,
     );
   }
 
@@ -221,18 +287,24 @@ class AppButtonTheme extends ThemeExtension<AppButtonTheme> {
       successElevated: other.successElevated,
       infoElevated: other.infoElevated,
       warningElevated: other.warningElevated,
+      violetElevated: other.violetElevated,
+      tiaElevated: other.tiaElevated,
       primaryOutlined: other.primaryOutlined,
       secondaryOutlined: other.secondaryOutlined,
       errorOutlined: other.errorOutlined,
       successOutlined: other.successOutlined,
       infoOutlined: other.infoOutlined,
       warningOutlined: other.warningOutlined,
+      violetOutlined: other.violetOutlined,
+      tiaOutlined: other.tiaOutlined,
       primaryText: other.primaryText,
       secondaryText: other.secondaryText,
       errorText: other.errorText,
       successText: other.successText,
       infoText: other.infoText,
       warningText: other.warningText,
+      violetText: other.violetText,
+      tiaText: other.tiaText,
     );
   }
 }

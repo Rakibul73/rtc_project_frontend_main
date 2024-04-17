@@ -11,6 +11,8 @@ const Color kErrorColor = Color(0xFFDC3545);
 const Color kSuccessColor = Color(0xFF08A158);
 const Color kInfoColor = Color(0xFF17A2B8);
 const Color kWarningColor = Color(0xFFFFc107);
+const Color kTiaColor = Color.fromARGB(255, 152, 255, 7);
+const Color kVioletColor = Color.fromARGB(255, 147, 4, 236);
 
 const Color kTextColor = Color(0xFF2A2B2D);
 
@@ -57,6 +59,8 @@ class AppThemeData {
       success: kSuccessColor,
       info: kInfoColor,
       warning: kWarningColor,
+      tia: kTiaColor,
+      violet: kVioletColor,
       hyperlink: const Color(0xFF0074CC),
       buttonTextBlack: kTextColor,
       buttonTextDisabled: kTextColor.withOpacity(0.38),
@@ -124,6 +128,8 @@ class AppThemeData {
       success: kSuccessColor,
       info: kInfoColor,
       warning: kWarningColor,
+      tia: kTiaColor,
+      violet: kVioletColor,
       hyperlink: const Color(0xFF6BBBF7),
       buttonTextBlack: kTextColor,
       buttonTextDisabled: Colors.white.withOpacity(0.38),

@@ -10,6 +10,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   final Color hyperlink;
   final Color buttonTextBlack;
   final Color buttonTextDisabled;
+  final Color violet;
+  final Color tia;
 
   const AppColorScheme({
     required this.primary,
@@ -21,6 +23,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     required this.hyperlink,
     required this.buttonTextBlack,
     required this.buttonTextDisabled,
+    required this.tia,
+    required this.violet,
   });
 
   @override
@@ -31,6 +35,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     Color? success,
     Color? info,
     Color? warning,
+    Color? tia,
+    Color? violet,
     Color? hyperlink,
     Color? buttonTextBlack,
     Color? buttonTextDisabled,
@@ -42,6 +48,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       success: success ?? this.success,
       info: info ?? this.info,
       warning: warning ?? this.warning,
+      violet: violet ?? this.violet,
+      tia: tia ?? this.tia,
       hyperlink: hyperlink ?? this.hyperlink,
       buttonTextBlack: buttonTextBlack ?? this.buttonTextBlack,
       buttonTextDisabled: buttonTextDisabled ?? this.buttonTextDisabled,
@@ -61,6 +69,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
       success: Color.lerp(success, other.success, t)!,
       info: Color.lerp(info, other.info, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
+      tia: Color.lerp(tia, other.tia, t)!,
+      violet: Color.lerp(violet, other.violet, t)!,
       hyperlink: Color.lerp(hyperlink, other.hyperlink, t)!,
       buttonTextBlack: Color.lerp(buttonTextBlack, other.buttonTextBlack, t)!,
       buttonTextDisabled: Color.lerp(buttonTextDisabled, other.buttonTextDisabled, t)!,
