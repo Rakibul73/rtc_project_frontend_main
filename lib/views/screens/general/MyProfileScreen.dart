@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, deprecated_member_use
-
 import 'dart:convert';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -1403,23 +1401,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-            child: FormBuilderDropdown(
-              name: 'roleId',
-              decoration: const InputDecoration(
-                labelText: 'Role',
-                hintText: 'roleId',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              hint: const Text('Select'),
-              initialValue: _formData.rolename,
-              validator: FormBuilderValidators.required(),
-              items: ['Admin', 'Researcher', 'Reviewer', 'Teacher', 'Student'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onSaved: (value) => (_formData.rolename = value ?? ''),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+          //   child: FormBuilderDropdown(
+          //     name: 'roleId',
+          //     decoration: const InputDecoration(
+          //       labelText: 'Role',
+          //       hintText: 'roleId',
+          //       border: OutlineInputBorder(),
+          //       floatingLabelBehavior: FloatingLabelBehavior.always,
+          //     ),
+          //     hint: const Text('Select'),
+          //     initialValue: _formData.rolename,
+          //     validator: FormBuilderValidators.required(),
+          //     items: ['Admin', 'Researcher', 'Reviewer', 'Teacher', 'Student'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          //     onSaved: (value) => (_formData.rolename = value ?? ''),
+          //   ),
+          // ),
           Align(
             alignment: Alignment.center,
             child: SizedBox(
