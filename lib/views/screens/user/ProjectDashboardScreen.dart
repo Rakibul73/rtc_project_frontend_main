@@ -2,9 +2,15 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:rtc_project_fronend/api_service.dart';
+import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
+import 'package:rtc_project_fronend/providers/user_data_provider.dart';
+import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
+import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 
 class ProjectDashboardScreen extends StatefulWidget {
@@ -17,6 +23,7 @@ class ProjectDashboardScreen extends StatefulWidget {
 class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
   final _dataTableHorizontalScrollController = ScrollController();
   late Future<Map<String, dynamic>> _summaryDataFuture;
+  
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getSelfProjectDashboard();
@@ -42,7 +49,6 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
         'total_projects': await totalProjects,
       };
       return summaryData;
-
     } else if (data['statuscode'] == 401) {
       // Handle token expiration
       // ignore: use_build_context_synchronously
@@ -66,7 +72,6 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
         'total_projects': 0,
       };
       return summaryData;
-
     } else {
       // Handle other error cases
       final Map<String, dynamic> summaryData = {
@@ -102,6 +107,7 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
     // final appDataTableTheme = Theme.of(context).extension<AppDataTableTheme>()!;
     final size = MediaQuery.of(context).size;
     final summaryCardCrossAxisCount = (size.width >= kScreenWidthLg ? 4 : 2);
+    var isAdmin = Provider.of<UserDataProvider>(context).roleId;
 
     return PortalMasterLayout(
         body: FutureBuilder<Map<String, dynamic>>(
@@ -219,6 +225,42 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
                       ],
                     );
                   },
+                ),
+              ),
+              Visibility(
+                visible: isAdmin != 1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CardBody(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => GoRouter.of(context).go(RouteUri.circularnotice),
+                                  style: themeData.extension<AppButtonTheme>()!.warningText,
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: kTextPadding),
+                                        child: Icon(Icons.notifications_active_outlined),
+                                      ),
+                                      Text('Notice Board'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

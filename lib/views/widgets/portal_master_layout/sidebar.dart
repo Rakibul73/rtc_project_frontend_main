@@ -150,10 +150,10 @@ class _SidebarState extends State<Sidebar> {
     return Column(
       children: sidebarMenuConfigs.map<Widget>((menu) {
         // Check if the menu item is "Admin Panel" and the user is not a Admin
-        if (menu.title(context) == "Admin Panel" && !isAdmin) {
+        if ((menu.title(context) == "Admin Panel" && !isAdmin) || (menu.title(context) == "Dashboard" && !isAdmin)) {
           return Container(); // Return an empty container to hide the menu item
         }
-        if (menu.title(context) == "Project" && isAdmin) {
+        if ((menu.title(context) == "Project" && isAdmin) || (menu.title(context) == "Project Dashboard" && isAdmin)) {
           return Container(); // Return an empty container to hide the menu item
         } else {
           if (menu.children.isEmpty) {

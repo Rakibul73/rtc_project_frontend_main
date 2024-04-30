@@ -10,15 +10,15 @@ final sidebarMenuConfigs = [
     title: (context) => "Dashboard",
   ),
   SidebarMenuConfig(
+    uri: RouteUri.projectdashboard,
+    icon: Icons.dashboard_customize_outlined,
+    title: (context) => "Project Dashboard",
+  ),
+  SidebarMenuConfig(
     uri: '',
     icon: Icons.article_outlined,
     title: (context) => "Project",
     children: [
-      SidebarChildMenuConfig(
-        uri: RouteUri.projectdashboard,
-        icon: Icons.dashboard_customize_outlined,
-        title: (context) => "Project Dashboard",
-      ),
       SidebarChildMenuConfig(
         uri: RouteUri.createproject,
         icon: Icons.create,

@@ -36,7 +36,7 @@ import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewIndividualNotificationScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart';
-import 'package:rtc_project_fronend/views/screens/general/dashboard_screen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/DashboardScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/error_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/forgot_pass.dart';
 import 'package:rtc_project_fronend/views/screens/general/login_screen.dart';
