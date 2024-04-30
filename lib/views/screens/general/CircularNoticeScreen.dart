@@ -4,10 +4,12 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/constants/values.dart';
+import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'dart:math';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -126,6 +128,7 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
+    var isAdmin = Provider.of<UserDataProvider>(context).roleId;
 
     return PortalMasterLayout(
         body: ListView(
@@ -216,28 +219,31 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: kDefaultPadding),
-                                      child: SizedBox(
-                                        height: 40.0,
-                                        child: OutlinedButton(
-                                          style: themeData.extension<AppButtonTheme>()!.primaryText,
-                                          onPressed: () => GoRouter.of(context).go(RouteUri.createcircularnotice),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                                child: Icon(
-                                                  Icons.add_alert_sharp,
-                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                    Visibility(
+                                      visible: isAdmin == 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: kDefaultPadding),
+                                        child: SizedBox(
+                                          height: 40.0,
+                                          child: OutlinedButton(
+                                            style: themeData.extension<AppButtonTheme>()!.primaryText,
+                                            onPressed: () => GoRouter.of(context).go(RouteUri.createcircularnotice),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                  child: Icon(
+                                                    Icons.add_alert_sharp,
+                                                    size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                  ),
                                                 ),
-                                              ),
-                                              const Text(
-                                                "Create Notice",
-                                              ),
-                                            ],
+                                                const Text(
+                                                  "Create Notice",
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
