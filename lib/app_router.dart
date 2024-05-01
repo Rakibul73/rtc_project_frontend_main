@@ -106,13 +106,11 @@ class RouteUri {
 const List<String> unrestrictedRoutes = [
   RouteUri.error404,
   RouteUri.logout,
-  // RouteUri.login, // Remove this line for actual authentication flow.
-  // RouteUri.register, // Remove this line for actual authentication flow.
 ];
 
 const List<String> publicRoutes = [
-  RouteUri.login, // Enable this line for actual authentication flow.
-  RouteUri.register, // Enable this line for actual authentication flow.
+  RouteUri.login,
+  RouteUri.register,
   RouteUri.forgotpass,
   RouteUri.resetpassscreen,
 ];

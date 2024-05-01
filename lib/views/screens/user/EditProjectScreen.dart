@@ -475,6 +475,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
 
   void _doDelete(BuildContext context) {
     AppFocusHelper.instance.requestUnfocus();
+    TextEditingController reasonController = TextEditingController();
 
     final dialog = AwesomeDialog(
       context: context,
@@ -484,47 +485,99 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
       width: kDialogWidth,
       btnOkText: "Yes",
       btnOkOnPress: () async {
-        // here should make a api request to delete project
-        final responseBody = await ApiService.deleteProject(int.parse(widget.projectID));
-        if (responseBody['statusCode'] == 200) {
-          final dialog = AwesomeDialog(
-            context: context,
-            dialogType: DialogType.success,
-            title: responseBody['message'],
-            width: kDialogWidth,
-            btnOkText: 'OK',
-            btnOkOnPress: () => GoRouter.of(context).go(RouteUri.myprojects),
-          );
-          dialog.show();
-          print('Project deleted successfully');
-        } else if (responseBody['statusCode'] == 403) {
-          final dialog = AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            title: "You don't have permission to delete this project.",
-            desc: "Please contact admin.",
-            width: kDialogWidth,
-            btnOkText: 'Send Delete Request to Admin',
-            btnOkOnPress: () async {
-              // Send a delete request to admin
-              final responseBody = await ApiService.requestProjectDeletionToAdmin(int.parse(_formData.projectID));
-              print(responseBody);
-              if (responseBody['statusCode'] == 200) {
-                final dialog = AwesomeDialog(
-                  context: context,
-                  dialogType: DialogType.success,
-                  title: responseBody['message'],
-                  width: kDialogWidth,
-                  btnOkText: 'OK',
-                  btnOkOnPress: () {},
-                );
-                dialog.show();
-                print('Project deletion request sent successfully');
-              }
-            },
-          );
-          dialog.show();
-        }
+        late AwesomeDialog reasonDialog;
+        reasonDialog = AwesomeDialog(
+          context: context,
+          animType: AnimType.scale,
+          dialogType: DialogType.info,
+          width: kDialogWidth * 2.0,
+          keyboardAware: true,
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Reason for deletion',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Material(
+                  elevation: 0,
+                  color: Colors.blueGrey.withAlpha(40),
+                  child: TextFormField(
+                    controller: reasonController,
+                    autofocus: true,
+                    minLines: 1,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a reason for deletion';
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Reason for deletion',
+                      prefixIcon: Icon(Icons.text_fields),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                AnimatedButton(
+                  isFixedHeight: false,
+                  text: 'Delete Now',
+                  pressEvent: () async {
+                    reasonDialog.dismiss();
+                    // here should make a api request to delete project
+                    final responseBody = await ApiService.deleteProject(int.parse(widget.projectID));
+                    if (responseBody['statusCode'] == 200) {
+                      final dialog = AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.success,
+                        title: responseBody['message'],
+                        width: kDialogWidth,
+                        btnOkText: 'OK',
+                        btnOkOnPress: () => GoRouter.of(context).go(RouteUri.myprojects),
+                      );
+                      dialog.show();
+                      print('Project deleted successfully');
+                    } else if (responseBody['statusCode'] == 403) {
+                      final dialog = AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.error,
+                        title: "You don't have permission to delete this project.",
+                        desc: "Please contact admin.",
+                        width: kDialogWidth,
+                        btnOkText: 'Send Delete Request to Admin',
+                        btnOkOnPress: () async {
+                          // Send a delete request to admin
+                          final responseBody = await ApiService.requestProjectDeletionToAdmin(int.parse(_formData.projectID), reasonController.text);
+                          print(responseBody);
+                          if (responseBody['statusCode'] == 200) {
+                            final dialog = AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.success,
+                              title: responseBody['message'],
+                              width: kDialogWidth,
+                              btnOkText: 'OK',
+                              btnOkOnPress: () {},
+                            );
+                            dialog.show();
+                            print('Project deletion request sent successfully');
+                          }
+                        },
+                      );
+                      dialog.show();
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+        reasonDialog.show();
       },
       btnCancelText: "No",
       btnCancelOnPress: () {},

@@ -17,7 +17,6 @@ Future<String?> getAccessToken() async {
 }
 
 class ApiService {
-
   static Future<Map<String, dynamic>> deleteNotice(int noticeID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -43,7 +42,7 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> updateNotice(Map<String, dynamic> updateNoticeData , int noticeID) async {
+  static Future<Map<String, dynamic>> updateNotice(Map<String, dynamic> updateNoticeData, int noticeID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
@@ -147,7 +146,6 @@ class ApiService {
     }
   }
 
-
   static Future<List<dynamic>> fetchAllNotice() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -247,6 +245,7 @@ class ApiService {
       throw Exception('Failed to load verified users : $e');
     }
   }
+
   static Future<List<dynamic>> fetchAdminFundConfirmList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1564,18 +1563,22 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> requestProjectDeletionToAdmin(int projectId) async {
+  static Future<Map<String, dynamic>> requestProjectDeletionToAdmin(int projectId, String reasonForDelete) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
       throw Exception('JWT token not found');
     }
+
+    final body = jsonEncode({'reasonForDelete': reasonForDelete});
 
     final response = await http.post(
       Uri.parse('$baseUrl/request_project_deletion_to_admin/$projectId'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
         'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        'Content-Type': 'application/json', // Specify the content type as JSON
       },
+      body: body,
     );
 
     print("requestProjectDeletionToAdmin response: ${response.statusCode}");

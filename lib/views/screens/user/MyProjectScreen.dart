@@ -81,7 +81,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
     }
   }
 
-  Future<void> deletingProject(int projectID) async {
+  Future<void> deletingProject(int projectID, String reasonForDelete) async {
     try {
       final responseBody = await ApiService.deleteProject(projectID);
       print(responseBody);
@@ -111,7 +111,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
           btnCancelOnPress: () {},
           btnOkOnPress: () async {
             // Send a delete request to admin
-            final responseBody = await ApiService.requestProjectDeletionToAdmin(projectID);
+            final responseBody = await ApiService.requestProjectDeletionToAdmin(projectID, reasonForDelete);
             print(responseBody);
             if (responseBody['statusCode'] == 200) {
               final dialog = AwesomeDialog(
@@ -136,7 +136,8 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
 
   // function to delete a project with data['ProjectID']
   void deleteProject(int projectID) {
-    final dialog = AwesomeDialog(
+    TextEditingController reasonController = TextEditingController();
+    final deleteDialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.warning,
       title: "Delete this project?",
@@ -144,11 +145,58 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
       width: kDialogWidth,
       btnOkText: 'Delete This',
       btnOkOnPress: () {
-        deletingProject(projectID);
+        late AwesomeDialog reasonDialog;
+        reasonDialog = AwesomeDialog(
+          context: context,
+          animType: AnimType.scale,
+          dialogType: DialogType.info,
+          width: kDialogWidth * 2.0,
+          keyboardAware: true,
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Reason for deletion',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Material(
+                  elevation: 0,
+                  color: Colors.blueGrey.withAlpha(40),
+                  child: TextFormField(
+                    controller: reasonController,
+                    autofocus: true,
+                    minLines: 1,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Reason for deletion',
+                      prefixIcon: Icon(Icons.text_fields),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                AnimatedButton(
+                  isFixedHeight: false,
+                  text: 'Delete Now',
+                  pressEvent: () {
+                    reasonDialog.dismiss();
+                    deletingProject(projectID, reasonController.text);
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+        reasonDialog.show();
       },
       btnCancelOnPress: () {},
     );
-    dialog.show();
+    deleteDialog.show();
   }
 
   @override
@@ -421,7 +469,10 @@ class DataSource extends DataTableSource {
                 child: ElevatedButton(
                   onPressed: () => onViewButtonPressed.call(data),
                   style: Theme.of(context).extension<AppButtonTheme>()!.infoText,
-                  child: const Text("View" , style: TextStyle(fontWeight : FontWeight.bold),),
+                  child: const Text(
+                    "View",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               Padding(
@@ -429,13 +480,19 @@ class DataSource extends DataTableSource {
                 child: ElevatedButton(
                   onPressed: () => onEditButtonPressed.call(data),
                   style: Theme.of(context).extension<AppButtonTheme>()!.secondaryText,
-                  child: const Text("Edit" , style: TextStyle(fontWeight : FontWeight.bold),),
+                  child: const Text(
+                    "Edit",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => onDeleteButtonPressed.call(data),
                 style: Theme.of(context).extension<AppButtonTheme>()!.errorText,
-                child: const Text("Delete" , style: TextStyle(fontWeight : FontWeight.bold),),
+                child: const Text(
+                  "Delete",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           );
