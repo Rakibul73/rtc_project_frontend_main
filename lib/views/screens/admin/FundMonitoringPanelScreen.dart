@@ -172,7 +172,7 @@ class _FundMonitoringPanelScreenState extends State<FundMonitoringPanelScreen> {
                           children: <Widget>[
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.allfundrequestqueuelist),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.alladvancefundrequestqueuelist),
                                 style: appButtonTheme.successOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -181,7 +181,7 @@ class _FundMonitoringPanelScreenState extends State<FundMonitoringPanelScreen> {
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_rounded),
                                     ),
-                                    Text('Queue List'),
+                                    Text('Queue List for Advance'),
                                   ],
                                 ),
                               ),
@@ -189,7 +189,7 @@ class _FundMonitoringPanelScreenState extends State<FundMonitoringPanelScreen> {
                             const SizedBox(width: 20),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.allfundconfirmlist),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.alladvancefundconfirmlist),
                                 style: appButtonTheme.infoOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -198,7 +198,57 @@ class _FundMonitoringPanelScreenState extends State<FundMonitoringPanelScreen> {
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_outlined),
                                     ),
-                                    Text('Fund Confirm List'),
+                                    Text('Advance Confirm List'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CardBody(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.allfundrequestqueuelist),
+                                style: appButtonTheme.successText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.reviews_rounded),
+                                    ),
+                                    Text('Queue List for Honorarium'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.allfundconfirmlist),
+                                style: appButtonTheme.infoText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.reviews_outlined),
+                                    ),
+                                    Text('Honorarium Confirm List'),
                                   ],
                                 ),
                               ),

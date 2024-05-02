@@ -14,14 +14,14 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/theme/theme_extensions/app_data_table_theme.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class AllFundRequestQueueListScreen extends StatefulWidget {
-  const AllFundRequestQueueListScreen({Key? key}) : super(key: key);
+class AllAdvanceFundRequestQueueListScreen extends StatefulWidget {
+  const AllAdvanceFundRequestQueueListScreen({Key? key}) : super(key: key);
 
   @override
-  State<AllFundRequestQueueListScreen> createState() => _AllFundRequestQueueListScreenState();
+  State<AllAdvanceFundRequestQueueListScreen> createState() => _AllAdvanceFundRequestQueueListScreenState();
 }
 
-class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListScreen> {
+class _AllAdvanceFundRequestQueueListScreenState extends State<AllAdvanceFundRequestQueueListScreen> {
   final _scrollController = ScrollController();
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -51,7 +51,7 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
 
   void viewAllProjects() async {
     try {
-      _initialProjects = await ApiService.fetchAdminFundQueueList();
+      _initialProjects = await ApiService.fetchAdminAdvanceFundQueueList();
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
@@ -67,7 +67,7 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.success,
-      title: "Want to send Honorarium for this project?",
+      title: "Want to send Advance fund for this project?",
       width: kDialogWidth,
       btnOkText: 'Yes',
       btnOkOnPress: () {
@@ -75,16 +75,16 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
           context: context,
           dialogType: DialogType.success,
           title: "উক্ত সম্মানীর সমূদয় অর্থ আইটি কর্তন পূর্বক অর্থ ও হিসাব শাখার মাধ্যমে স্ব স্ব ব্যক্তিগত হিসাবে (রুপালী ব্যাংক লিমিটেড, পবিপ্রবি শাখায়) প্রেরণ করতে হবে।",
-          desc: "Please wait. After sending fund, press ok button.",
+          desc: "Please wait. After sending advance, press ok button.",
           width: kDialogWidth,
           btnOkText: 'OK',
           btnOkOnPress: () async {
-            final result = await ApiService.updateFundSendValue(projectID);
+            final result = await ApiService.updateAdvanceFundSendValue(projectID);
             if (result['statuscode'] == 200) {
               final dialog = AwesomeDialog(
                 context: context,
                 dialogType: DialogType.success,
-                title: "Honorarium Sent Successfully",
+                title: "Advance Sent Successfully",
                 width: kDialogWidth,
                 btnOkText: 'OK',
                 btnOkOnPress: () {
@@ -112,7 +112,7 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
     viewAllProjects();
 
     _dataSource = DataSource(
-      onViewFundButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectfund}?projectid=${data['ProjectID']}'),
+      onViewFundButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectadvancefund}?projectid=${data['ProjectID']}'),
       onSendFundButtonPressed: (data) {
         sendFund(data['ProjectID']);
       },
@@ -137,7 +137,7 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
             Text(
-              'Queue List for Honorarium Request',
+              'Queue List For Advance Request',
               style: themeData.textTheme.headlineMedium,
             ),
             Padding(
@@ -257,7 +257,7 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
                                               columns: const [
                                                 DataColumn(label: Text('ProjectID'), numeric: true),
                                                 DataColumn(label: Text('TotalBudget')),
-                                                DataColumn(label: Text('TotalHonorarium')),
+                                                DataColumn(label: Text('Requested Amount')),
                                                 DataColumn(label: Text('Actions')),
                                               ],
                                             );
@@ -300,7 +300,7 @@ class DataSource extends DataTableSource {
     return DataRow.byIndex(index: index, cells: [
       DataCell(Text(data['ProjectID'].toString())),
       DataCell(Text(data['TotalBudget'].toString())),
-      DataCell(Text(data['TotalHonorarium'].toString())),
+      DataCell(Text(data['RequestedAmount'].toString())),
       DataCell(FutureBuilder<String>(
         future: getTheProjectFundSendOrNot(data['ProjectID']),
         builder: (context, snapshot) {
@@ -313,7 +313,7 @@ class DataSource extends DataTableSource {
                   child: OutlinedButton(
                     onPressed: () => onViewFundButtonPressed.call(data),
                     style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-                    child: const Text("View Honorarium Fund Details"),
+                    child: const Text("View Advance Fund Details"),
                   ),
                 ),
                 Visibility(
@@ -323,7 +323,7 @@ class DataSource extends DataTableSource {
                     child: OutlinedButton(
                       onPressed: () => onSendFundButtonPressed.call(data),
                       style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-                      child: const Text("Send Honorarium"),
+                      child: const Text("Send Advance"),
                     ),
                   ),
                 ),
@@ -334,7 +334,7 @@ class DataSource extends DataTableSource {
                     child: OutlinedButton(
                       onPressed: null,
                       style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                      child: const Text("Honorarium Already Send"),
+                      child: const Text("Advance Already Send"),
                     ),
                   ),
                 ),
@@ -360,8 +360,8 @@ class DataSource extends DataTableSource {
   int get selectedRowCount => 0;
 
   Future<String> getTheProjectFundSendOrNot(int projectID) async {
-    final responseBody = await ApiService.checkProjectFundSendOrNot(projectID);
-    String projectFundSendCheck = responseBody['ProjectFundSendCheck'];
+    final responseBody = await ApiService.checkProjectAdvanceFundSendOrNot(projectID);
+    String projectFundSendCheck = responseBody['ProjectAdvanceFundSendCheck'];
     return projectFundSendCheck;
   }
 }

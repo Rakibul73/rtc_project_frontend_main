@@ -27,13 +27,13 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
     print(data['statuscode']);
     if (data['statuscode'] == 200) {
       // Handle successful response
-      final totalProjectFundRecieved = await data['total_project_fund_recieved'];
-      final totalProjectAppliedFund = await data['total_project_applied_fund'];
+      final recievedHonorariumFund = await data['recieved_honorarium_fund'];
+      final recievedAdvanceFund = await data['recieved_advance_fund'];
       final totalProjectCanApplyFund = await data['total_project_can_apply_fund'];
 
       final Map<String, dynamic> summaryData = {
-        'total_project_fund_recieved': await totalProjectFundRecieved,
-        'total_project_applied_fund': await totalProjectAppliedFund,
+        'recieved_honorarium_fund': await recievedHonorariumFund,
+        'recieved_advance_fund': await recievedAdvanceFund,
         'total_project_can_apply_fund': await totalProjectCanApplyFund,
       };
       return summaryData;
@@ -51,16 +51,16 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
 
       dialog.show();
       final Map<String, dynamic> summaryData = {
-        'total_project_fund_recieved': 0,
-        'total_project_applied_fund': 0,
+        'recieved_honorarium_fund': 0,
+        'recieved_advance_fund': 0,
         'total_project_can_apply_fund': 0,
       };
       return summaryData;
     } else {
       // Handle other error cases
       final Map<String, dynamic> summaryData = {
-        'total_project_fund_recieved': 'x',
-        'total_project_applied_fund': 'x',
+        'recieved_honorarium_fund': 'x',
+        'recieved_advance_fund': 'x',
         'total_project_can_apply_fund': 'x',
       };
       return summaryData;
@@ -138,8 +138,8 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Fund Already Requested",
-                          value: snapshot.data!['total_project_applied_fund'].toString(),
+                          title: "Recieved Advance Fund",
+                          value: snapshot.data!['recieved_advance_fund'].toString(),
                           icon: Icons.article_outlined,
                           backgroundColor: const Color.fromARGB(255, 255, 162, 68),
                           textColor: themeData.colorScheme.onPrimary,
@@ -147,8 +147,8 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Funded Projects",
-                          value: snapshot.data!['total_project_fund_recieved'].toString(),
+                          title: "Recieved Honorarium Fund",
+                          value: snapshot.data!['recieved_honorarium_fund'].toString(),
                           icon: Icons.group_add_rounded,
                           backgroundColor: appColorScheme.warning,
                           textColor: appColorScheme.buttonTextBlack,
@@ -172,7 +172,7 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                           children: <Widget>[
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforrequestforadvance),
                                 style: appButtonTheme.successOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -181,7 +181,7 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_rounded),
                                     ),
-                                    Text('Projects I Can Apply for Fund'),
+                                    Text('Projects I Can Apply For Advance'),
                                   ],
                                 ),
                               ),
@@ -189,7 +189,7 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                             const SizedBox(width: 20),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.myprojectrecievedfund),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.myprojectrecievedadvancefund),
                                 style: appButtonTheme.infoOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -198,7 +198,57 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_outlined),
                                     ),
-                                    Text('Recieved Fund'),
+                                    Text('Recieved Advance Fund'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CardBody(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
+                                style: appButtonTheme.successText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.reviews_rounded),
+                                    ),
+                                    Text('Projects I Can Apply for Honorarium'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.myprojectrecievedfund),
+                                style: appButtonTheme.infoText,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.reviews_outlined),
+                                    ),
+                                    Text('Recieved Honorarium'),
                                   ],
                                 ),
                               ),

@@ -89,6 +89,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
 
         _formData.piEmail = userDetailsForFundApply['user']['Email'] ?? '';
         _formData.piPhone = userDetailsForFundApply['user']['Phone'] ?? '';
+        _formData.piFacultyName = userDetailsForFundApply['user']['FacultyName'] ?? '';
         _formData.piInstituteName = userDetailsForFundApply['user']['InstituteName'] ?? '';
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
@@ -109,7 +110,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.question,
-      title: "Are you sure you want to submit a fund request for this project?",
+      title: "Want to submit a honorarium request for this project?",
       desc: "Note: This action cannot be undone.",
       width: kDialogWidth,
       btnOkText: "Yes",
@@ -135,7 +136,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
-              title: "Project fund request submitted successfully",
+              title: "Honorarium request submitted successfully",
               width: kDialogWidth,
               btnOkText: 'OK',
               btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projecticanapplyforfund),
@@ -221,7 +222,9 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
 
   Widget _content(BuildContext context) {
     final themeData = Theme.of(context);
-    const pageTitle = 'Request for Honorarium of Research Project';
+    final currentYear = DateTime.now().year;
+    final previousYear = DateTime.now().year - 1;
+    var pageTitle = 'Request for Honorarium of Research Project FY: $previousYear-$currentYear';
 
     return FormBuilder(
         key: _formKey,
@@ -1219,8 +1222,6 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                 ),
               ),
             ),
-            
-            
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
@@ -1275,7 +1276,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
                                             size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                           ),
                                         ),
-                                        const Text("Submit Request for Fund"),
+                                        const Text("Submit Request for Honorarium"),
                                       ],
                                     ),
                                   ),

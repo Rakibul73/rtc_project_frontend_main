@@ -277,6 +277,38 @@ class ApiService {
       throw Exception('Failed to load fetchAdminFundConfirmList : $e');
     }
   }
+  
+  static Future<List<dynamic>> fetchAdminAdvanceFundConfirmList() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_admin_advance_fund_confirm_list');
+    print("fetchAdminFundConfirmList url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects_advance_fund_confirm'];
+      } else {
+        print("fetchAdminFundConfirmList = Failed to load fetchAdminFundConfirmList : ${response.statusCode}");
+        throw Exception('Failed to load fetchAdminFundConfirmList: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load fetchAdminFundConfirmList : $e');
+    }
+  }
 
   static Future<Map<String, dynamic>> updateFundSendValue(int projectID) async {
     final accessToken = await getAccessToken();
@@ -285,6 +317,41 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/update_fund_send/$projectID');
+    print("updateFundSendValue url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update updateFundSendValue : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
+  
+  static Future<Map<String, dynamic>> updateAdvanceFundSendValue(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_advance_fund_send/$projectID');
     print("updateFundSendValue url: $url");
 
     try {
@@ -339,6 +406,33 @@ class ApiService {
       throw Exception('Failed to check project fund send or not. Error: ${response.body}');
     }
   }
+  
+  static Future<Map<String, dynamic>> checkProjectAdvanceFundSendOrNot(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check_a_project_advance_fund_send_or_not/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    print("checkProjectFundSendOrNot: ${data['ProjectAdvanceFundSendCheck']}");
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to check project fund send or not. Error: ${response.body}');
+    }
+  }
 
   static Future<List<dynamic>> fetchAdminFundQueueList() async {
     final accessToken = await getAccessToken();
@@ -363,6 +457,38 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects_fund_queue'];
+      } else {
+        print("fetchAdminFundQueueList = Failed to load fetchAdminFundQueueList : ${response.statusCode}");
+        throw Exception('Failed to load fetchAdminFundQueueList: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load fetchAdminFundQueueList : $e');
+    }
+  }
+  
+  static Future<List<dynamic>> fetchAdminAdvanceFundQueueList() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_admin_advance_fund_queue_list');
+    print("fetchAdminFundQueueList url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects_advance_fund_queue'];
       } else {
         print("fetchAdminFundQueueList = Failed to load fetchAdminFundQueueList : ${response.statusCode}");
         throw Exception('Failed to load fetchAdminFundQueueList: ${response.statusCode}');
@@ -439,6 +565,41 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
+  
+  static Future<Map<String, dynamic>> updateConfirmAdvanceFundRecieved(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/update_confirm_advance_fund_recieved/$projectID');
+    print("updateConfirmFundRecieved url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to update updateConfirmFundRecieved : ${responseBody['message']}');
+      }
+    } catch (e) {
+      rethrow; // Rethrow the exception to propagate it up the call stack.
+    }
+  }
 
   static Future<Map<String, dynamic>> checkProjectFundConfirmedOrNot(int projectID) async {
     final accessToken = await getAccessToken();
@@ -466,6 +627,33 @@ class ApiService {
       throw Exception('Failed to check project confirmed or not. Error: ${response.body}');
     }
   }
+  
+  static Future<Map<String, dynamic>> checkProjectAdvanceFundConfirmedOrNot(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check_a_project_advance_fund_confirmation_send_or_not/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    print("checkProjectFundConfirmedOrNot: ${data['ProjectConfirmAdvanceFundCheck']}");
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to check project confirmed or not. Error: ${response.body}');
+    }
+  }
 
   static Future<List<dynamic>> fetchMyFundedProject() async {
     final accessToken = await getAccessToken();
@@ -474,6 +662,38 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/get_all_my_funded_projects');
+    print("fetchMyFundedProject url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects'];
+      } else {
+        print("fetchMyFundedProject = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+  
+  static Future<List<dynamic>> fetchMyAdvanceFundedProject() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_my_advance_funded_projects');
     print("fetchMyFundedProject url: $url");
 
     try {
@@ -525,6 +745,33 @@ class ApiService {
       throw Exception('Failed to load getFundDetailsForSpecificProject. Error: ${response.body}');
     }
   }
+  
+  static Future<Map<String, dynamic>> getAdvanceFundDetailsForSpecificProject(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_advance_fund_details_for_specific_project/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load getFundDetailsForSpecificProject. Error: ${response.body}');
+    }
+  }
 
   static Future<Map<String, dynamic>> createFundRequestForSpecificProject(Map<String, dynamic> fundRequestData) async {
     final accessToken = await getAccessToken();
@@ -533,6 +780,44 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/create_fund_request_for_specific_project');
+    print("createFundRequestForSpecificProject url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(fundRequestData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        return responseBody;
+      } else {
+        // Failed to create project
+        throw Exception('Failed to createFundRequestForSpecificProject: ${responseBody['error']}');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+  
+  static Future<Map<String, dynamic>> createAdvanceFundRequestForSpecificProject(Map<String, dynamic> fundRequestData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_advance_fund_request_for_specific_project');
     print("createFundRequestForSpecificProject url: $url");
 
     try {
@@ -619,6 +904,35 @@ class ApiService {
       throw Exception('Failed to load project details. Error: ${response.body}');
     }
   }
+  
+  static Future<Map<String, dynamic>> getSpecificProjectForAdvanceFundSelf(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("getSpecificProjectForAdvanceFundSelf $projectId");
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_specific_project_for_advance_fund_self/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load project details. Error: ${response.body}');
+    }
+  }
 
   static Future<Map<String, dynamic>> checkProjectFundAppliedOrNot(int projectID) async {
     final accessToken = await getAccessToken();
@@ -646,6 +960,33 @@ class ApiService {
       throw Exception('Failed to check project reviewed or not. Error: ${response.body}');
     }
   }
+  
+  static Future<Map<String, dynamic>> checkProjectAdvanceFundAppliedOrNot(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check_a_project_advance_fund_applied_or_not/$projectID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    print("checkProjectFundAppliedOrNot: ${data['ProjectRequestAdvanceFundCheck']}");
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to check project reviewed or not. Error: ${response.body}');
+    }
+  }
 
   static Future<List<dynamic>> fetchMyProjectsICanApplyFund() async {
     final accessToken = await getAccessToken();
@@ -654,6 +995,38 @@ class ApiService {
     }
 
     final Uri url = Uri.parse('$baseUrl/get_all_myprojects_can_apply_fund');
+    print("fetchMyProjectsICanApplyFund url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects'];
+      } else {
+        print("fetchMyProjectsICanApplyFund = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+  
+  static Future<List<dynamic>> fetchMyProjectsICanApplyAdvanceFund() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_myprojects_can_apply_advance_fund');
     print("fetchMyProjectsICanApplyFund url: $url");
 
     try {

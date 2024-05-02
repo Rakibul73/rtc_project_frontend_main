@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
+import 'package:rtc_project_fronend/views/screens/admin/AllAdvanceFundConfirmListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/AllAdvanceFundRequestQueueListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/AllFundConfirmListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/AllFundRequestQueueListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/CreateCircularNoticeScreen.dart';
@@ -13,6 +15,8 @@ import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectAdvanceFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedAdvanceFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
@@ -26,6 +30,7 @@ import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.da
 import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectHaveToReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForRequestForAdvanceScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
@@ -44,6 +49,7 @@ import 'package:rtc_project_fronend/views/screens/general/logout_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/MyProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
 import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
+import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundAdvanceScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
@@ -93,14 +99,20 @@ class RouteUri {
   static const String projecticanapplyforfund = '/projecticanapplyforfund';
   static const String requestforaprojectfund = '/requestforaprojectfund';
   static const String viewrequestforaprojectfund = '/viewrequestforaprojectfund';
+  static const String viewrequestforaprojectadvancefund = '/viewrequestforaprojectadvancefund';
   static const String myprojectrecievedfund = '/myprojectrecievedfund';
+  static const String myprojectrecievedadvancefund = '/myprojectrecievedadvancefund';
   static const String fundmonitoringpanel = '/fundmonitoringpanel';
   static const String allfundrequestqueuelist = '/allfundrequestqueuelist';
+  static const String alladvancefundrequestqueuelist = '/alladvancefundrequestqueuelist';
   static const String allfundconfirmlist = '/allfundconfirmlist';
+  static const String alladvancefundconfirmlist = '/alladvancefundconfirmlist';
   static const String circularnotice = '/circularnotice';
   static const String createcircularnotice = '/createcircularnotice';
   static const String editnoticeadmin = '/editnoticeadmin';
   static const String viewnotice = '/viewnotice';
+  static const String projecticanapplyforrequestforadvance = '/projecticanapplyforrequestforadvance';
+  static const String requestforaprojectfundadvance = '/requestforaprojectfundadvance';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -267,11 +279,29 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.requestforaprojectfundadvance,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: RequestForAProjectFundAdvanceScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.viewrequestforaprojectfund,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewRequestForAProjectFundScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewrequestforaprojectadvancefund,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewRequestForAProjectAdvanceFundScreen(projectID: state.queryParameters['projectid'] ?? ''),
           );
         },
       ),
@@ -317,6 +347,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
+        path: RouteUri.projecticanapplyforrequestforadvance,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectICanApplyForRequestForAdvanceScreen(),
+        ),
+      ),
+      GoRoute(
         path: RouteUri.fundmonitoringpanel,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -328,6 +365,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const MyProjectRecievedFundScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.myprojectrecievedadvancefund,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MyProjectRecievedAdvanceFundScreen(),
         ),
       ),
       GoRoute(
@@ -366,10 +410,24 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
+        path: RouteUri.alladvancefundconfirmlist,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const AllAdvanceFundConfirmListScreen(),
+        ),
+      ),
+      GoRoute(
         path: RouteUri.allfundrequestqueuelist,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const AllFundRequestQueueListScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.alladvancefundrequestqueuelist,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const AllAdvanceFundRequestQueueListScreen(),
         ),
       ),
       GoRoute(

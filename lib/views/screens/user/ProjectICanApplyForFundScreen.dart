@@ -89,7 +89,7 @@ class _ProjectICanApplyForFundScreenState extends State<ProjectICanApplyForFundS
       padding: const EdgeInsets.all(kDefaultPadding),
       children: [
         Text(
-          'Applicable Projects for Fund',
+          'Request for Honorarium of Research Project',
           style: themeData.textTheme.headlineMedium,
         ),
         Padding(
@@ -272,7 +272,7 @@ class DataSource extends DataTableSource {
                     child: OutlinedButton(
                       onPressed: () => onApplyForFundButtonPressed.call(data),
                       style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-                      child: const Text("Apply For Fund"),
+                      child: const Text("Apply For Honorarium"),
                     ),
                   ),
                 ),
@@ -294,7 +294,7 @@ class DataSource extends DataTableSource {
                     child: OutlinedButton(
                       onPressed: () => onViewDetailsButtonPressed.call(data),
                       style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
-                      child: const Text("View Request"),
+                      child: const Text("View Honorarium Request"),
                     ),
                   ),
                 ),

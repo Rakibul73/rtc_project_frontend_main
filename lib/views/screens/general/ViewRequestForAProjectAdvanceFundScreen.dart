@@ -17,19 +17,19 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ViewRequestForAProjectFundScreen extends StatefulWidget {
+class ViewRequestForAProjectAdvanceFundScreen extends StatefulWidget {
   final String projectID;
 
-  const ViewRequestForAProjectFundScreen({
+  const ViewRequestForAProjectAdvanceFundScreen({
     Key? key,
     required this.projectID,
   }) : super(key: key);
 
   @override
-  State<ViewRequestForAProjectFundScreen> createState() => _ViewRequestForAProjectFundScreenState();
+  State<ViewRequestForAProjectAdvanceFundScreen> createState() => _ViewRequestForAProjectAdvanceFundScreenState();
 }
 
-class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjectFundScreen> {
+class _ViewRequestForAProjectAdvanceFundScreenState extends State<ViewRequestForAProjectAdvanceFundScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
@@ -53,7 +53,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
     Future.wait([
       d.show(),
       Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
-      generateRequestForhonorariumPDF(_formData, context, _piSignatureFileBytes, _piSealFileBytes, _chairmanSignatureFileBytes, _chairmanSealFileBytes, initialProjectBudget),
+      generateRequestForAdvancePDF(_formData, context, _piSignatureFileBytes, _piSealFileBytes, _chairmanSignatureFileBytes, _chairmanSealFileBytes, initialProjectBudget),
     ]).then((_) {
       d.dismiss();
     });
@@ -67,7 +67,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         _formData.projectID = widget.projectID;
 
         int projectID = int.parse(widget.projectID);
-        final projectDetailForFundSelf = await ApiService.getSpecificProjectForFundSelf(
+        final projectDetailForFundSelf = await ApiService.getSpecificProjectForAdvanceFundSelf(
           projectID,
         );
 
@@ -145,12 +145,11 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
 
-        final fundDetails = await ApiService.getFundDetailsForSpecificProject(
+        final fundDetails = await ApiService.getAdvanceFundDetailsForSpecificProject(
           int.parse(_formData.projectID),
         );
 
-        _formData.requestedHonorariumOfPI = fundDetails['fund']['HonorariumOfPI'] ?? '';
-        _formData.requestedHonorariumOfCoPI = fundDetails['fund']['HonorariumOfCoPI'] ?? '';
+        _formData.requestedAmount = fundDetails['fund']['RequestedAmount'] ?? '';
         _formData.piSignatureDate = fundDetails['fund']['PiSignatureDate'] ?? '';
         // ignore: unnecessary_null_comparison
         if (_formData.piSignatureDate != null && _formData.piSignatureDate.isNotEmpty) {
@@ -161,7 +160,6 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
         if (_formData.dateOfChairmanOfTheDepartment != null && _formData.dateOfChairmanOfTheDepartment.isNotEmpty) {
           _formData.dateOfChairmanOfTheDepartment = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment));
         }
-        _formData.totalHonorarium = fundDetails['fund']['TotalHonorarium'] ?? '';
 
         print("==========**E      N      D*****===========");
       });
@@ -207,7 +205,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
     final themeData = Theme.of(context);
     final currentYear = DateTime.now().year;
     final previousYear = DateTime.now().year - 1;
-    var pageTitle = 'Request for Honorarium of Research Project FY: $previousYear-$currentYear';
+    var pageTitle = 'Request For Advance of Research Project FY: $previousYear-$currentYear';
 
     return FormBuilder(
         key: _formKey,
@@ -671,7 +669,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CardHeader(
-                                              title: 'Requested amount for honorarium of PI :',
+                                              title: 'Requested Amount:',
                                               backgroundColor: Color.fromARGB(255, 74, 89, 96),
                                               titleColor: Color.fromARGB(255, 151, 204, 197),
                                               showDivider: false,
@@ -689,101 +687,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CardHeader(
-                                              title: _formData.requestedHonorariumOfPI.toString(),
-                                              backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                              titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                              showDivider: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.33) - (kDefaultPadding * 0.33)),
-                                      child: const Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CardHeader(
-                                              title: 'Requested amount for honorarium of Co-PI :',
-                                              backgroundColor: Color.fromARGB(255, 74, 89, 96),
-                                              titleColor: Color.fromARGB(255, 151, 204, 197),
-                                              showDivider: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.55) - (kDefaultPadding * 0.55)),
-                                      child: Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CardHeader(
-                                              title: _formData.requestedHonorariumOfCoPI.toString(),
-                                              backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                              titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                              showDivider: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: kDefaultPadding, top: kDefaultPadding),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.33) - (kDefaultPadding * 0.33)),
-                                      child: const Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CardHeader(
-                                              title: 'Total honorarium of PI /Co-PI :',
-                                              backgroundColor: Color.fromARGB(255, 74, 89, 96),
-                                              titleColor: Color.fromARGB(255, 151, 204, 197),
-                                              showDivider: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: kDefaultPadding),
-                                    SizedBox(
-                                      width: ((constraints.maxWidth * 0.55) - (kDefaultPadding * 0.55)),
-                                      child: Card(
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CardHeader(
-                                              title: _formData.totalHonorarium.toString(),
+                                              title: _formData.requestedAmount.toString(),
                                               backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                               titleColor: const Color.fromARGB(255, 238, 216, 221),
                                               showDivider: false,
@@ -1189,9 +1093,9 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
                                     final sharedPref = await SharedPreferences.getInstance();
                                     final roleID = sharedPref.getInt(StorageKeys.roleId) ?? 0;
                                     if (roleID == 1) {
-                                      GoRouter.of(context).go(RouteUri.allfundrequestqueuelist);
+                                      GoRouter.of(context).go(RouteUri.alladvancefundrequestqueuelist);
                                     } else {
-                                      GoRouter.of(context).go(RouteUri.projecticanapplyforfund);
+                                      GoRouter.of(context).go(RouteUri.projecticanapplyforrequestforadvance);
                                     }
                                   },
                                   child: Row(
@@ -1254,9 +1158,7 @@ class _ViewRequestForAProjectFundScreenState extends State<ViewRequestForAProjec
 class FormData {
   String projectID = '';
 
-  double requestedHonorariumOfPI = 0.0;
-  double requestedHonorariumOfCoPI = 0.0;
-  double totalHonorarium = 0.0;
+  double requestedAmount = 0.0;
   String dateOfChairmanOfTheDepartment = '';
   String piSignatureDate = '';
 
