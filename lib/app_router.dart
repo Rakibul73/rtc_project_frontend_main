@@ -16,6 +16,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAd
 import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectAdvanceFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ApplyForMonitoringScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedAdvanceFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
@@ -31,6 +32,7 @@ import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.da
 import 'package:rtc_project_fronend/views/screens/user/ProjectHaveToReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForRequestForAdvanceScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ProjectINeedToSendMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
@@ -113,6 +115,8 @@ class RouteUri {
   static const String viewnotice = '/viewnotice';
   static const String projecticanapplyforrequestforadvance = '/projecticanapplyforrequestforadvance';
   static const String requestforaprojectfundadvance = '/requestforaprojectfundadvance';
+  static const String applyformonitoring = '/applyformonitoring';
+  static const String projectineedtosendmonitoringreport = '/projectineedtosendmonitoringreport';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -288,6 +292,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.applyformonitoring,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ApplyForMonitoringScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.viewrequestforaprojectfund,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
@@ -351,6 +364,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectICanApplyForRequestForAdvanceScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.projectineedtosendmonitoringreport,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ProjectINeedToSendMonitoringReportScreen(),
         ),
       ),
       GoRoute(

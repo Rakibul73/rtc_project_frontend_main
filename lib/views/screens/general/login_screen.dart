@@ -84,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
           final firstName = userDetails['user']['FirstName'];
           final lastname = userDetails['user']['LastName'];
           final username = userDetails['user']['Username'];
+          final userID = userDetails['user']['UserID'];
           // String ss;
           // if(userDetails['user']['ProfilePicLocation'] == null){
           //   ss = 'defaultprofilepic.png';
@@ -100,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
             lastname: lastname,
             profilePicLocation: profilePicLocation,
             roleId: roleId,
+            userId: userID,
           );
 
           onSuccess.call();
