@@ -55,6 +55,8 @@ import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundAdv
 import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringHistoryScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
 
@@ -116,6 +118,8 @@ class RouteUri {
   static const String projecticanapplyforrequestforadvance = '/projecticanapplyforrequestforadvance';
   static const String requestforaprojectfundadvance = '/requestforaprojectfundadvance';
   static const String applyformonitoring = '/applyformonitoring';
+  static const String viewmonitoringreport = '/viewmonitoringreport';
+  static const String viewmonitoringhistory = '/viewmonitoringhistory';
   static const String projectineedtosendmonitoringreport = '/projectineedtosendmonitoringreport';
 }
 
@@ -297,6 +301,31 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ApplyForMonitoringScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewmonitoringreport,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewMonitoringReportScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewmonitoringhistory,
+        pageBuilder: (context, state) {
+          final data = state.extra != null ? state.extra as Map<String, dynamic> : {};
+          final additionalValue = data.cast<String, dynamic>(); // Add this line
+
+          // final data = state.extra! as Map<String, dynamic>;
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewMonitoringHistoryScreen(
+              projectID: state.queryParameters['projectid'] ?? '',
+              additionalValue: additionalValue,
+            ),
           );
         },
       ),

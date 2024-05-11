@@ -67,7 +67,12 @@ class _ProjectINeedToSendMonitoringReportScreenState extends State<ProjectINeedT
 
     _dataSource = DataSource(
       onApplyForMonitoringPressed: (data) => GoRouter.of(context).go('${RouteUri.applyformonitoring}?projectid=${data['ProjectID']}'),
-      onViewMonitoringHistoryPressed: (data) => GoRouter.of(context).go('${RouteUri.viewrequestforaprojectadvancefund}?projectid=${data['ProjectID']}'),
+      onViewMonitoringHistoryPressed: (data) {
+        final additionalData = {
+          'projectTitle': data['ProjectTitle'],
+        };
+        GoRouter.of(context).go('${RouteUri.viewmonitoringhistory}?projectid=${data['ProjectID']}', extra: additionalData);
+      },
       data: [],
     );
   }

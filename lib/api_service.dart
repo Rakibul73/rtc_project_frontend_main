@@ -277,7 +277,7 @@ class ApiService {
       throw Exception('Failed to load fetchAdminFundConfirmList : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchAdminAdvanceFundConfirmList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -344,7 +344,7 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
-  
+
   static Future<Map<String, dynamic>> updateAdvanceFundSendValue(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -406,7 +406,7 @@ class ApiService {
       throw Exception('Failed to check project fund send or not. Error: ${response.body}');
     }
   }
-  
+
   static Future<Map<String, dynamic>> checkProjectAdvanceFundSendOrNot(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -465,7 +465,7 @@ class ApiService {
       throw Exception('Failed to load fetchAdminFundQueueList : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchAdminAdvanceFundQueueList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -565,7 +565,7 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
-  
+
   static Future<Map<String, dynamic>> updateConfirmAdvanceFundRecieved(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -627,7 +627,7 @@ class ApiService {
       throw Exception('Failed to check project confirmed or not. Error: ${response.body}');
     }
   }
-  
+
   static Future<Map<String, dynamic>> checkProjectAdvanceFundConfirmedOrNot(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -686,7 +686,7 @@ class ApiService {
       throw Exception('Failed to load projects : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchMyAdvanceFundedProject() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -745,7 +745,7 @@ class ApiService {
       throw Exception('Failed to load getFundDetailsForSpecificProject. Error: ${response.body}');
     }
   }
-  
+
   static Future<Map<String, dynamic>> getAdvanceFundDetailsForSpecificProject(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -810,7 +810,7 @@ class ApiService {
       rethrow;
     }
   }
-  
+
   static Future<Map<String, dynamic>> createAdvanceFundRequestForSpecificProject(Map<String, dynamic> fundRequestData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -848,7 +848,7 @@ class ApiService {
       rethrow;
     }
   }
-  
+
   static Future<Map<String, dynamic>> createMonitoringRequestForSpecificProject(Map<String, dynamic> fundRequestData) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -942,7 +942,36 @@ class ApiService {
       throw Exception('Failed to load project details. Error: ${response.body}');
     }
   }
-  
+
+  static Future<Map<String, dynamic>> getSpecificProjectMonitoringReport(int monitoringReportID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("getSpecificProjectMonitoringReport $monitoringReportID");
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_specific_project_monitoring_report/$monitoringReportID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load project details. Error: ${response.body}');
+    }
+  }
+
   static Future<Map<String, dynamic>> getSpecificProjectForAdvanceFundSelf(int projectId) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -998,7 +1027,7 @@ class ApiService {
       throw Exception('Failed to check project reviewed or not. Error: ${response.body}');
     }
   }
-  
+
   static Future<Map<String, dynamic>> checkProjectAdvanceFundAppliedOrNot(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1057,7 +1086,7 @@ class ApiService {
       throw Exception('Failed to load projects : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchMyProjectsICanApplyAdvanceFund() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1089,7 +1118,7 @@ class ApiService {
       throw Exception('Failed to load projects : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchMyProjectsINeedToSendMonitoringReport() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1119,6 +1148,38 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Failed to load projects : $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchMonitoringHistoryForSingleProject(int projectID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_single_project_monitoring_history/$projectID');
+    print("fetchMonitoringHistoryForSingleProject url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['projects'];
+      } else {
+        print("fetchMonitoringHistoryForSingleProject = Failed to load history: ${response.statusCode}");
+        throw Exception('Failed to load history: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load history : $e');
     }
   }
 
@@ -1154,7 +1215,7 @@ class ApiService {
       throw Exception('Failed to fetch getMyFundDashboard: $e');
     }
   }
-  
+
   static Future<Map<String, dynamic>> getMyMonitoringDashboard() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1287,7 +1348,7 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
-  
+
   static Future<Map<String, dynamic>> updateProjectBudgetDetailsForMonitoring(List<dynamic> budgetFormDataForUpload, int projectMonitoringReportID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1355,7 +1416,71 @@ class ApiService {
       throw Exception('Failed to load projects budget: $e');
     }
   }
-  
+
+  static Future<List<dynamic>> fetchAllGanttOfAProjectHistory(int monitoringReportID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_self_project_gantt_history/$monitoringReportID');
+    print("fetchAllGanttOfAProjectHistory url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['gantt_list'];
+      } else {
+        print("fetchAllGanttOfAProjectHistory = Failed to load projects budget: ${response.statusCode}");
+        throw Exception('Failed to load projects budget: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects budget: $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllBudgetOfAProjectHistory(int monitoringReportID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_self_project_budget_history/$monitoringReportID');
+    print("fetchAllBudgetOfAProjectHistory url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['budget_list'];
+      } else {
+        print("fetchAllBudgetOfAProjectHistory = Failed to load projects budget: ${response.statusCode}");
+        throw Exception('Failed to load projects budget: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects budget: $e');
+    }
+  }
+
   static Future<List<dynamic>> fetchAllBudgetOfAProjectOriginal(int projectId) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1423,7 +1548,7 @@ class ApiService {
       rethrow; // Rethrow the exception to propagate it up the call stack.
     }
   }
-  
+
   static Future<Map<String, dynamic>> updateProjectGanttDetailsForMonitoring(List<dynamic> ganttFormDataForUpload, int projectMonitoringReportID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1491,7 +1616,7 @@ class ApiService {
       throw Exception('Failed to load projects gantt: $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchAllGanttOfAProjectOriginal(int projectId) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -2798,6 +2923,68 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Failed to fetch $endpoint: $e');
+    }
+  }
+
+  static Future<String> getProjectTitle(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/projecttitle/$projectId');
+    print("getProjectTitle url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        return responseBody['project']['ProjectTitle'].toString(); // Convert file bytes to base64 string
+      } else {
+        throw Exception('Failed to get project title: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get project title: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSpecificProjectRTCCodeAndTitleOnly(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/projecttitle/$projectId');
+    print("getProjectTitle url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        return responseBody; // Convert file bytes to base64 string
+      } else {
+        throw Exception('Failed to get project title: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get project title: $e');
     }
   }
 
