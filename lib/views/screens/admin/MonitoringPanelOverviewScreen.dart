@@ -10,29 +10,31 @@ import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_ma
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 
-class ProjectMonitoringReportScreen extends StatefulWidget {
-  const ProjectMonitoringReportScreen({Key? key}) : super(key: key);
+class MonitoringPanelOverviewScreen extends StatefulWidget {
+  const MonitoringPanelOverviewScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProjectMonitoringReportScreen> createState() => _ProjectMonitoringReportScreenState();
+  State<MonitoringPanelOverviewScreen> createState() => _MonitoringPanelOverviewScreenState();
 }
 
-class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportScreen> {
+class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewScreen> {
   final _dataTableHorizontalScrollController = ScrollController();
   late Future<Map<String, dynamic>> _summaryDataFuture;
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
-    final data = await ApiService.getMyMonitoringDashboard();
+    final data = await ApiService.getMonitoringPanelOverview();
     print("_fetchProjectSummaryData = data: $data");
     print(data['statuscode']);
     if (data['statuscode'] == 200) {
       // Handle successful response
-      final feedbackFromCommittee = await data['feedback_from_committee'];
-      final sendForMonitoring = await data['send_for_monitoring'];
+      final committeeGavefeedback = await data['committee_gave_feedback'];
+      final assignedmonitoringcommittee = await data['assigned_monitoring_committee'];
+      final needToAssignMonitoringCommittee = await data['need_to_assign_monitoring_committee'];
 
       final Map<String, dynamic> summaryData = {
-        'feedback_from_committee': await feedbackFromCommittee,
-        'send_for_monitoring': await sendForMonitoring,
+        'committee_gave_feedback': await committeeGavefeedback,
+        'assigned_monitoring_committee': await assignedmonitoringcommittee,
+        'need_to_assign_monitoring_committee': await needToAssignMonitoringCommittee,
       };
       return summaryData;
     } else if (data['statuscode'] == 401) {
@@ -49,15 +51,17 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
 
       dialog.show();
       final Map<String, dynamic> summaryData = {
-        'feedback_from_committee': 0,
-        'send_for_monitoring': 0,
+        'committee_gave_feedback': 0,
+        'assigned_monitoring_committee': 0,
+        'need_to_assign_monitoring_committee': 0,
       };
       return summaryData;
     } else {
       // Handle other error cases
       final Map<String, dynamic> summaryData = {
-        'feedback_from_committee': 'x',
-        'send_for_monitoring': 'x',
+        'committee_gave_feedback': 'x',
+        'assigned_monitoring_committee': 'x',
+        'need_to_assign_monitoring_committee': 'x',
       };
       return summaryData;
     }
@@ -97,23 +101,9 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
           return ListView(
             padding: const EdgeInsets.all(kDefaultPadding),
             children: [
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: themeData.textTheme.headlineMedium,
-                  children: const [
-                    TextSpan(
-                      text: 'My Project Monitoring Hub ',
-                    ),
-                    TextSpan(
-                      text: '(No of Projects:)',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(183, 59, 255, 248), // Change color to your desired color
-                      ),
-                    ),
-                  ],
-                ),
+              Text(
+                "No of Projects = ",
+                style: themeData.textTheme.headlineMedium,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
@@ -125,23 +115,28 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                       spacing: kDefaultPadding,
                       runSpacing: kDefaultPadding,
                       children: [
-                        SizedBox(
-                          height: 120.0,
+                        SummaryCard(
+                          title: "Need to Assign Monitoring Committee",
+                          value: snapshot.data!['need_to_assign_monitoring_committee'].toString(),
+                          icon: Icons.people_rounded,
+                          backgroundColor: appColorScheme.success,
+                          textColor: themeData.colorScheme.onPrimary,
+                          iconColor: Colors.black12,
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Send For Monitoring",
-                          value: snapshot.data!['send_for_monitoring'].toString(),
-                          icon: Icons.add_task_outlined,
+                          title: "Assigned Monitoring Committee",
+                          value: snapshot.data!['assigned_monitoring_committee'].toString(),
+                          icon: Icons.article_outlined,
                           backgroundColor: const Color.fromARGB(255, 255, 162, 68),
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Feedback From Committee",
-                          value: snapshot.data!['feedback_from_committee'].toString(),
-                          icon: Icons.feedback_rounded,
+                          title: "Committee Gave Feedback",
+                          value: snapshot.data!['committee_gave_feedback'].toString(),
+                          icon: Icons.group_add_rounded,
                           backgroundColor: appColorScheme.warning,
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
@@ -164,7 +159,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                           children: <Widget>[
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.monitorthereportasmonitoringcommittee),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.monitoringpanelneedtoassignmonitoringcommittee),
                                 style: appButtonTheme.successOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -173,57 +168,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_rounded),
                                     ),
-                                    Text('Monitor The Report As Monitoring Committee'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            // const SizedBox(width: 20),
-                            // Expanded(
-                            //   child: ElevatedButton(
-                            //     onPressed: () => GoRouter.of(context).go(RouteUri.myrecievedfeedbackfrommonitoringcommittee),
-                            //     style: appButtonTheme.infoOutlined,
-                            //     child: const Row(
-                            //       mainAxisSize: MainAxisSize.min,
-                            //       children: [
-                            //         Padding(
-                            //           padding: EdgeInsets.only(right: kTextPadding),
-                            //           child: Icon(Icons.reviews_outlined),
-                            //         ),
-                            //         Text('Recieved feedback from monitoring committee'),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CardBody(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.projectineedtosendmonitoringreport),
-                                style: appButtonTheme.successOutlined,
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: kTextPadding),
-                                      child: Icon(Icons.reviews_rounded),
-                                    ),
-                                    Text('Projects I need to send monitoring report'),
+                                    Text('Monitoring Reports you have to Assign Monitoring Committee'),
                                   ],
                                 ),
                               ),
@@ -231,8 +176,8 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                             const SizedBox(width: 20),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.myrecievedfeedbackfrommonitoringcommittee),
-                                style: appButtonTheme.infoOutlined,
+                                onPressed: () => GoRouter.of(context).go(RouteUri.projectreviewerhasgivenreview),
+                                style: appButtonTheme.warningOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -240,7 +185,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_outlined),
                                     ),
-                                    Text('Recieved feedback from monitoring committee'),
+                                    Text('Monitoring Reports that Committee has given Feedback'),
                                   ],
                                 ),
                               ),

@@ -7,18 +7,23 @@ import 'package:rtc_project_fronend/views/screens/admin/AllFundRequestQueueListS
 import 'package:rtc_project_fronend/views/screens/admin/CreateCircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/EditNoticeAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/MonitoringPanelNeedToAssignMonitoringCommitteeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/MonitoringPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/UserProfileScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/ViewMonitoringReportAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectAdvanceFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ApplyForMonitoringScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MonitorTheReportAsMonitoringCommitteeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedAdvanceFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/MyRecievedFeedbackFromMonitoringCommitteeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
@@ -55,6 +60,7 @@ import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundAdv
 import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringFeedbackScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringHistoryScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringReportScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart';
@@ -74,6 +80,7 @@ class RouteUri {
   static const String searchproject = '/searchproject';
   static const String myprojects = '/myprojects';
   static const String viewprojectadmin = '/viewprojectadmin';
+  static const String viewmonitoringreportadmin = '/viewmonitoringreportadmin';
   static const String viewproject = '/viewproject';
   static const String editproject = '/editproject';
   static const String editprojectadmin = '/editprojectadmin';
@@ -94,9 +101,12 @@ class RouteUri {
   static const String changepassword = '/changepassword';
   static const String myprojectreview = '/myprojectreview';
   static const String projecthavetoreview = '/projecthavetoreview';
+  static const String monitorthereportasmonitoringcommittee = '/monitorthereportasmonitoringcommittee';
   static const String reviewprojectscreen = '/reviewprojectscreen';
   static const String reviewpaneloverview = '/reviewpaneloverview';
+  static const String monitoringpaneloverview = '/monitoringpaneloverview';
   static const String projectyouhavetoassignreviewer = '/projectyouhavetoassignreviewer';
+  static const String monitoringpanelneedtoassignmonitoringcommittee = '/monitoringpanelneedtoassignmonitoringcommittee';
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
   static const String viewreviewoftheproject = '/viewreviewoftheproject';
   static const String viewreviewoftheprojectadmin = '/viewreviewoftheprojectadmin';
@@ -118,9 +128,11 @@ class RouteUri {
   static const String projecticanapplyforrequestforadvance = '/projecticanapplyforrequestforadvance';
   static const String requestforaprojectfundadvance = '/requestforaprojectfundadvance';
   static const String applyformonitoring = '/applyformonitoring';
+  static const String viewmonitoringfeedback = '/viewmonitoringfeedback';
   static const String viewmonitoringreport = '/viewmonitoringreport';
   static const String viewmonitoringhistory = '/viewmonitoringhistory';
   static const String projectineedtosendmonitoringreport = '/projectineedtosendmonitoringreport';
+  static const String myrecievedfeedbackfrommonitoringcommittee = '/myrecievedfeedbackfrommonitoringcommittee';
 }
 
 const List<String> unrestrictedRoutes = [
@@ -180,6 +192,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectHaveToReviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.monitorthereportasmonitoringcommittee,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MonitorTheReportAsMonitoringCommitteeScreen(),
         ),
       ),
       GoRoute(
@@ -305,11 +324,29 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         },
       ),
       GoRoute(
+        path: RouteUri.viewmonitoringfeedback,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewMonitoringFeedbackScreen(projectMonitoringFeedbackID: state.queryParameters['projectmonitoringfeedbackid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
         path: RouteUri.viewmonitoringreport,
         pageBuilder: (context, state) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewMonitoringReportScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewmonitoringreportadmin,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewMonitoringReportAdminScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
           );
         },
       ),
@@ -400,6 +437,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectINeedToSendMonitoringReportScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.myrecievedfeedbackfrommonitoringcommittee,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MyRecievedFeedbackFromMonitoringCommitteeScreen(),
         ),
       ),
       GoRoute(
@@ -508,6 +552,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         ),
       ),
       GoRoute(
+        path: RouteUri.monitoringpanelneedtoassignmonitoringcommittee,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MonitoringPanelNeedToAssignMonitoringCommitteeScreen(),
+        ),
+      ),
+      GoRoute(
         path: RouteUri.projectreviewerhasgivenreview,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
@@ -519,6 +570,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ReviewPanelOverviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.monitoringpaneloverview,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MonitoringPanelOverviewScreen(),
         ),
       ),
       GoRoute(

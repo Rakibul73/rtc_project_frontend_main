@@ -87,6 +87,11 @@ final sidebarMenuConfigs = [
         title: (context) => "Fund Monitoring Panel",
       ),
       SidebarChildMenuConfig(
+        uri: RouteUri.monitoringpaneloverview,
+        icon: Icons.monitor_heart_outlined,
+        title: (context) => "Monitoring Panel Overview",
+      ),
+      SidebarChildMenuConfig(
         uri: RouteUri.viewallnotifications,
         icon: Icons.notifications_outlined,
         title: (context) => "View All Notifications",

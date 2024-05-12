@@ -1151,6 +1151,38 @@ class ApiService {
     }
   }
 
+  static Future<List<dynamic>> fetchMyMonitoringFeedbackList() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/list_monitoring_feedback_project_and_pi_can_see');
+    print("fetchMyMonitoringFeedbackList url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['ProjectFeedbackList'];
+      } else {
+        print("fetchMyMonitoringFeedbackList = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
   static Future<List<dynamic>> fetchMonitoringHistoryForSingleProject(int projectID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -1761,6 +1793,38 @@ class ApiService {
     }
   }
 
+  static Future<List<dynamic>> fetchMonitoringReportNeedToAssignCommittee() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_monitoring_report_need_to_assign_committee');
+    print("fetchMonitoringReportNeedToAssignCommittee url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['MonitoringReportNeedToAssignCommitteeList'];
+      } else {
+        print("fetchMonitoringReportNeedToAssignCommittee = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
+
   static Future<List<dynamic>> fetchAllProjectPiCanView() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -2015,6 +2079,39 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> getMonitoringPanelOverview() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/monitoring_panel_overview');
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        print("getMonitoringPanelOverview = responseBody: $responseBody");
+        return responseBody;
+      } else if (response.statusCode == 401) {
+        print("getMonitoringPanelOverview = Token expired");
+        return {'statuscode': 401}; // Return status code as a map
+      } else {
+        return {'statuscode': response.statusCode}; // Return status code as a map
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch getReviewPanelOverview: $e');
+    }
+  }
+
   static Future<Map<String, dynamic>> getAllReviewsForSpecificReviewer(Map<String, dynamic> projectIDAndReviewerUserID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -2117,6 +2214,33 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> checkMonitoringReportFeedbackGivenOrNot(int projectMonitoringReportID, int userID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/check_a_monitoring_report_feedback_given_or_not/$projectMonitoringReportID/$userID'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    final data = json.decode(response.body);
+
+    print("checkMonitoringReportFeedbackGivenOrNot: ${data['MonitoringReportFeedbackCheck']}");
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to check project reviewed or not. Error: ${response.body}');
+    }
+  }
+
   static Future<List<dynamic>> fetchAllProjectHaveToReviewList() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -2143,6 +2267,38 @@ class ApiService {
         return data['ProjectHaveToReviewList'];
       } else {
         print("fetchAllProjectHaveToReviewList = Failed to load Project Have To Review: ${response.statusCode}");
+        throw Exception('Failed to load Project Have To Review: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load Project Have To Review : $e');
+    }
+  }
+
+  static Future<List<dynamic>> fetchAllProjectHaveToMonitorList() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_projects_have_to_monitor');
+    print("fetchAllProjectHaveToMonitorList url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['ProjectHaveToMonitorList'];
+      } else {
+        print("fetchAllProjectHaveToMonitorList = Failed to load Project Have To Review: ${response.statusCode}");
         throw Exception('Failed to load Project Have To Review: ${response.statusCode}');
       }
     } catch (e) {
@@ -2193,6 +2349,35 @@ class ApiService {
 
     final response = await http.get(
       Uri.parse('$baseUrl/get_revieweruserid_for_specific_project/$projectId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $accessToken',
+        'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+      },
+    );
+
+    print(response.statusCode);
+    if (response.statusCode == 401) {
+      print("token expired");
+      return {'statuscode': 401};
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return data;
+    } else {
+      throw Exception('Failed to load notification details. Error: ${response.body}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getMonitoringCommitteeUserId(int monitoringReportID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("getMonitoringCommitteeUserId $monitoringReportID");
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/get_committeeuserid_for_specific_monitoring_report/$monitoringReportID'),
       headers: <String, String>{
         'Authorization': 'Bearer $accessToken',
         'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
@@ -2264,6 +2449,63 @@ class ApiService {
       } else {
         // Failed to create project
         throw Exception('Failed to set reviewer: ${responseBody['error']} | ${jsonDecode(response2.body)} | ${jsonDecode(response3.body)} ');
+      }
+    } catch (e) {
+      // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> setMonitoringCommittee(Map<String, dynamic> committee1, Map<String, dynamic> committee2, Map<String, dynamic> committee3) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/set_monitoring_committee_for_specific_project_monitoring_report');
+    print("setMonitoringCommittee url: $url");
+
+    try {
+      final http.Response response1 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(committee1),
+      );
+      final http.Response response2 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(committee2),
+      );
+      final http.Response response3 = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(committee3),
+      );
+
+      print('Response status: ${response1.statusCode}');
+      print('Response body: ${response1.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response1.body);
+
+      if (response1.statusCode == 201 && response2.statusCode == 201 && response3.statusCode == 201) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to set committee: ${responseBody['error']} | ${jsonDecode(response2.body)} | ${jsonDecode(response3.body)} ');
       }
     } catch (e) {
       // Rethrow the exception to propagate it up the call stack.
@@ -2965,6 +3207,37 @@ class ApiService {
 
     final Uri url = Uri.parse('$baseUrl/projecttitle/$projectId');
     print("getProjectTitle url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        return responseBody; // Convert file bytes to base64 string
+      } else {
+        throw Exception('Failed to get project title: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get project title: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> getSpecificProjectCreatorUserIDOnly(int projectId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/projecttitle/$projectId');
+    print("getSpecificProjectCreatorUserIDOnly url: $url");
 
     try {
       final http.Response response = await http.get(

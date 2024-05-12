@@ -6,26 +6,28 @@ import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
+import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class ViewMonitoringReportScreen extends StatefulWidget {
-  final String monitoringReportID;
+class ViewMonitoringFeedbackScreen extends StatefulWidget {
+  final String projectMonitoringFeedbackID;
 
-  const ViewMonitoringReportScreen({
+  const ViewMonitoringFeedbackScreen({
     Key? key,
-    required this.monitoringReportID,
+    required this.projectMonitoringFeedbackID,
   }) : super(key: key);
 
   @override
-  State<ViewMonitoringReportScreen> createState() => _ViewMonitoringReportScreenState();
+  State<ViewMonitoringFeedbackScreen> createState() => _ViewMonitoringFeedbackScreenState();
 }
 
-class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen> {
+class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _formData = FormData();
 
@@ -38,15 +40,18 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
   Future<bool>? _future;
 
   Future<bool> _getDataAsync() async {
-    if (widget.monitoringReportID.isNotEmpty) {
+    print('projectMonitoringFeedbackID: ${widget.projectMonitoringFeedbackID}');
+    if (widget.projectMonitoringFeedbackID.isNotEmpty) {
+      print('projectMonitoringFeedbackID: ${widget.projectMonitoringFeedbackID}');
       await Future.delayed(const Duration(seconds: 1), () async {
-        _formData.monitoringReportID = widget.monitoringReportID;
-        int monitoringReportID = int.parse(_formData.monitoringReportID);
-        final projectMonitoringReportDetails = await ApiService.getSpecificProjectMonitoringReport(
-          monitoringReportID,
+        _formData.projectMonitoringFeedbackID = widget.projectMonitoringFeedbackID;
+
+        int projectMonitoringFeedbackID = int.parse(widget.projectMonitoringFeedbackID);
+        final projectDetailForFundSelf = await ApiService.getSpecificProjectForFundSelf(
+          projectMonitoringFeedbackID,
         );
 
-        if (projectMonitoringReportDetails['statuscode'] == 401) {
+        if (projectDetailForFundSelf['statuscode'] == 401) {
           // Handle token expiration
           final dialog = AwesomeDialog(
             context: context,
@@ -59,20 +64,10 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
           dialog.show();
         }
 
-        _formData.projectID = projectMonitoringReportDetails['monitoring_report_data']['ProjectID'].toString();
+        print(projectDetailForFundSelf['project']);
 
-        _formData.reportDate = projectMonitoringReportDetails['monitoring_report_data']['ReportDate'];
-        print("=========deb=========");
-
-        _formData.reportFileLocation = projectMonitoringReportDetails['monitoring_report_data']['ReportFileLocation'] ?? '';
-
-        final projectRTCCodeAndTitleOnly = await ApiService.getSpecificProjectRTCCodeAndTitleOnly(
-          int.parse(_formData.projectID),
-        );
-        if (projectRTCCodeAndTitleOnly.isNotEmpty) {
-          _formData.projectTitle = projectRTCCodeAndTitleOnly['project']['ProjectTitle'] ?? '';
-          _formData.rtcCode = projectRTCCodeAndTitleOnly['project']['CodeByRTC'].toString();
-        }
+        _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
+        _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
 
         final budgetDetailsOriginal = await ApiService.fetchAllBudgetOfAProjectOriginal(
           int.parse(_formData.projectID),
@@ -81,16 +76,16 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
           initialProjectBudgetOriginal = budgetDetailsOriginal;
         }
 
-        final budgetDetails = await ApiService.fetchAllBudgetOfAProjectHistory(
-          monitoringReportID,
+        final budgetDetails = await ApiService.fetchAllBudgetOfAProject(
+          int.parse(_formData.projectID),
         );
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
         print("initialProjectBudget: $initialProjectBudget");
 
-        final ganttDetails = await ApiService.fetchAllGanttOfAProjectHistory(
-          monitoringReportID,
+        final ganttDetails = await ApiService.fetchAllGanttOfAProject(
+          int.parse(_formData.projectID),
         );
         if (ganttDetails.isNotEmpty) {
           initialProjectGantts = ganttDetails;
@@ -198,7 +193,7 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
           print(budgetFormDataForUpload);
           final responseBodyBudget = await ApiService.updateProjectBudgetDetailsForMonitoring(budgetFormDataForUpload, projectMonitoringReportID);
 
-          if (responseBodyGantt['statuscode'] == 200 && responseBodyBudget['statuscode'] == 200) {
+          if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 200 && responseBodyBudget['statuscode'] == 200) {
             // Handle success
             final dialog = AwesomeDialog(
               context: context,
@@ -289,6 +284,7 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
 
   Widget _content(BuildContext context) {
     final themeData = Theme.of(context);
+    final appColorScheme = themeData.extension<AppColorScheme>()!;
     final currentYear = DateTime.now().year;
     final previousYear = DateTime.now().year - 1;
     var pageTitle = 'Monitoring Format: FY $previousYear-$currentYear';
@@ -751,56 +747,65 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                                             children: [
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.4) - (kDefaultPadding * 0.4)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: ganttData['Activity'],
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: ganttData['Activity'], // Use ganttData instead of _formData
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'work_activity',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Work/Activity',
+                                                    hintText: 'Work/Activity',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  onChanged: (value) => (ganttData['Activity'] = value ?? ''), // Update ganttData
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.2)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title:
-                                                            "${DateFormat("d MMM yyyy").format(DateFormat("E, d MMM yyyy HH:mm:ss 'GMT'").parseUTC(ganttData['StartDate']))}  To  ${DateFormat("d MMM yyyy").format(DateFormat("E, d MMM yyyy HH:mm:ss 'GMT'").parseUTC(ganttData['EndDate']))}",
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                                child: FormBuilderDateRangePicker(
+                                                    initialValue: DateTimeRange(
+                                                      start: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['StartDate']),
+                                                      end: DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(ganttData['EndDate']),
+                                                    ),
+                                                    name: 'duration',
+                                                    firstDate: DateTime(1970),
+                                                    lastDate: DateTime(2030),
+                                                    format: DateFormat('MMMM d, yyyy'),
+                                                    decoration: const InputDecoration(
+                                                      labelText: 'Duration',
+                                                      hintText: 'Duration',
+                                                      border: OutlineInputBorder(),
+                                                    ),
+                                                    onChanged: (value) {
+                                                      if (value != null) {
+                                                        setState(() {
+                                                          final DateFormat formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss');
+                                                          ganttData['StartDate'] = formatter.format(value.start);
+                                                          ganttData['EndDate'] = formatter.format(value.end);
+                                                        });
+                                                      }
+                                                    }),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.1)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: ganttData['ActivityStatus'],
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderChoiceChip(
+                                                  initialValue: ganttData['ActivityStatus'],
+                                                  name: 'activity_status',
+                                                  spacing: kDefaultPadding * 0.5,
+                                                  runSpacing: kDefaultPadding * 0.2,
+                                                  selectedColor: appColorScheme.warning,
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Activity Status',
+                                                    border: OutlineInputBorder(),
                                                   ),
+                                                  options: const [
+                                                    FormBuilderChipOption(value: 'Completed', child: Text('Completed')),
+                                                    FormBuilderChipOption(value: 'Ongoing', child: Text('Ongoing')),
+                                                  ],
+                                                  onChanged: (value) => (ganttData['ActivityStatus'] = value ?? ''), // Update ganttData
                                                 ),
                                               ),
                                             ],
@@ -1118,91 +1123,91 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                                             children: [
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: budgetData['SerialNo'].toString(),
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['SerialNo'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'sl_no',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Sl. No.',
+                                                    hintText: 'Sl. No.',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['SerialNo'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.3) - (kDefaultPadding * 0.3)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: budgetData['Item'],
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['Item'],
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'item',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Item',
+                                                    hintText: 'Item',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['Item'] = value ?? ''),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.1) - (kDefaultPadding * 0.1)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: budgetData['Quantity'].toString(),
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['Quantity'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'quantity',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Quantity',
+                                                    hintText: 'Quantity',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['Quantity'] = value ?? 0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: budgetData['UnitPrice'].toString(),
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['UnitPrice'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'unit_price',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Unit Price',
+                                                    hintText: '(Taka)',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['UnitPrice'] = value ?? 0.0),
                                                 ),
                                               ),
                                               const SizedBox(width: kDefaultPadding),
                                               SizedBox(
                                                 width: ((constraints.maxWidth * 0.2) - (kDefaultPadding * 0.2)),
-                                                child: Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      CardHeader(
-                                                        title: budgetData['TotalCost'].toString(),
-                                                        backgroundColor: const Color.fromARGB(255, 51, 55, 56),
-                                                        titleColor: const Color.fromARGB(255, 238, 216, 221),
-                                                        showDivider: false,
-                                                      ),
-                                                    ],
+                                                child: FormBuilderTextField(
+                                                  initialValue: budgetData['TotalCost'].toString(),
+                                                  keyboardType: TextInputType.multiline,
+                                                  maxLines: null, // Allow unlimited lines
+                                                  name: 'total_cost_tk',
+                                                  decoration: const InputDecoration(
+                                                    labelText: 'Total cost (Tk)',
+                                                    hintText: '(Taka)',
+                                                    border: OutlineInputBorder(),
+                                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   ),
+                                                  validator: FormBuilderValidators.required(),
+                                                  onChanged: (value) => (budgetData['TotalCost'] = value ?? 0.0),
                                                 ),
                                               ),
                                             ],
@@ -1222,7 +1227,6 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                 ),
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
@@ -1241,7 +1245,7 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go('${RouteUri.viewmonitoringhistory}?projectid=${_formData.projectID}'),
+                                  onPressed: () => GoRouter.of(context).go(RouteUri.projectineedtosendmonitoringreport),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1258,31 +1262,31 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                                   ),
                                 ),
                               ),
-                              // const Spacer(),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(right: kDefaultPadding),
-                              //   child: SizedBox(
-                              //     height: 40.0,
-                              //     child: ElevatedButton(
-                              //       style: themeData.extension<AppButtonTheme>()!.primaryOutlined,
-                              //       onPressed: () => _goSubmitMonitoringReport(context),
-                              //       child: Row(
-                              //         mainAxisSize: MainAxisSize.min,
-                              //         crossAxisAlignment: CrossAxisAlignment.center,
-                              //         children: [
-                              //           Padding(
-                              //             padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                              //             child: Icon(
-                              //               Icons.arrow_circle_right_outlined,
-                              //               size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                              //             ),
-                              //           ),
-                              //           const Text("Submit Monitoring Report"),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+                              const Spacer(),
+                              Padding(
+                                padding: const EdgeInsets.only(right: kDefaultPadding),
+                                child: SizedBox(
+                                  height: 40.0,
+                                  child: ElevatedButton(
+                                    style: themeData.extension<AppButtonTheme>()!.primaryOutlined,
+                                    onPressed: () => _goSubmitMonitoringReport(context),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                          child: Icon(
+                                            Icons.arrow_circle_right_outlined,
+                                            size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                          ),
+                                        ),
+                                        const Text("Submit Monitoring Report"),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -1295,13 +1299,28 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
           ],
         ));
   }
+
+  Widget _linearProgressIndicator(BuildContext context, double? value, Color color, bool withBottomPadding) {
+    final themeData = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: (withBottomPadding ? kDefaultPadding * 1.5 : 0.0)),
+      child: Theme(
+        data: themeData.copyWith(
+          colorScheme: themeData.colorScheme.copyWith(primary: color),
+        ),
+        child: LinearProgressIndicator(
+          value: value,
+          backgroundColor: themeData.scaffoldBackgroundColor,
+        ),
+      ),
+    );
+  }
 }
 
 class FormData {
   String projectID = '';
-  String monitoringReportID = '';
-  String reportDate = '';
-  String reportFileLocation = '';
+  String projectMonitoringFeedbackID = '';
   String piInstituteName = '';
   String piInstituteAddress = '';
   String piName = '';
