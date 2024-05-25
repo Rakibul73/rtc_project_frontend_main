@@ -1,70 +1,72 @@
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
-import 'package:rtc_project_fronend/views/screens/admin/AllAdvanceFundConfirmListScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/AllAdvanceFundRequestQueueListScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/AllFundConfirmListScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/AllFundRequestQueueListScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/CreateCircularNoticeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/EditNoticeAdminScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/FundMonitoringPanelScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/MonitoringPanelNeedToAssignMonitoringCommitteeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ProjectReviewerHasGivenReviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ProjectYouHaveToAssignReviewerScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/MonitoringPanelOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ReviewPanelOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/UserProfileScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/VerifiedUsersScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewMonitoringReportAdminScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewReviewOfTheProjectAdminScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/CircularNoticeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/ViewNoticeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectAdvanceFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ApplyForMonitoringScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MonitorTheReportAsMonitoringCommitteeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedAdvanceFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MyProjectRecievedFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MyRecievedFeedbackFromMonitoringCommitteeScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectFundManagementScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/ChangePasswordScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/CreateProject.dart';
-import 'package:rtc_project_fronend/views/screens/admin/DeleteUserScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MyProjectReviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/MyProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/NotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/PendingUsersScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectDashboardScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ProjectOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectHaveToReviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectICanApplyForRequestForAdvanceScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectINeedToSendMonitoringReportScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectMonitoringReportScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ProjectReviewTrackingScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/SearchProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/UserManagementOverviewScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/VerifyUserScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewAllNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/EditProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/EditProjectScreenAdmin.dart';
-import 'package:rtc_project_fronend/views/screens/general/ViewIndividualNotificationScreen.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart';
+import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllAdvanceFundConfirmListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllAdvanceFundRequestQueueListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllFundConfirmListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllFundRequestQueueListScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/AssignedMonitoringCommitteeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/notice_board/CreateCircularNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/notice_board/EditNoticeAdminScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/fund_panel/FundMonitoringPanelScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/MonitoringPanelNeedToAssignMonitoringCommitteeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/review_panel/ProjectReviewerHasGivenReviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/review_panel/ProjectYouHaveToAssignReviewerScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/MonitoringPanelOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/review_panel/ReviewPanelOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/UserProfileScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/VerifiedUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/ViewMonitoringReportAdminScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/review_panel/ViewReviewOfTheProjectAdminScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/notice_board/CircularNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/notice_board/ViewNoticeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectAdvanceFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ApplyForMonitoringScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/MonitorTheReportAsMonitoringCommitteeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/MyProjectRecievedAdvanceFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/MyProjectRecievedFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/MyRecievedFeedbackFromMonitoringCommitteeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/ProjectFundManagementScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/ChangePasswordScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/project_panel/CreateProject.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/DeleteUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/review_panel/MyProjectReviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/project_panel/MyProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/notification_panel/NotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/PendingUsersScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/project_panel/ProjectDashboardScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/project_overview/ProjectOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/review_panel/ProjectHaveToReviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/ProjectICanApplyForFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/ProjectICanApplyForRequestForAdvanceScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ProjectINeedToSendMonitoringReportScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ProjectMonitoringReportScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/review_panel/ProjectReviewTrackingScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/project_overview/SearchProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/UserManagementOverviewScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/user_management/VerifyUserScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/notification_panel/ViewAllNotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/project_panel/EditProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/project_overview/EditProjectScreenAdmin.dart';
+import 'package:rtc_project_fronend/views/screens/general/notification_panel/ViewIndividualNotificationScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/project_overview/ViewProjectScreenAdmin.dart';
 import 'package:rtc_project_fronend/views/screens/admin/DashboardScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/error_screen.dart';
-import 'package:rtc_project_fronend/views/screens/general/forgot_pass.dart';
-import 'package:rtc_project_fronend/views/screens/general/login_screen.dart';
-import 'package:rtc_project_fronend/views/screens/general/logout_screen.dart';
-import 'package:rtc_project_fronend/views/screens/general/MyProfileScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/register_screen.dart';
-import 'package:rtc_project_fronend/views/screens/general/reset_pass_screen.dart';
-import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundAdvanceScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/RequestForAProjectFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ReviewIndividualProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringFeedbackScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringHistoryScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewMonitoringReportScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart';
-import 'package:rtc_project_fronend/views/screens/user/ViewReviewOfTheProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/profile/error_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/forgot_pass.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/login_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/logout_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/profile/MyProfileScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/register_screen.dart';
+import 'package:rtc_project_fronend/views/screens/general/auth/reset_pass_screen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/RequestForAProjectFundAdvanceScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/fund_panel/RequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/FeedbackMonitoringReportScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/review_panel/ReviewIndividualProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectFundScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewMonitoringFeedbackScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewMonitoringHistoryScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewMonitoringReportScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/project_panel/ViewProjectScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/review_panel/ViewReviewOfTheProjectScreen.dart';
 
 class RouteUri {
   static const String home = '/';
@@ -103,10 +105,12 @@ class RouteUri {
   static const String projecthavetoreview = '/projecthavetoreview';
   static const String monitorthereportasmonitoringcommittee = '/monitorthereportasmonitoringcommittee';
   static const String reviewprojectscreen = '/reviewprojectscreen';
+  static const String feedbackmonitoringreport = '/feedbackmonitoringreport';
   static const String reviewpaneloverview = '/reviewpaneloverview';
   static const String monitoringpaneloverview = '/monitoringpaneloverview';
   static const String projectyouhavetoassignreviewer = '/projectyouhavetoassignreviewer';
   static const String monitoringpanelneedtoassignmonitoringcommittee = '/monitoringpanelneedtoassignmonitoringcommittee';
+  static const String assignedmonitoringcommittee = '/assignedmonitoringcommittee';
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
   static const String viewreviewoftheproject = '/viewreviewoftheproject';
   static const String viewreviewoftheprojectadmin = '/viewreviewoftheprojectadmin';
@@ -275,6 +279,15 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ReviewIndividualProjectScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.feedbackmonitoringreport,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: FeedbackMonitoringReportScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
           );
         },
       ),
@@ -556,6 +569,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const MonitoringPanelNeedToAssignMonitoringCommitteeScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.assignedmonitoringcommittee,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const AssignedMonitoringCommitteeScreen(),
         ),
       ),
       GoRoute(

@@ -1824,6 +1824,38 @@ class ApiService {
       throw Exception('Failed to load projects : $e');
     }
   }
+  
+  static Future<List<dynamic>> fetchAssignedMonitoringCommittee() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_monitoring_report_already_assigned_committee');
+    print("fetchAssignedMonitoringCommittee url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['MonitoringReportAssignedCommitteeList'];
+      } else {
+        print("fetchAssignedMonitoringCommittee = Failed to load projects: ${response.statusCode}");
+        throw Exception('Failed to load projects: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load projects : $e');
+    }
+  }
 
   static Future<List<dynamic>> fetchAllProjectPiCanView() async {
     final accessToken = await getAccessToken();
@@ -2147,6 +2179,42 @@ class ApiService {
       rethrow;
     }
   }
+  
+  static Future<Map<String, dynamic>> getfeedbackForSpecificCommitteeAndReport(Map<String, dynamic> monitoringReportIdAndCommitteeId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_feedback_for_specific_monitoring_committee_and_specific_report');
+    print("getAllReviewsForSpecificReviewer url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(monitoringReportIdAndCommitteeId),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to getAllReviewsForSpecificReviewer: ${responseBody['error']}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   static Future<Map<String, dynamic>> createReviewSpecificProject(Map<String, dynamic> reviewData) async {
     final accessToken = await getAccessToken();
@@ -2183,6 +2251,42 @@ class ApiService {
       }
     } catch (e) {
       // Rethrow the exception to propagate it up the call stack.
+      rethrow;
+    }
+  }
+  
+  static Future<Map<String, dynamic>> createFeedbackSpecificMonitoringReport(Map<String, dynamic> feedbackData) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/create_feedback_specific_monitoring_report');
+    print("createFeedbackSpecificMonitoringReport url: $url");
+
+    try {
+      final http.Response response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+        body: jsonEncode(feedbackData),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        return responseBody;
+      } else {
+        throw Exception('Failed to createFeedbackSpecificMonitoringReport: ${responseBody['error']}');
+      }
+    } catch (e) {
       rethrow;
     }
   }

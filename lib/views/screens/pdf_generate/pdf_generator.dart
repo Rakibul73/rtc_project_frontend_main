@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:rtc_project_fronend/constants/dimens.dart';
-import 'package:rtc_project_fronend/views/screens/admin/ViewProjectScreenAdmin.dart' as admin;
-import 'package:rtc_project_fronend/views/screens/user/ViewProjectScreen.dart' as user;
-import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectFundScreen.dart' as viewfund;
-import 'package:rtc_project_fronend/views/screens/general/ViewRequestForAProjectAdvanceFundScreen.dart' as viewadvancefund;
+import 'package:rtc_project_fronend/views/screens/admin/project_overview/ViewProjectScreenAdmin.dart' as admin;
+import 'package:rtc_project_fronend/views/screens/user/project_panel/ViewProjectScreen.dart' as user;
+import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectFundScreen.dart' as viewfund;
+import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectAdvanceFundScreen.dart' as viewadvancefund;
 import 'dart:html' as html;
 
 Future<pw.Widget> generateImageWidget(Uint8List? fileBytes, width, height) async {

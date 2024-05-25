@@ -13,6 +13,7 @@ const Color kInfoColor = Color(0xFF17A2B8);
 const Color kWarningColor = Color(0xFFFFc107);
 const Color kTiaColor = Color.fromARGB(255, 152, 255, 7);
 const Color kVioletColor = Color.fromARGB(255, 147, 4, 236);
+const Color kOrangeColor = Color.fromARGB(255, 251, 144, 38);
 
 const Color kTextColor = Color(0xFF2A2B2D);
 
@@ -61,6 +62,7 @@ class AppThemeData {
       warning: kWarningColor,
       tia: kTiaColor,
       violet: kVioletColor,
+      orange: kOrangeColor,
       hyperlink: const Color(0xFF0074CC),
       buttonTextBlack: kTextColor,
       buttonTextDisabled: kTextColor.withOpacity(0.38),
@@ -130,6 +132,7 @@ class AppThemeData {
       warning: kWarningColor,
       tia: kTiaColor,
       violet: kVioletColor,
+      orange: kOrangeColor,
       hyperlink: const Color(0xFF6BBBF7),
       buttonTextBlack: kTextColor,
       buttonTextDisabled: Colors.white.withOpacity(0.38),

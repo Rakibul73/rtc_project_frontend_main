@@ -128,7 +128,7 @@ class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewS
                           title: "Assigned Monitoring Committee",
                           value: snapshot.data!['assigned_monitoring_committee'].toString(),
                           icon: Icons.article_outlined,
-                          backgroundColor: const Color.fromARGB(255, 255, 162, 68),
+                          backgroundColor: appColorScheme.orange,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
@@ -168,7 +168,24 @@ class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewS
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_rounded),
                                     ),
-                                    Text('Monitoring Reports you have to Assign Monitoring Committee'),
+                                    Text('Need to Assign Monitoring Committee'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.assignedmonitoringcommittee),
+                                style: appButtonTheme.orangeOutlined,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.reviews_outlined),
+                                    ),
+                                    Text('Assigned Monitoring Committee'),
                                   ],
                                 ),
                               ),
@@ -185,7 +202,7 @@ class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewS
                                       padding: EdgeInsets.only(right: kTextPadding),
                                       child: Icon(Icons.reviews_outlined),
                                     ),
-                                    Text('Monitoring Reports that Committee has given Feedback'),
+                                    Text('Committee has given Feedback'),
                                   ],
                                 ),
                               ),

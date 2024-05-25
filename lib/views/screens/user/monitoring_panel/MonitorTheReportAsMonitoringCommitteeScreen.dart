@@ -64,8 +64,8 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
     viewAllProjectHaveToMonitorList();
 
     _dataSource = DataSource(
-      onGiveFeedbackButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.reviewprojectscreen}?projectid=${data['ProjectID']}'),
-      onViewFeedbackAndReportButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.reviewprojectscreen}?projectid=${data['ProjectID']}'),
+      onGiveFeedbackButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.feedbackmonitoringreport}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
+      onViewFeedbackAndReportButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.feedbackmonitoringreport}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
       data: [],
     );
   }
@@ -82,7 +82,7 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-        selectedMenuUri: RouteUri.projectreviewtracking,
+        selectedMenuUri: RouteUri.projectmonitoringreport,
         body: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
