@@ -1311,7 +1311,7 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
                                 height: 40.0,
                                 child: ElevatedButton(
                                   style: themeData.extension<AppButtonTheme>()!.secondaryElevated,
-                                  onPressed: () => GoRouter.of(context).go('${RouteUri.viewmonitoringhistory}?projectid=${_formData.projectID}'),
+                                  onPressed: () => GoRouter.of(context).go(RouteUri.assignedmonitoringcommittee),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment: CrossAxisAlignment.center,

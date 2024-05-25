@@ -5,6 +5,8 @@ import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllAdvanceFun
 import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllFundConfirmListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllFundRequestQueueListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/AssignedMonitoringCommitteeScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/MonitoringCommitteeHasGivenFeedbackScreen.dart';
+import 'package:rtc_project_fronend/views/screens/admin/monitoring_panel/ViewFeedbackAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/notice_board/CreateCircularNoticeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/notice_board/EditNoticeAdminScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/fund_panel/FundMonitoringPanelScreen.dart';
@@ -27,6 +29,7 @@ import 'package:rtc_project_fronend/views/screens/user/fund_panel/MyProjectRecie
 import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/MyRecievedFeedbackFromMonitoringCommitteeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/fund_panel/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/auth/ChangePasswordScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewFeedbacksScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/project_panel/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/user_management/DeleteUserScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/review_panel/MyProjectReviewScreen.dart';
@@ -112,8 +115,11 @@ class RouteUri {
   static const String monitoringpanelneedtoassignmonitoringcommittee = '/monitoringpanelneedtoassignmonitoringcommittee';
   static const String assignedmonitoringcommittee = '/assignedmonitoringcommittee';
   static const String projectreviewerhasgivenreview = '/projectreviewerhasgivenreview';
+  static const String monitoringcommitteehasgivenfeedback = '/monitoringcommitteehasgivenfeedback';
   static const String viewreviewoftheproject = '/viewreviewoftheproject';
   static const String viewreviewoftheprojectadmin = '/viewreviewoftheprojectadmin';
+  static const String viewfeedbackadmin = '/viewfeedbackadmin';
+  static const String viewfeedbacks = '/viewfeedbacks';
   static const String projecticanapplyforfund = '/projecticanapplyforfund';
   static const String requestforaprojectfund = '/requestforaprojectfund';
   static const String viewrequestforaprojectfund = '/viewrequestforaprojectfund';
@@ -297,6 +303,24 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
           return NoTransitionPage<void>(
             key: state.pageKey,
             child: ViewReviewOfTheProjectAdminScreen(projectID: state.queryParameters['projectid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewfeedbackadmin,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewFeedbackAdminScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
+          );
+        },
+      ),
+      GoRoute(
+        path: RouteUri.viewfeedbacks,
+        pageBuilder: (context, state) {
+          return NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ViewFeedbacksScreen(monitoringReportID: state.queryParameters['monitoringreportid'] ?? ''),
           );
         },
       ),
@@ -583,6 +607,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const ProjectReviewerHasGivenReviewScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.monitoringcommitteehasgivenfeedback,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const MonitoringCommitteeHasGivenFeedbackScreen(),
         ),
       ),
       GoRoute(

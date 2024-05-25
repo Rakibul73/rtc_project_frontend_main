@@ -193,7 +193,7 @@ class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewS
                             const SizedBox(width: 20),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () => GoRouter.of(context).go(RouteUri.projectreviewerhasgivenreview),
+                                onPressed: () => GoRouter.of(context).go(RouteUri.monitoringcommitteehasgivenfeedback),
                                 style: appButtonTheme.warningOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,

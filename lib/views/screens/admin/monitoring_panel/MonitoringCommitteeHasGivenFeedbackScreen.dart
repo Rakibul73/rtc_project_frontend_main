@@ -12,14 +12,14 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/theme/theme_extensions/app_data_table_theme.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 
-class MyRecievedFeedbackFromMonitoringCommitteeScreen extends StatefulWidget {
-  const MyRecievedFeedbackFromMonitoringCommitteeScreen({Key? key}) : super(key: key);
+class MonitoringCommitteeHasGivenFeedbackScreen extends StatefulWidget {
+  const MonitoringCommitteeHasGivenFeedbackScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyRecievedFeedbackFromMonitoringCommitteeScreen> createState() => _MyRecievedFeedbackFromMonitoringCommitteeScreenState();
+  State<MonitoringCommitteeHasGivenFeedbackScreen> createState() => _MonitoringCommitteeHasGivenFeedbackScreenState();
 }
 
-class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyRecievedFeedbackFromMonitoringCommitteeScreen> {
+class _MonitoringCommitteeHasGivenFeedbackScreenState extends State<MonitoringCommitteeHasGivenFeedbackScreen> {
   final _scrollController = ScrollController();
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -47,9 +47,9 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
     }
   }
 
-  void viewAllMyMonitoringFeedbackList() async {
+  void viewAllProjectsReviewerGivenReview() async {
     try {
-      _initialProjects = await ApiService.fetchMyMonitoringFeedbackList();
+      _initialProjects = await ApiService.fetchAllMonitoringReportCommitteeHasGivenFeedback();
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
@@ -63,10 +63,11 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
   void initState() {
     super.initState();
     // Fetch all projects
-    viewAllMyMonitoringFeedbackList();
+    viewAllProjectsReviewerGivenReview();
 
     _dataSource = DataSource(
-      onViewFeedbackButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewfeedbacks}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
+      onViewMonitoringReportButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewmonitoringreportadmin}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
+      onViewFeedbackButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewfeedbackadmin}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
       data: [],
     );
   }
@@ -83,13 +84,26 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-        selectedMenuUri: RouteUri.projectmonitoringreport,
+        selectedMenuUri: RouteUri.monitoringpaneloverview,
         body: ListView(
           padding: const EdgeInsets.all(kDefaultPadding),
           children: [
-            Text(
-              'My Recieved Feedback From Monitoring Committee',
-              style: themeData.textTheme.headlineMedium,
+            RichText(
+              text: TextSpan(
+                style: themeData.textTheme.headlineMedium,
+                children: const [
+                  TextSpan(
+                    text: ' Monitoring Report ',
+                  ),
+                  TextSpan(
+                    text: 'Feedback',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(183, 255, 235, 59), // Change color to your desired color
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
@@ -98,6 +112,9 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const CardHeader(
+                      title: 'Monitoring Report List',
+                    ),
                     CardBody(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,10 +143,10 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                                             child: Padding(
                                               padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
                                               child: FormBuilderTextField(
-                                                name: 'search_project_id',
+                                                name: 'search_project_Id',
                                                 decoration: const InputDecoration(
-                                                  labelText: 'Search by Project ID',
-                                                  hintText: 'Enter project ID',
+                                                  labelText: 'Search by Project Id',
+                                                  hintText: 'Enter project Id',
                                                   border: OutlineInputBorder(),
                                                   floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   isDense: true,
@@ -151,8 +168,8 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                                           child: SizedBox(
                                             height: 40.0,
                                             child: ElevatedButton(
-                                              style: themeData.extension<AppButtonTheme>()!.primaryOutlined,
-                                              onPressed: () => viewAllMyMonitoringFeedbackList(),
+                                              style: themeData.extension<AppButtonTheme>()!.warningOutlined,
+                                              onPressed: () => viewAllProjectsReviewerGivenReview(),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +181,7 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                                                       size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
                                                     ),
                                                   ),
-                                                  const Text("Refresh Page"),
+                                                  const Text("Refresh"),
                                                 ],
                                               ),
                                             ),
@@ -202,13 +219,14 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                                             return PaginatedDataTable(
                                               key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
                                               source: _dataSource,
-                                              rowsPerPage: 10,
+                                              rowsPerPage: 20,
                                               showCheckboxColumn: false,
                                               showFirstLastButtons: true,
                                               columns: const [
-                                                DataColumn(label: Text('ProjectMonitoringFeedbackID'), numeric: true),
-                                                DataColumn(label: Text('ProjectMonitoringReportID')),
+                                                DataColumn(label: Text('FeedbackID'), numeric: true),
+                                                DataColumn(label: Text('MonitoringReportID')),
                                                 DataColumn(label: Text('ProjectID')),
+                                                DataColumn(label: Text('Notification')),
                                                 DataColumn(label: Text('Actions')),
                                               ],
                                             );
@@ -235,10 +253,12 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
 
 class DataSource extends DataTableSource {
   final void Function(Map<String, dynamic> data) onViewFeedbackButtonPressed;
+  final void Function(Map<String, dynamic> data) onViewMonitoringReportButtonPressed;
   List<dynamic> data;
 
   DataSource({
     required this.onViewFeedbackButtonPressed,
+    required this.onViewMonitoringReportButtonPressed,
     required this.data,
   });
 
@@ -246,10 +266,14 @@ class DataSource extends DataTableSource {
   DataRow? getRow(int index) {
     final data = this.data[index];
 
+    // Determine the maximum length of the project title to be displayed without scrolling
+    const maxLength = 20; // Adjust this value as needed
+
     return DataRow.byIndex(index: index, cells: [
       DataCell(Text(data['ProjectMonitoringFeedbackID'].toString())),
       DataCell(Text(data['ProjectMonitoringReportID'].toString())),
       DataCell(Text(data['ProjectID'].toString())),
+      DataCell(Text(data['PiCanViewOrNot'] == 1 ? 'Sent to PI' : 'Not sent')),
       DataCell(Builder(
         builder: (context) {
           return Row(
@@ -257,13 +281,18 @@ class DataSource extends DataTableSource {
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: kDefaultPadding),
-                child: ElevatedButton(
+                child: OutlinedButton(
+                  onPressed: () => onViewMonitoringReportButtonPressed.call(data),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.infoOutlined,
+                  child: const Text("View Monitoring Report"),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: kDefaultPadding),
+                child: OutlinedButton(
                   onPressed: () => onViewFeedbackButtonPressed.call(data),
-                  style: Theme.of(context).extension<AppButtonTheme>()!.primaryOutlined,
-                  child: const Text(
-                    "View Feedback",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
+                  child: const Text("View Feedback"),
                 ),
               ),
             ],
