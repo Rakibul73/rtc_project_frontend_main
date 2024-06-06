@@ -2508,6 +2508,38 @@ class ApiService {
       throw Exception('Failed to load Project Have To Review : $e');
     }
   }
+  
+  static Future<List<dynamic>> fetchAllMyMonitoringReportHistory() async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/get_all_my_monitoring_report_history');
+    print("fetchAllMyMonitoringReportHistory url: $url");
+
+    try {
+      final http.Response response = await http.get(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $accessToken',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['MyProjectMonitoringHistoryList'];
+      } else {
+        print("fetchAllMyMonitoringReportHistory = Failed to load Project Have To Review: ${response.statusCode}");
+        throw Exception('Failed to load Project Have To Review: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load Project Have To Review : $e');
+    }
+  }
 
   static Future<Map<String, dynamic>> getReviewDashboard() async {
     final accessToken = await getAccessToken();

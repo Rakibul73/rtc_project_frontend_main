@@ -29,6 +29,7 @@ import 'package:rtc_project_fronend/views/screens/user/fund_panel/MyProjectRecie
 import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/MyRecievedFeedbackFromMonitoringCommitteeScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/fund_panel/ProjectFundManagementScreen.dart';
 import 'package:rtc_project_fronend/views/screens/general/auth/ChangePasswordScreen.dart';
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewAllOfMyMonitoringReportHistoryScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ViewFeedbacksScreen.dart';
 import 'package:rtc_project_fronend/views/screens/user/project_panel/CreateProject.dart';
 import 'package:rtc_project_fronend/views/screens/admin/user_management/DeleteUserScreen.dart';
@@ -107,6 +108,7 @@ class RouteUri {
   static const String myprojectreview = '/myprojectreview';
   static const String projecthavetoreview = '/projecthavetoreview';
   static const String monitorthereportasmonitoringcommittee = '/monitorthereportasmonitoringcommittee';
+  static const String viewallofmymonitoringreporthistory = '/viewallofmymonitoringreporthistory';
   static const String reviewprojectscreen = '/reviewprojectscreen';
   static const String feedbackmonitoringreport = '/feedbackmonitoringreport';
   static const String reviewpaneloverview = '/reviewpaneloverview';
@@ -209,6 +211,13 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
           child: const MonitorTheReportAsMonitoringCommitteeScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteUri.viewallofmymonitoringreporthistory,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: const ViewAllOfMyMonitoringReportHistoryScreen(),
         ),
       ),
       GoRoute(

@@ -102,14 +102,14 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                 text: TextSpan(
                   style: themeData.textTheme.headlineMedium,
                   children: const [
+                    // TextSpan(
+                    //   text: '',
+                    // ),
                     TextSpan(
-                      text: 'My Project Monitoring Hub ',
-                    ),
-                    TextSpan(
-                      text: '(No of Projects:)',
+                      text: 'My Project Monitoring Hub',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(183, 59, 255, 248), // Change color to your desired color
+                        color: Color.fromARGB(183, 228, 229, 229), // Change color to your desired color
                       ),
                     ),
                   ],
@@ -130,16 +130,16 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Send For Monitoring",
+                          title: "Total Monitoring Report Sent",
                           value: snapshot.data!['send_for_monitoring'].toString(),
                           icon: Icons.add_task_outlined,
-                          backgroundColor: const Color.fromARGB(255, 255, 162, 68),
+                          backgroundColor: appColorScheme.secondary,
                           textColor: themeData.colorScheme.onPrimary,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
-                          title: "Feedback From Committee",
+                          title: "Received Feedback From Committee",
                           value: snapshot.data!['feedback_from_committee'].toString(),
                           icon: Icons.feedback_rounded,
                           backgroundColor: appColorScheme.warning,
@@ -245,6 +245,56 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CardBody(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => GoRouter.of(context).go(RouteUri.viewallofmymonitoringreporthistory),
+                                style: appButtonTheme.secondaryOutlined,
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(right: kTextPadding),
+                                      child: Icon(Icons.history_rounded),
+                                    ),
+                                    Text('View All of My Monitoring Report History'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // const SizedBox(width: 20),
+                            // Expanded(
+                            //   child: ElevatedButton(
+                            //     onPressed: () => GoRouter.of(context).go(RouteUri.myrecievedfeedbackfrommonitoringcommittee),
+                            //     style: appButtonTheme.infoOutlined,
+                            //     child: const Row(
+                            //       mainAxisSize: MainAxisSize.min,
+                            //       children: [
+                            //         Padding(
+                            //           padding: EdgeInsets.only(right: kTextPadding),
+                            //           child: Icon(Icons.reviews_outlined),
+                            //         ),
+                            //         Text('Recieved feedback from monitoring committee'),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
