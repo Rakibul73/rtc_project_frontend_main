@@ -29,10 +29,16 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
       // Handle successful response
       final feedbackFromCommittee = await data['feedback_from_committee'];
       final sendForMonitoring = await data['send_for_monitoring'];
+      final canSendMonitoringReport = await data['can_send_monitoring_report'];
+      final noOfReportAssignedToMe = await data['no_of_report_assigned_to_me'];
+      final feedbackSent = await data['feedback_sent'];
 
       final Map<String, dynamic> summaryData = {
         'feedback_from_committee': await feedbackFromCommittee,
         'send_for_monitoring': await sendForMonitoring,
+        'can_send_monitoring_report': await canSendMonitoringReport,
+        'feedback_sent': await feedbackSent,
+        'no_of_report_assigned_to_me': await noOfReportAssignedToMe,
       };
       return summaryData;
     } else if (data['statuscode'] == 401) {
@@ -51,6 +57,9 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
       final Map<String, dynamic> summaryData = {
         'feedback_from_committee': 0,
         'send_for_monitoring': 0,
+        'can_send_monitoring_report': 0,
+        'feedback_sent': 0,
+        'no_of_report_assigned_to_me': 0,
       };
       return summaryData;
     } else {
@@ -58,6 +67,9 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
       final Map<String, dynamic> summaryData = {
         'feedback_from_committee': 'x',
         'send_for_monitoring': 'x',
+        'can_send_monitoring_report': 'x',
+        'feedback_sent': 'x',
+        'no_of_report_assigned_to_me': 'x',
       };
       return summaryData;
     }
@@ -98,7 +110,61 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
             padding: const EdgeInsets.all(kDefaultPadding),
             children: [
               RichText(
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
+                text: TextSpan(
+                  style: themeData.textTheme.headlineMedium,
+                  children: const [
+                    // TextSpan(
+                    //   text: '',
+                    // ),
+                    TextSpan(
+                      text: 'As Monitoring Committee',
+                      style: TextStyle(
+                        color: Color.fromARGB(183, 228, 229, 229), // Change color to your desired color
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final summaryCardWidth = ((constraints.maxWidth - (kDefaultPadding * (summaryCardCrossAxisCount - 1))) / summaryCardCrossAxisCount);
+                    return Wrap(
+                      direction: Axis.horizontal,
+                      spacing: kDefaultPadding,
+                      runSpacing: kDefaultPadding,
+                      children: [
+                        // SizedBox(
+                        //   height: 120.0,
+                        //   width: summaryCardWidth,
+                        // ),
+                        SummaryCard(
+                          title: "No. of Report Assigned To Me",
+                          value: snapshot.data!['no_of_report_assigned_to_me'].toString(),
+                          icon: Icons.add_task_outlined,
+                          backgroundColor: appColorScheme.tia,
+                          textColor: themeData.colorScheme.onPrimary,
+                          iconColor: Colors.black12,
+                          width: summaryCardWidth,
+                        ),
+                        SummaryCard(
+                          title: "Feedback Sent",
+                          value: snapshot.data!['feedback_sent'].toString(),
+                          icon: Icons.add_task_outlined,
+                          backgroundColor: appColorScheme.violet,
+                          textColor: themeData.colorScheme.onPrimary,
+                          iconColor: Colors.black12,
+                          width: summaryCardWidth,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              RichText(
+                textAlign: TextAlign.right,
                 text: TextSpan(
                   style: themeData.textTheme.headlineMedium,
                   children: const [
@@ -108,7 +174,6 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                     TextSpan(
                       text: 'My Project Monitoring Hub',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         color: Color.fromARGB(183, 228, 229, 229), // Change color to your desired color
                       ),
                     ),
@@ -130,6 +195,15 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                           width: summaryCardWidth,
                         ),
                         SummaryCard(
+                          title: "Can Send Monitoring Report",
+                          value: snapshot.data!['can_send_monitoring_report'].toString(),
+                          icon: Icons.add_task_outlined,
+                          backgroundColor: appColorScheme.primary,
+                          textColor: themeData.colorScheme.onPrimary,
+                          iconColor: Colors.black12,
+                          width: summaryCardWidth,
+                        ),
+                        SummaryCard(
                           title: "Total Monitoring Report Sent",
                           value: snapshot.data!['send_for_monitoring'].toString(),
                           icon: Icons.add_task_outlined,
@@ -142,7 +216,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                           title: "Received Feedback From Committee",
                           value: snapshot.data!['feedback_from_committee'].toString(),
                           icon: Icons.feedback_rounded,
-                          backgroundColor: appColorScheme.warning,
+                          backgroundColor: appColorScheme.info,
                           textColor: appColorScheme.buttonTextBlack,
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
@@ -165,7 +239,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () => GoRouter.of(context).go(RouteUri.monitorthereportasmonitoringcommittee),
-                                style: appButtonTheme.successOutlined,
+                                style: appButtonTheme.tiaOutlined,
                                 child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
