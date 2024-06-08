@@ -206,8 +206,7 @@ class _MyRecievedFeedbackFromMonitoringCommitteeScreenState extends State<MyReci
                                               showCheckboxColumn: false,
                                               showFirstLastButtons: true,
                                               columns: const [
-                                                DataColumn(label: Text('ProjectMonitoringFeedbackID'), numeric: true),
-                                                DataColumn(label: Text('ProjectMonitoringReportID')),
+                                                DataColumn(label: Text('ProjectMonitoringReportID'), numeric: true),
                                                 DataColumn(label: Text('ProjectID')),
                                                 DataColumn(label: Text('Actions')),
                                               ],
@@ -247,7 +246,6 @@ class DataSource extends DataTableSource {
     final data = this.data[index];
 
     return DataRow.byIndex(index: index, cells: [
-      DataCell(Text(data['ProjectMonitoringFeedbackID'].toString())),
       DataCell(Text(data['ProjectMonitoringReportID'].toString())),
       DataCell(Text(data['ProjectID'].toString())),
       DataCell(Builder(

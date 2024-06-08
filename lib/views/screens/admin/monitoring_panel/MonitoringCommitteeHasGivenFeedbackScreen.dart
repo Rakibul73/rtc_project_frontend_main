@@ -223,8 +223,7 @@ class _MonitoringCommitteeHasGivenFeedbackScreenState extends State<MonitoringCo
                                               showCheckboxColumn: false,
                                               showFirstLastButtons: true,
                                               columns: const [
-                                                DataColumn(label: Text('FeedbackID'), numeric: true),
-                                                DataColumn(label: Text('MonitoringReportID')),
+                                                DataColumn(label: Text('MonitoringReportID'), numeric: true),
                                                 DataColumn(label: Text('ProjectID')),
                                                 DataColumn(label: Text('Notification')),
                                                 DataColumn(label: Text('Actions')),
@@ -270,7 +269,6 @@ class DataSource extends DataTableSource {
     const maxLength = 20; // Adjust this value as needed
 
     return DataRow.byIndex(index: index, cells: [
-      DataCell(Text(data['ProjectMonitoringFeedbackID'].toString())),
       DataCell(Text(data['ProjectMonitoringReportID'].toString())),
       DataCell(Text(data['ProjectID'].toString())),
       DataCell(Text(data['PiCanViewOrNot'] == 1 ? 'Sent to PI' : 'Not sent')),

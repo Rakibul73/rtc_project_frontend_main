@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
+import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
@@ -37,12 +38,39 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
   bool editphone = false;
   bool editrole = false;
   bool initialPendingUserDataChange = false;
+  Uint8List? _downloadProjectFileBytes;
 
   Future<bool>? _future;
 
-  void _downloadMonitoringReportFeedbacks(feedbackFileLocation) async {
-    AppFocusHelper.instance.requestUnfocus();
-    print(feedbackFileLocation);
+  void _pdfHandleButtonPress(String feedbackFileLocation) {
+    final d = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      title: "PDF Downloading.....",
+      desc: "Please wait...5 seconds",
+      width: kDialogWidth,
+      headerAnimationLoop: true,
+    );
+    Future.wait([
+      d.show(),
+      Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
+      downloadMonitoringReport(feedbackFileLocation),
+    ]).then((_) {
+      d.dismiss();
+    });
+  }
+
+  Future<void> downloadMonitoringReport(String fileName) async {
+    String downloadProjectReport = await ApiService.downloadFile('monitoringreportfile/download', fileName);
+    if (downloadProjectReport.isNotEmpty) {
+      Uint8List fileBytes = base64Decode(downloadProjectReport);
+      _downloadProjectFileBytes = fileBytes;
+    }
+    final blob = html.Blob([_downloadProjectFileBytes], 'application/octet-stream');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final html.AnchorElement anchor = html.AnchorElement(href: url);
+    anchor.download = fileName; // Specify the filename for the downloaded file
+    anchor.click(); // Trigger the download
   }
 
   void _sendFeedbacksToPI() async {
@@ -317,7 +345,7 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
                                               ElevatedButton(
                                                 style: themeData.extension<AppButtonTheme>()!.warningText,
                                                 onPressed: () {
-                                                  _downloadMonitoringReportFeedbacks(_formData.monitoringFeedbackFileLocation1);
+                                                  _pdfHandleButtonPress(_formData.monitoringFeedbackFileLocation1);
                                                 },
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.min,
@@ -525,7 +553,7 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
                                               ElevatedButton(
                                                 style: themeData.extension<AppButtonTheme>()!.warningText,
                                                 onPressed: () {
-                                                  _downloadMonitoringReportFeedbacks(_formData.monitoringFeedbackFileLocation2);
+                                                  _pdfHandleButtonPress(_formData.monitoringFeedbackFileLocation2);
                                                 },
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.min,
@@ -733,7 +761,7 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
                                               ElevatedButton(
                                                 style: themeData.extension<AppButtonTheme>()!.warningText,
                                                 onPressed: () {
-                                                  _downloadMonitoringReportFeedbacks(_formData.monitoringFeedbackFileLocation3);
+                                                  _pdfHandleButtonPress(_formData.monitoringFeedbackFileLocation3);
                                                 },
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.min,

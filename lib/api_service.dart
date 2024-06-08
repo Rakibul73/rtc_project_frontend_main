@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,6 +18,36 @@ Future<String?> getAccessToken() async {
 }
 
 class ApiService {
+  static Future<Map<String, Object>> uploadPdfFile(String endpoint, String fileName, Uint8List bytes, int projectMonitoringReportID) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    print("zzzz");
+
+    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/$endpoint/upload'));
+    print(request);
+    request.files.add(http.MultipartFile.fromBytes('pdf', bytes, filename: fileName));
+    request.fields['projectMonitoringReportID'] = projectMonitoringReportID.toString();
+    // Add custom headers
+    request.headers.addAll({
+      'Authorization': 'Bearer $accessToken',
+      'Accept-Encoding': 'gzip, deflate, br',
+    });
+    var response = await request.send();
+
+    print(" response: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      return {'message': 'PDF file uploaded successfully', 'statusCode': 200};
+    } else if (response.statusCode == 403) {
+      return {'message': 'Unauthorized access', 'statusCode': 403};
+    } else {
+      throw Exception('Failed to delete notice. errors: $response');
+    }
+  }
+
   static Future<Map<String, dynamic>> deleteNotice(int noticeID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -2508,7 +2539,7 @@ class ApiService {
       throw Exception('Failed to load Project Have To Review : $e');
     }
   }
-  
+
   static Future<List<dynamic>> fetchAllMyMonitoringReportHistory() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {

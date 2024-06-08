@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +9,7 @@ import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
+import 'package:rtc_project_fronend/views/screens/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -193,8 +196,19 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
           print(budgetFormDataForUpload);
           final responseBodyBudget = await ApiService.updateProjectBudgetDetailsForMonitoring(budgetFormDataForUpload, projectMonitoringReportID);
 
+          final zzzz =
+              generateMonitoringReportPDF(_formData, context, initialProjectBudgetOriginal, budgetFormDataForUpload, initialProjectGanttsOriginal, ganttFormDataForUpload, projectMonitoringReportID);
+          print("PDF saved in");
+
+          Uint8List zzzzz = await zzzz;
+
+          print("cccccccccc");
+          final responseBodyuploadPdfFile =
+              await ApiService.uploadPdfFile("monitoring_report", "MonitoringReportID_${projectMonitoringReportID}_PI_Name_${_formData.piName}.pdf", zzzzz, projectMonitoringReportID);
+          print("cccccccccc");
+
           if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 200 && responseBodyBudget['statuscode'] == 200) {
-            // Handle success
+            // Handle successrr
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -1298,23 +1312,6 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
             ),
           ],
         ));
-  }
-
-  Widget _linearProgressIndicator(BuildContext context, double? value, Color color, bool withBottomPadding) {
-    final themeData = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: (withBottomPadding ? kDefaultPadding * 1.5 : 0.0)),
-      child: Theme(
-        data: themeData.copyWith(
-          colorScheme: themeData.colorScheme.copyWith(primary: color),
-        ),
-        child: LinearProgressIndicator(
-          value: value,
-          backgroundColor: themeData.scaffoldBackgroundColor,
-        ),
-      ),
-    );
   }
 }
 

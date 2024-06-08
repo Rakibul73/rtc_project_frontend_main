@@ -8,9 +8,12 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/views/screens/admin/project_overview/ViewProjectScreenAdmin.dart' as admin;
 import 'package:rtc_project_fronend/views/screens/user/project_panel/ViewProjectScreen.dart' as user;
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ApplyForMonitoringScreen.dart' as usermonitoringreport;
+import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/FeedbackMonitoringReportScreen.dart' as usermonitoringreportwithfeedback;
 import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectFundScreen.dart' as viewfund;
 import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectAdvanceFundScreen.dart' as viewadvancefund;
 import 'dart:html' as html;
+import 'package:http/http.dart' as http;
 
 Future<pw.Widget> generateImageWidget(Uint8List? fileBytes, width, height) async {
   final image = pw.MemoryImage(fileBytes!);
@@ -6825,4 +6828,1687 @@ Future<void> downloadImage(Uint8List noticeFileBytes, String fileName) async {
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
+}
+
+Future<Uint8List> generateMonitoringReportWithFeedbackPDF(usermonitoringreportwithfeedback.FormData formData, BuildContext context, List<dynamic> initialProjectBudgetOriginal,
+    List<dynamic> budgetFormDataForUpload, List<dynamic> initialProjectGanttsOriginal, List<dynamic> ganttFormDataForUpload, int feedbackId) async {
+  final pdf = pw.Document();
+  final fontGeneral = await rootBundle.load("fonts/times-new-roman.ttf");
+  final fontBold = await rootBundle.load("fonts/times-new-roman-bold.ttf");
+  final ttfGeneral = pw.Font.ttf(fontGeneral);
+  final ttfBold = pw.Font.ttf(fontBold);
+
+  final appLogo = await rootBundle.load("images/app_logo_2.png");
+  final appLogoImageBytes = appLogo.buffer.asUint8List();
+
+  List<pw.Widget> widgets = [];
+  final currentYear = DateTime.now().year;
+  final previousYear = DateTime.now().year - 1;
+  var pageTitle = 'Monitoring Format FY: $previousYear-$currentYear';
+
+  final zzz = pw.ListView(padding: const pw.EdgeInsets.all(5.0), children: [
+    pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Container(
+              alignment: pw.Alignment.center,
+              padding: const pw.EdgeInsets.only(left: kDefaultPadding * 4.0, right: kDefaultPadding * 3.0),
+              child: pw.Stack(
+                children: [
+                  pw.Image(pw.MemoryImage(appLogoImageBytes), width: 80, height: 95),
+                ],
+              ),
+            ),
+          ],
+        ),
+        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+          pw.Text(
+            "Research and Training Centre",
+            style: pw.TextStyle(font: ttfBold, fontSize: 20, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Patuakhali Science and Technology University",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13, letterSpacing: 0.2),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Dumki, Patuakhali-8602, Bangladesh",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Email: rtc@pstu.ac.bd",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+        ]),
+      ],
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 1.5, top: kDefaultPadding),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 0.0),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Text(
+            pageTitle,
+            style: pw.TextStyle(font: ttfBold, fontSize: 13, letterSpacing: 0.3, decoration: pw.TextDecoration.underline, decorationThickness: 1.5),
+            textAlign: pw.TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.RichText(
+            textAlign: pw.TextAlign.left,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: 'Part-A ',
+                  style: pw.TextStyle(font: ttfBold, fontSize: 12, letterSpacing: 0.3, decoration: pw.TextDecoration.underline, decorationThickness: 1.5),
+                ),
+                pw.TextSpan(
+                  text: '(For PI)',
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 12,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ]);
+
+  widgets.add(zzz);
+  print("               ok                   ");
+
+  final zzz1 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '1. Project Title:  ',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+                pw.TextSpan(
+                  text: formData.projectTitle,
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz1);
+
+  final zzz2 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '2. Name of the PI with address: ',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+                pw.TextSpan(
+                  text: "${formData.piName}, ${formData.piInstituteAddress} , ${formData.piInstituteName}",
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz2);
+
+  List<Map<String, dynamic>> convertTasks(List<dynamic> initialProjectGanttsBudgets) {
+    List<Map<String, dynamic>> convertedTasks = [];
+    for (var item in initialProjectGanttsBudgets) {
+      if (item is Map<String, dynamic>) {
+        convertedTasks.add(item);
+      }
+    }
+    return convertedTasks;
+  }
+
+  final zzz3 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '3. Project activity and progress:',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz3);
+
+  final convertedTasksGanttOriginal = convertTasks(initialProjectGanttsOriginal);
+  final convertedTasksGantt = convertTasks(ganttFormDataForUpload);
+  List<pw.TableRow> buildTableRows(List<Map<String, dynamic>> tasks) {
+    // Define months
+    final List<String> months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+    // Define table header
+    final headerRow = pw.TableRow(
+      children: [
+        pw.Container(
+          alignment: pw.Alignment.center,
+          child: pw.Padding(
+            padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+            child: pw.SizedBox(height: (kDefaultPadding * 0.53), width: (kDefaultPadding * 5), child: pw.Text('Work/Activity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5))),
+          ),
+        ),
+        ...months.map((month) => pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+                pw.SizedBox(
+                    height: 5,
+                    width: 15,
+                    child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+                      pw.Transform.rotate(
+                        angle: 1.5708, // 90 degrees counter-clockwise in radians
+                        child: pw.Text(
+                          textAlign: pw.TextAlign.center,
+                          month,
+                          style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5),
+                        ),
+                      ),
+                    ])),
+              ]),
+            )),
+      ],
+    );
+
+    // Define table data rows
+    final dataRows = tasks.map((task) {
+      final taskName = task['Activity'].toString();
+      final startDate = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(task['StartDate']);
+      final endDate = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(task['EndDate']);
+      final status = task['ActivityStatus'] == 'Completed';
+
+      return pw.TableRow(
+        children: [
+          pw.Container(
+            alignment: pw.Alignment.center,
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+              child: pw.SizedBox(width: (kDefaultPadding * 5), child: pw.Text(taskName, style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5))),
+            ),
+          ),
+          ...months.map((month) {
+            var monthIndex = (months.indexOf(month) + 7) % 12; // Adjusted index
+            if (monthIndex == 0) {
+              monthIndex = 12;
+            }
+            final isWithinRange = monthIndex >= startDate.month && monthIndex <= endDate.month;
+
+            // Check if the task status is completed
+            if (isWithinRange && status) {
+              // Cell within range and task completed, color green
+              return pw.Container(
+                width: 15,
+                height: taskName.length * 0.25,
+                color: PdfColors.green,
+              );
+            } else if (isWithinRange && !status) {
+              // Cell within range but task not completed, color red
+              return pw.Container(
+                width: 15,
+                height: taskName.length * 0.25,
+                color: PdfColors.red,
+              );
+            } else {
+              return pw.Container(
+                width: 15,
+                // height: 40,
+              );
+            }
+          }),
+        ],
+      );
+    }).toList();
+
+    return [headerRow, ...dataRows];
+  }
+
+  final activityplan = pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0, right: kDefaultPadding * 2.0),
+      child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        pw.Table(
+          defaultColumnWidth: const pw.IntrinsicColumnWidth(flex: 1.0),
+          border: pw.TableBorder.all(),
+          children: [
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Activity proposed in original proposal', style: pw.TextStyle(font: ttfBold, fontSize: 10)),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Progress (Completed/ongoing)', style: pw.TextStyle(font: ttfBold, fontSize: 10)),
+                ),
+              ],
+            ),
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: buildTableRows(convertedTasksGanttOriginal),
+                  ),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: buildTableRows(convertedTasksGantt),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]));
+
+  widgets.add(activityplan);
+
+  print("               ok    activity               ");
+
+
+  final zzz4 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '4. List of procured goods and services proposed in the original proposal:',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz4);
+
+  final convertedBudgetOriginal = convertTasks(initialProjectBudgetOriginal);
+  final convertedBudget = convertTasks(budgetFormDataForUpload);
+  double grandTotalBudgetOriginal = convertedBudgetOriginal.map((item) => item['TotalCost'] as double).fold(0, (a, b) => a + b);
+  double grandTotalBudget = convertedBudget.map((item) => item['TotalCost'] as double).fold(0, (a, b) => a + b);
+
+  final budget = pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0, right: kDefaultPadding * 2.0),
+      child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        pw.Table(
+          defaultColumnWidth: const pw.IntrinsicColumnWidth(flex: 1.0),
+          border: pw.TableBorder.all(),
+          children: [
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Proposed goods and services to be procured (Mentioned in the original proposal)', style: pw.TextStyle(font: ttfGeneral, fontSize: 10)),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Procured goods and services', style: pw.TextStyle(font: ttfGeneral, fontSize: 10)),
+                ),
+              ],
+            ),
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: [
+                      pw.TableRow(
+                        children: [
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Sl. No.', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Item', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Quantity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Unit Price', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Total cost (Tk)', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                        ],
+                      ),
+                      ...initialProjectBudgetOriginal.asMap().entries.map((entry) {
+                        final budgetData = entry.value;
+                        return pw.TableRow(
+                          children: [
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['SerialNo'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['Item'], style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['Quantity'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['UnitPrice'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['TotalCost'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                      pw.TableRow(children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text((grandTotalBudgetOriginal.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                        ),
+                      ])
+                    ],
+                  ),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Table(
+                        border: pw.TableBorder.all(),
+                        children: [
+                          pw.TableRow(
+                            children: [
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Sl. No.', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Item', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Quantity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Unit Price', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Total cost (Tk)', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                            ],
+                          ),
+                          ...budgetFormDataForUpload.asMap().entries.map((entry) {
+                            final budgetData = entry.value;
+                            return pw.TableRow(
+                              children: [
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['SerialNo'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['Item'], style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['Quantity'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['UnitPrice'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['TotalCost'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                          pw.TableRow(children: [
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text((grandTotalBudget.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                            ),
+                          ])
+                        ],
+                      ),
+                      pw.SizedBox(height: 5),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]));
+
+  widgets.add(budget);
+
+  final zz5 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "Part-B",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              decoration: pw.TextDecoration.underline,
+              decorationThickness: 0.5,
+            ),
+            textAlign: pw.TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zz5);
+
+  final zz6 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "(For Monitoring Committee)",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+              decoration: pw.TextDecoration.underline,
+              decorationThickness: 0.5,
+            ),
+            textAlign: pw.TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zz6);
+
+  final zz7 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "1. Observation (Qualitative progress in %):  ${formData.observation}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz7);
+
+  final zz8 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "2. Suggestions (If any):  ${formData.suggestion}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz8);
+
+  final zz9 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "3. Recommendations of monitoring committee:  ${formData.recommendation}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz9);
+
+  final zz10 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            formData.endorsement,
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz10);
+
+  final zz11 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "__________________________________________",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz11);
+
+  final zz12 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.1, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "Endorsement of Monitoring Committee",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz12);
+
+  final zzz99 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "BUDGET SUMMARY (ANNUAL BASIS):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final attachedBudget = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.TableHelper.fromTextArray(
+            cellAlignment: pw.Alignment.center,
+            columnWidths: {0: const pw.FixedColumnWidth(30), 1: const pw.FixedColumnWidth(200), 2: const pw.FixedColumnWidth(50), 3: const pw.FixedColumnWidth(75), 4: const pw.FixedColumnWidth(75)},
+            headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
+            cellStyle: pw.TextStyle(font: ttfGeneral, fontSize: 11, lineSpacing: 1.5),
+            cellAlignments: {0: pw.Alignment.topLeft, 1: pw.Alignment.topLeft, 2: pw.Alignment.center, 3: pw.Alignment.center, 4: pw.Alignment.center},
+            border: pw.TableBorder.all(),
+            headers: ['Sl. No.', 'Item', 'Quantity', 'Unit Price', 'Total Cost (Tk)'],
+            data: convertedBudgetOriginal
+                .map((row) => [
+                      '${row['SerialNo']}',
+                      row['Item'],
+                      '${row['Quantity']}',
+                      '${row['UnitPrice']}',
+                      '${row['TotalCost']}',
+                    ])
+                .toList()
+              ..add(['', pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold)), '', '', pw.Text((grandTotalBudgetOriginal.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold))]),
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zzz99);
+  widgets.add(attachedBudget);
+
+  // Add content to the PDF document
+  // USE Paragraph FOR TEXT TO AUTO SPAN TO MULTIPLE LINES & PAGES
+  pdf.addPage(
+    pw.MultiPage(
+        pageTheme: const pw.PageTheme(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.only(top: 13.0, left: 0.0, right: 0.0, bottom: 40.0),
+        ),
+        build: (pw.Context context) => widgets),
+  );
+
+  // Save the PDF document to a file
+  final bytes = await pdf.save();
+  final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final fileName = 'MonitoringFeedbackID_${feedbackId}_PI_Name_${formData.piName}.pdf';
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+  print("PDF generated and saved successfully!");
+  return bytes;
+  // Save the PDF
+  // final output = await getTemporaryDirectory();
+  // final file = File("${output.path}/monitoring_report.pdf");
+  // await file.writeAsBytes(await pdf.save());
+  // Call the function defined in api_service.dart to upload the PDF file
+}
+
+Future<Uint8List> generateMonitoringReportPDF(usermonitoringreport.FormData formData, BuildContext context, List<dynamic> initialProjectBudgetOriginal, List<dynamic> budgetFormDataForUpload,
+    List<dynamic> initialProjectGanttsOriginal, List<dynamic> ganttFormDataForUpload, int projectMonitoringReportID) async {
+  final pdf = pw.Document();
+  final fontGeneral = await rootBundle.load("fonts/times-new-roman.ttf");
+  final fontBold = await rootBundle.load("fonts/times-new-roman-bold.ttf");
+  final ttfGeneral = pw.Font.ttf(fontGeneral);
+  final ttfBold = pw.Font.ttf(fontBold);
+
+  final appLogo = await rootBundle.load("images/app_logo_2.png");
+  final appLogoImageBytes = appLogo.buffer.asUint8List();
+
+  List<pw.Widget> widgets = [];
+  final currentYear = DateTime.now().year;
+  final previousYear = DateTime.now().year - 1;
+  var pageTitle = 'Monitoring Format FY: $previousYear-$currentYear';
+
+  final zzz = pw.ListView(padding: const pw.EdgeInsets.all(5.0), children: [
+    pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Container(
+              alignment: pw.Alignment.center,
+              padding: const pw.EdgeInsets.only(left: kDefaultPadding * 4.0, right: kDefaultPadding * 3.0),
+              child: pw.Stack(
+                children: [
+                  pw.Image(pw.MemoryImage(appLogoImageBytes), width: 80, height: 95),
+                ],
+              ),
+            ),
+          ],
+        ),
+        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+          pw.Text(
+            "Research and Training Centre",
+            style: pw.TextStyle(font: ttfBold, fontSize: 20, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Patuakhali Science and Technology University",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13, letterSpacing: 0.2),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Dumki, Patuakhali-8602, Bangladesh",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Email: rtc@pstu.ac.bd",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+        ]),
+      ],
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 1.5, top: kDefaultPadding),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 0.0),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Text(
+            pageTitle,
+            style: pw.TextStyle(font: ttfBold, fontSize: 13, letterSpacing: 0.3, decoration: pw.TextDecoration.underline, decorationThickness: 1.5),
+            textAlign: pw.TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.RichText(
+            textAlign: pw.TextAlign.left,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: 'Part-A ',
+                  style: pw.TextStyle(font: ttfBold, fontSize: 12, letterSpacing: 0.3, decoration: pw.TextDecoration.underline, decorationThickness: 1.5),
+                ),
+                pw.TextSpan(
+                  text: '(For PI)',
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 12,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ]);
+
+  widgets.add(zzz);
+
+  final zzz1 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '1. Project Title:  ',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+                pw.TextSpan(
+                  text: formData.projectTitle,
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz1);
+
+  final zzz2 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '2. Name of the PI with address: ',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+                pw.TextSpan(
+                  text: "${formData.piName}, ${formData.piInstituteAddress} , ${formData.piInstituteName}",
+                  style: pw.TextStyle(
+                    font: ttfGeneral,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz2);
+
+  List<Map<String, dynamic>> convertTasks(List<dynamic> initialProjectGanttsBudgets) {
+    List<Map<String, dynamic>> convertedTasks = [];
+    for (var item in initialProjectGanttsBudgets) {
+      if (item is Map<String, dynamic>) {
+        convertedTasks.add(item);
+      }
+    }
+    return convertedTasks;
+  }
+
+  final zzz3 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '3. Project activity and progress:',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz3);
+
+  final convertedTasksGanttOriginal = convertTasks(initialProjectGanttsOriginal);
+  final convertedTasksGantt = convertTasks(ganttFormDataForUpload);
+  List<pw.TableRow> buildTableRows(List<Map<String, dynamic>> tasks) {
+    // Define months
+    final List<String> months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+    // Define table header
+    final headerRow = pw.TableRow(
+      children: [
+        pw.Container(
+          alignment: pw.Alignment.center,
+          child: pw.Padding(
+            padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+            child: pw.SizedBox(height: (kDefaultPadding * 0.53), width: (kDefaultPadding * 5), child: pw.Text('Work/Activity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5))),
+          ),
+        ),
+        ...months.map((month) => pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+              child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+                pw.SizedBox(
+                    height: 5,
+                    width: 15,
+                    child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+                      pw.Transform.rotate(
+                        angle: 1.5708, // 90 degrees counter-clockwise in radians
+                        child: pw.Text(
+                          textAlign: pw.TextAlign.center,
+                          month,
+                          style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5),
+                        ),
+                      ),
+                    ])),
+              ]),
+            )),
+      ],
+    );
+
+    // Define table data rows
+    final dataRows = tasks.map((task) {
+      final taskName = task['Activity'].toString();
+      final startDate = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(task['StartDate']);
+      final endDate = DateFormat('EEE, dd MMM yyyy HH:mm:ss').parse(task['EndDate']);
+      final status = task['ActivityStatus'] == 'Completed';
+
+      return pw.TableRow(
+        children: [
+          pw.Container(
+            alignment: pw.Alignment.center,
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+              child: pw.SizedBox(width: (kDefaultPadding * 5), child: pw.Text(taskName, style: pw.TextStyle(font: ttfGeneral, fontSize: 5, lineSpacing: 1.5))),
+            ),
+          ),
+          ...months.map((month) {
+            var monthIndex = (months.indexOf(month) + 7) % 12; // Adjusted index
+            if (monthIndex == 0) {
+              monthIndex = 12;
+            }
+            final isWithinRange = monthIndex >= startDate.month && monthIndex <= endDate.month;
+
+            // Check if the task status is completed
+            if (isWithinRange && status) {
+              // Cell within range and task completed, color green
+              return pw.Container(
+                width: 15,
+                height: taskName.length * 0.25,
+                color: PdfColors.green,
+              );
+            } else if (isWithinRange && !status) {
+              // Cell within range but task not completed, color red
+              return pw.Container(
+                width: 15,
+                height: taskName.length * 0.25,
+                color: PdfColors.red,
+              );
+            } else {
+              return pw.Container(
+                width: 15,
+                // height: 40,
+              );
+            }
+          }),
+        ],
+      );
+    }).toList();
+
+    return [headerRow, ...dataRows];
+  }
+
+  final activityplan = pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0, right: kDefaultPadding * 2.0),
+      child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        pw.Table(
+          defaultColumnWidth: const pw.IntrinsicColumnWidth(flex: 1.0),
+          border: pw.TableBorder.all(),
+          children: [
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Activity proposed in original proposal', style: pw.TextStyle(font: ttfBold, fontSize: 10)),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Progress (Completed/ongoing)', style: pw.TextStyle(font: ttfBold, fontSize: 10)),
+                ),
+              ],
+            ),
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: buildTableRows(convertedTasksGanttOriginal),
+                  ),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: buildTableRows(convertedTasksGantt),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]));
+
+  widgets.add(activityplan);
+
+  final zzz4 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.RichText(
+            textAlign: pw.TextAlign.start,
+            text: pw.TextSpan(
+              children: [
+                pw.TextSpan(
+                  text: '4. List of procured goods and services proposed in the original proposal:',
+                  style: pw.TextStyle(
+                    font: ttfBold,
+                    fontSize: 11,
+                    lineSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz4);
+
+  final convertedBudgetOriginal = convertTasks(initialProjectBudgetOriginal);
+  final convertedBudget = convertTasks(budgetFormDataForUpload);
+  double grandTotalBudgetOriginal = convertedBudgetOriginal.map((item) => item['TotalCost'] as double).fold(0, (a, b) => a + b);
+  double grandTotalBudget = convertedBudget.map((item) => item['TotalCost'] as double).fold(0, (a, b) => a + b);
+
+  final budget = pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0, right: kDefaultPadding * 2.0),
+      child: pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+        pw.Table(
+          defaultColumnWidth: const pw.IntrinsicColumnWidth(flex: 1.0),
+          border: pw.TableBorder.all(),
+          children: [
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Proposed goods and services to be procured (Mentioned in the original proposal)', style: pw.TextStyle(font: ttfGeneral, fontSize: 10)),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text('Procured goods and services', style: pw.TextStyle(font: ttfGeneral, fontSize: 10)),
+                ),
+              ],
+            ),
+            pw.TableRow(
+              children: [
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Table(
+                    border: pw.TableBorder.all(),
+                    children: [
+                      pw.TableRow(
+                        children: [
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Sl. No.', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Item', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Quantity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Unit Price', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text('Total cost (Tk)', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                          ),
+                        ],
+                      ),
+                      ...initialProjectBudgetOriginal.asMap().entries.map((entry) {
+                        final budgetData = entry.value;
+                        return pw.TableRow(
+                          children: [
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['SerialNo'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['Item'], style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['Quantity'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['UnitPrice'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(budgetData['TotalCost'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                      pw.TableRow(children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text(''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(3),
+                          child: pw.Text((grandTotalBudgetOriginal.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                        ),
+                      ])
+                    ],
+                  ),
+                ),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Table(
+                        border: pw.TableBorder.all(),
+                        children: [
+                          pw.TableRow(
+                            children: [
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Sl. No.', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Item', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Quantity', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Unit Price', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                              pw.Padding(
+                                padding: const pw.EdgeInsets.all(3),
+                                child: pw.Text('Total cost (Tk)', style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                              ),
+                            ],
+                          ),
+                          ...budgetFormDataForUpload.asMap().entries.map((entry) {
+                            final budgetData = entry.value;
+                            return pw.TableRow(
+                              children: [
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['SerialNo'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['Item'], style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['Quantity'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['UnitPrice'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(3),
+                                  child: pw.Text(budgetData['TotalCost'].toString(), style: pw.TextStyle(font: ttfGeneral, fontSize: 5)),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                          pw.TableRow(children: [
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text(''),
+                            ),
+                            pw.Padding(
+                              padding: const pw.EdgeInsets.all(3),
+                              child: pw.Text((grandTotalBudget.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold, fontSize: 5)),
+                            ),
+                          ])
+                        ],
+                      ),
+                      pw.SizedBox(height: 5),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ]));
+
+  widgets.add(budget);
+
+  final zz5 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "Part-B",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              decoration: pw.TextDecoration.underline,
+              decorationThickness: 0.5,
+            ),
+            textAlign: pw.TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zz5);
+
+  final zz6 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "(For Monitoring Committee)",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 11,
+              decoration: pw.TextDecoration.underline,
+              decorationThickness: 0.5,
+            ),
+            textAlign: pw.TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zz6);
+
+  final zz7 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "1. Observation (Qualitative progress in %):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz7);
+
+  final zz8 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "2. Suggestions (If any):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz8);
+
+  final zz9 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "3. Recommendations of monitoring committee:",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz9);
+
+  final zz10 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "__________________________________________",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz10);
+
+  final zz11 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.1, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 28),
+          child: pw.Text(
+            "Endorsement of Monitoring Committee",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zz11);
+
+  final zzz99 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 2.0, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.Text(
+            "BUDGET SUMMARY (ANNUAL BASIS):",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final attachedBudget = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.7, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 29),
+          child: pw.TableHelper.fromTextArray(
+            cellAlignment: pw.Alignment.center,
+            columnWidths: {0: const pw.FixedColumnWidth(30), 1: const pw.FixedColumnWidth(200), 2: const pw.FixedColumnWidth(50), 3: const pw.FixedColumnWidth(75), 4: const pw.FixedColumnWidth(75)},
+            headerStyle: pw.TextStyle(font: ttfBold, fontSize: 11, lineSpacing: 1.5),
+            cellStyle: pw.TextStyle(font: ttfGeneral, fontSize: 11, lineSpacing: 1.5),
+            cellAlignments: {0: pw.Alignment.topLeft, 1: pw.Alignment.topLeft, 2: pw.Alignment.center, 3: pw.Alignment.center, 4: pw.Alignment.center},
+            border: pw.TableBorder.all(),
+            headers: ['Sl. No.', 'Item', 'Quantity', 'Unit Price', 'Total Cost (Tk)'],
+            data: convertedBudgetOriginal
+                .map((row) => [
+                      '${row['SerialNo']}',
+                      row['Item'],
+                      '${row['Quantity']}',
+                      '${row['UnitPrice']}',
+                      '${row['TotalCost']}',
+                    ])
+                .toList()
+              ..add(['', pw.Text('Grand Total:', style: pw.TextStyle(font: ttfBold)), '', '', pw.Text((grandTotalBudgetOriginal.toStringAsFixed(2)), style: pw.TextStyle(font: ttfBold))]),
+          ),
+        ),
+      ],
+    ),
+  );
+  widgets.add(zzz99);
+  widgets.add(attachedBudget);
+
+  // Add content to the PDF document
+  // USE Paragraph FOR TEXT TO AUTO SPAN TO MULTIPLE LINES & PAGES
+  pdf.addPage(
+    pw.MultiPage(
+        pageTheme: const pw.PageTheme(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.only(top: 13.0, left: 0.0, right: 0.0, bottom: 40.0),
+        ),
+        build: (pw.Context context) => widgets),
+  );
+
+  // Save the PDF document to a file
+  final bytes = await pdf.save();
+  final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final fileName = 'MonitoringReportID_${projectMonitoringReportID}_PI_Name_${formData.piName}.pdf';
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+  print("PDF generated and saved successfully!");
+  return bytes;
+  // Save the PDF
+  // final output = await getTemporaryDirectory();
+  // final file = File("${output.path}/monitoring_report.pdf");
+  // await file.writeAsBytes(await pdf.save());
+  // Call the function defined in api_service.dart to upload the PDF file
 }

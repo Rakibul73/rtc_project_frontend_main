@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
+import 'package:rtc_project_fronend/views/screens/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -34,8 +37,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
   late List<dynamic> initialProjectBudget = [];
   late List<dynamic> initialProjectBudgetOriginal = [];
   late List<dynamic> initialProjectGanttsOriginal = [];
-  late List<dynamic> ganttFormDataForUpload = [];
-  late List<dynamic> budgetFormDataForUpload = [];
   Future<bool>? _future;
   bool initialFeedbackExist = false;
 
@@ -197,6 +198,16 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
           if (responseBody['statuscode'] == 201) {
             // Handle success
             print('Feedback submitted successfully');
+            int feedbackId = responseBody['feedback_id'];
+            final zzzz = await generateMonitoringReportWithFeedbackPDF(
+                _formData, context, initialProjectBudgetOriginal, initialProjectBudget, initialProjectGanttsOriginal, initialProjectGantts, feedbackId);
+            print("PDF saved in");
+            Uint8List zzzzz = await zzzz;
+            print("cccccccccc");
+            final responseBodyuploadPdfFile = await ApiService.uploadPdfFile(
+                "monitoring_report_feedback", "MonitoringFeedbackID_${feedbackId}_PI_Name_${_formData.piName}.pdf", zzzzz, feedbackId);
+            print("cccccccccc");
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,

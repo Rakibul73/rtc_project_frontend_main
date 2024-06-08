@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:html' as html; // Import the 'html' library for web-specific functionalities
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/app_router.dart';
@@ -24,6 +28,7 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
 
   late DataSource _dataSource;
   late List<dynamic> _initialProjectHaveToGiveFeedbackList = [];
+  Uint8List? _downloadProjectFileBytes;
 
 // Function to filter projects based on search text
   void filterProjects(String searchText) {
@@ -57,6 +62,37 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
     }
   }
 
+  void _pdfHandleButtonPress(String fileName) {
+    final d = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      title: "PDF Downloading.....",
+      desc: "Please wait...5 seconds",
+      width: kDialogWidth,
+      headerAnimationLoop: true,
+    );
+    Future.wait([
+      d.show(),
+      Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
+      downloadMonitoringReport(fileName),
+    ]).then((_) {
+      d.dismiss();
+    });
+  }
+
+  Future<void> downloadMonitoringReport(String fileName) async {
+    String downloadProjectReport = await ApiService.downloadFile('monitoringreportfile/download', fileName);
+    if (downloadProjectReport.isNotEmpty) {
+      Uint8List fileBytes = base64Decode(downloadProjectReport);
+      _downloadProjectFileBytes = fileBytes;
+    }
+    final blob = html.Blob([_downloadProjectFileBytes], 'application/octet-stream');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final html.AnchorElement anchor = html.AnchorElement(href: url);
+    anchor.download = fileName; // Specify the filename for the downloaded file
+    anchor.click(); // Trigger the download
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +102,21 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
     _dataSource = DataSource(
       onGiveFeedbackButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.feedbackmonitoringreport}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
       onViewFeedbackAndReportButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.feedbackmonitoringreport}?monitoringreportid=${data['ProjectMonitoringReportID']}'),
+      onPDFPressed: (data) {
+        if (data['MonitoringFeedbackFileLocation'] == null || data['MonitoringFeedbackFileLocation'].isEmpty) {
+          final notFoundPDF = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.infoReverse,
+            title: "Monitoring Feedback Not Found",
+            desc: "PDF file not found in server. Please contact administrator with (Project Monitoring Feedback-ID). Thank you.",
+            width: kDialogWidth,
+            headerAnimationLoop: true,
+          );
+          notFoundPDF.show();
+        } else {
+          _pdfHandleButtonPress(data['MonitoringFeedbackFileLocation']);
+        }
+      },
       data: [],
     );
   }
@@ -209,11 +260,13 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
 class DataSource extends DataTableSource {
   final void Function(Map<String, dynamic> data) onGiveFeedbackButtonPressed;
   final void Function(Map<String, dynamic> data) onViewFeedbackAndReportButtonPressed;
+  final void Function(Map<String, dynamic> data) onPDFPressed;
   List<dynamic> data;
 
   DataSource({
     required this.onGiveFeedbackButtonPressed,
     required this.onViewFeedbackAndReportButtonPressed,
+    required this.onPDFPressed,
     required this.data,
   });
 
@@ -264,6 +317,20 @@ class DataSource extends DataTableSource {
                       onPressed: () => onViewFeedbackAndReportButtonPressed.call(data),
                       style: Theme.of(context).extension<AppButtonTheme>()!.warningOutlined,
                       child: const Text("View Feedback & Report"),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: snapshot.data == "Yes",
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: kDefaultPadding),
+                    child: ElevatedButton(
+                      onPressed: () => onPDFPressed.call(data),
+                      style: Theme.of(context).extension<AppButtonTheme>()!.secondaryOutlined,
+                      child: const Text(
+                        "PDF",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ),
