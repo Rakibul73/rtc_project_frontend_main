@@ -113,10 +113,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _onLoginSuccess(BuildContext context) {
-    GoRouter.of(context).go(RouteUri.home);
-    // Navigator.pushReplacementNamed(context, '/dashboard');
-    print("GoRouter.of(context).go(RouteUri.home);");
+  void _onLoginSuccess(BuildContext context, int roleId) {
+    if (roleId == 1) {
+      GoRouter.of(context).go(RouteUri.home);
+      print("GoRouter.of(context).go(RouteUri.home);");
+    }
+    else {
+      GoRouter.of(context).go(RouteUri.projectdashboard);
+      print("GoRouter.of(context).go(RouteUri.projectdashboard);");
+    }
   }
 
   void _onLoginError(BuildContext context, String message) {
@@ -245,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ? null
                                     : () => _doLoginAsync(
                                           userDataProvider: context.read<UserDataProvider>(),
-                                          onSuccess: () => _onLoginSuccess(context),
+                                          onSuccess: () => _onLoginSuccess(context, getRoleId(_formData.roleID)),
                                           onError: (message) => _onLoginError(context, message),
                                         )),
                                 child: Text(
