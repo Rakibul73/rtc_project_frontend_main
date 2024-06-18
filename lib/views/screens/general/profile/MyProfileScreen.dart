@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +15,7 @@ import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
+import 'package:toast/toast.dart';
 
 bool editusername = false;
 bool editemail = false;
@@ -491,6 +491,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     final lang = Lang.of(context);
     final themeData = Theme.of(context);
+    ToastContext().init(context);
+
+    // Show sticky toast when the page is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Toast.show("After making any picture changes click Save-Changes button below", duration: 10, gravity: Toast.bottom);
+    });
 
     return PortalMasterLayout(
       body: ListView(
@@ -548,17 +554,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   Widget _content(BuildContext context) {
     final themeData = Theme.of(context);
-
-    // Show the sticky toast when the content is loaded
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // Use Fluttertoast to show the sticky toast
-      Fluttertoast.showToast(
-        msg: "After making Any Picture changes click Save-Changes button below",
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 10,
-        webPosition: 'right',
-      );
-    });
 
     return FormBuilder(
         key: _formKey,
