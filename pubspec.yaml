@@ -54,6 +54,7 @@ dependencies:
   pdf: ^3.10.8
   path_provider:
   printing: ^5.12.0
+  fluttertoast:
 
 
 dependency_overrides:
