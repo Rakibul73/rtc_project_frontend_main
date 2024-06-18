@@ -36,10 +36,11 @@ With the goal of improving research and training initiatives at any institution,
 - [x] User can give review to the project that he have assigned to
 - [x] Author of the project can see his projects review if admin sends it to him
 - [x] User profile section
-- [ ] Generate PDF report for every section
+- [x] Generate PDF report for every section
+  - [ ] Profile PDF
 - [ ] Notification panel for user must be handled
-- [ ] Project funding functionality where user can manage their projects funds.
-- [ ] Project monitoring functionality where PI & reviewer can co-operate to handle the project completion.
+- [x] Project funding functionality where user can manage their projects funds.
+- [x] Project monitoring functionality where PI & reviewer can co-operate to handle the project completion.
 
 
 
