@@ -18,16 +18,16 @@ With the goal of improving research and training initiatives at any institution,
 - [x] Streamlined administrative processes
     - [x] Admin can view , edit , delete and verify pending registered users
     - [x] Admin can view User Overview info
-    - [ ] Admin can search , view , edit and delete all users
+    - [x] Admin can search , view , edit and delete all users
     - [x] Admin can view Projects Overview info
     - [x] Admin can search , view , edit and delete all Projects
     - [x] Admin can approve / reject users project proposals based on review feedback
     - [x] Admin can set project review feedback
-    - [ ] Online notice board for project proposals
+    - [x] Online notice board for project proposals
     - [ ] Project deletion request from normal user must be handled
     - [ ] Notification panel for admin must be handled
-    - [ ] Project funding functionality
-    - [ ] Project monitoring functionality
+    - [x] Project funding functionality
+    - [x] Project monitoring functionality
 
 
 
