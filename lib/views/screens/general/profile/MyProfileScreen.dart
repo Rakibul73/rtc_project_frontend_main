@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously, deprecated_member_use
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -13,6 +14,7 @@ import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/utils/app_focus_helper.dart';
+import 'package:rtc_project_fronend/views/screens/pdf_generate/pdf_generator.dart';
 import 'package:rtc_project_fronend/views/widgets/card_elements.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
 import 'package:toast/toast.dart';
@@ -59,6 +61,11 @@ bool editStudentRegNo = false;
 bool editFirstEnrollmentSemester = false;
 bool editUndergraduateCGPALevel = false;
 bool initialUserDataChange = false;
+
+Uint8List? _signatureFileBytes;
+Uint8List? _profilePicFileBytes;
+Uint8List? _sealFileBytes;
+Uint8List? _nidFileBytes;
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({Key? key}) : super(key: key);
@@ -167,6 +174,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // try {
       for (var file in _profilePicFiles!) {
         final fileBytes = file.bytes!;
+        _profilePicFileBytes = fileBytes;
         final fileName = file.name;
         _formData.profilePicLocation = fileName;
         print(fileName);
@@ -189,6 +197,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // try {
       for (var file in _signatureFiles!) {
         final fileBytes = file.bytes!;
+        _signatureFileBytes = fileBytes;
         final fileName = file.name;
         _formData.signatureLocation = fileName;
         print(fileName);
@@ -211,6 +220,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // try {
       for (var file in _sealFiles!) {
         final fileBytes = file.bytes!;
+        _sealFileBytes = fileBytes;
         final fileName = file.name;
         _formData.sealLocation = fileName;
         print(fileName);
@@ -233,6 +243,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       // try {
       for (var file in _nidFiles!) {
         final fileBytes = file.bytes!;
+        _nidFileBytes = fileBytes;
         final fileName = file.name;
         _formData.nidLocation = fileName;
         print(fileName);
@@ -335,6 +346,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       _formData.studentRegNo = userDetails['user']['StudentRegNo'] ?? '';
       _formData.firstEnrollmentSemester = userDetails['user']['FirstEnrollmentSemester'] ?? '';
       _formData.undergraduateCGPALevel = userDetails['user']['UndergraduateCGPALevel'] ?? '';
+
+      String piSignaturefilePath = _formData.signatureLocation.isNotEmpty
+          ? await ApiService.downloadFile('signature/download', _formData.signatureLocation)
+          : await ApiService.downloadFile('signature/download', "defaultsignature.png"); // Check if value is not empty before making the API call
+      if (piSignaturefilePath.isNotEmpty) {
+        Uint8List fileBytes = base64Decode(piSignaturefilePath);
+        _signatureFileBytes = fileBytes;
+      }
+      String piSealfilePath = _formData.sealLocation.isNotEmpty
+          ? await ApiService.downloadFile('seal/download', _formData.sealLocation)
+          : await ApiService.downloadFile('seal/download', "defaultseal.png"); // Check if value is not empty before making the API call
+      if (piSealfilePath.isNotEmpty) {
+        Uint8List fileBytes = base64Decode(piSealfilePath);
+        _sealFileBytes = fileBytes;
+      }
+      String nidfilePath = _formData.nidLocation.isNotEmpty
+          ? await ApiService.downloadFile('nid/download', _formData.nidLocation)
+          : await ApiService.downloadFile('nid/download', "defaultnid.png"); // Check if value is not empty before making the API call
+      if (nidfilePath.isNotEmpty) {
+        Uint8List fileBytes = base64Decode(nidfilePath);
+        _nidFileBytes = fileBytes;
+      }
+      String profilePicFilePath = _formData.profilePicLocation.isNotEmpty
+          ? await ApiService.downloadFile('profile-pic/download', _formData.profilePicLocation)
+          : await ApiService.downloadFile('profile-pic/download', "defaultprofilepic.png"); // Check if value is not empty before making the API call
+      if (profilePicFilePath.isNotEmpty) {
+        Uint8List fileBytes = base64Decode(profilePicFilePath);
+        _profilePicFileBytes = fileBytes;
+      }
     });
     print(" Getting user data successfully ");
     return true;
@@ -487,6 +527,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }
   }
 
+  void _pdfHandleButtonPress() {
+    final d = AwesomeDialog(
+      context: context,
+      dialogType: DialogType.infoReverse,
+      title: "Profile PDF Generating.....",
+      desc: "Please wait...5 seconds",
+      width: kDialogWidth,
+      headerAnimationLoop: true,
+    );
+    Future.wait([
+      d.show(),
+      Future.delayed(const Duration(seconds: 5), () => d.dismiss()),
+      generateProfilePDF(_formData, context, _profilePicFileBytes, _nidFileBytes, _sealFileBytes, _signatureFileBytes),
+    ]).then((_) {
+      d.dismiss();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final lang = Lang.of(context);
@@ -502,9 +560,38 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       body: ListView(
         padding: const EdgeInsets.all(kDefaultPadding),
         children: [
-          Text(
-            lang.myProfile,
-            style: themeData.textTheme.headlineMedium,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                lang.myProfile,
+                style: themeData.textTheme.headlineMedium,
+              ),
+              const Spacer(),
+              SizedBox(
+                width: kDefaultPadding * 10,
+                child: ElevatedButton(
+                  style: themeData.extension<AppButtonTheme>()!.successText,
+                  onPressed: () {
+                    _pdfHandleButtonPress();
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                        child: Icon(
+                          Icons.download_for_offline_outlined,
+                          size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                        ),
+                      ),
+                      const Text("Profile PDF"),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),

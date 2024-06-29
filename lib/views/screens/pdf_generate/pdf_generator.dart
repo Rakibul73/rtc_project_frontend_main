@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
+import 'package:bijoy_helper/bijoy_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/views/screens/admin/project_overview/ViewProjectScreenAdmin.dart' as admin;
 import 'package:rtc_project_fronend/views/screens/user/project_panel/ViewProjectScreen.dart' as user;
+import 'package:rtc_project_fronend/views/screens/general/profile/MyProfileScreen.dart' as userprofile;
 import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/ApplyForMonitoringScreen.dart' as usermonitoringreport;
 import 'package:rtc_project_fronend/views/screens/user/monitoring_panel/FeedbackMonitoringReportScreen.dart' as usermonitoringreportwithfeedback;
 import 'package:rtc_project_fronend/views/screens/general/fund_panel/ViewRequestForAProjectFundScreen.dart' as viewfund;
@@ -7196,7 +7200,6 @@ Future<Uint8List> generateMonitoringReportWithFeedbackPDF(usermonitoringreportwi
 
   print("               ok    activity               ");
 
-
   final zzz4 = pw.Padding(
     padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 4.0),
     child: pw.Row(
@@ -8511,4 +8514,1394 @@ Future<Uint8List> generateMonitoringReportPDF(usermonitoringreport.FormData form
   // final file = File("${output.path}/monitoring_report.pdf");
   // await file.writeAsBytes(await pdf.save());
   // Call the function defined in api_service.dart to upload the PDF file
+}
+
+Future<void> generateProfilePDF(
+  userprofile.FormData formData,
+  BuildContext context,
+  Uint8List? profilePicFileBytes,
+  Uint8List? nidFileBytes,
+  Uint8List? sealFileBytes,
+  Uint8List? signatureFileBytes,
+) async {
+  // Create a PDF document
+  final pdf = pw.Document();
+  final fontGeneral = await rootBundle.load("fonts/times-new-roman.ttf");
+  final fontBold = await rootBundle.load("fonts/times-new-roman-bold.ttf");
+  final fontSymbola = await rootBundle.load("fonts/Symbola.ttf");
+  final fontSutonnyMJBold = await rootBundle.load("fonts/SutonnyMJ-Bold.ttf");
+
+  final ttfGeneral = pw.Font.ttf(fontGeneral);
+  final ttfBold = pw.Font.ttf(fontBold);
+  final ttfSymbola = pw.Font.ttf(fontSymbola);
+  final ttfSutonnyMJBold = pw.Font.ttf(fontSutonnyMJBold);
+
+  print(" ============ unicode to Bijoy convertion   ============");
+  final fullNameBangla = unicodeToBijoy(formData.fullNameBangla);
+  final positionBangla = unicodeToBijoy(formData.positionBangla);
+  print(" ============ unicode to Bijoy convertion  END ============");
+
+  final appLogo = await rootBundle.load("images/app_logo_2.png");
+  final appLogoImageBytes = appLogo.buffer.asUint8List();
+
+  final signatureimage = pw.MemoryImage(signatureFileBytes!);
+  final sealimage = pw.MemoryImage(sealFileBytes!);
+  final nidimage = pw.MemoryImage(nidFileBytes!);
+  final profilePicimage = pw.MemoryImage(profilePicFileBytes!);
+
+  List<pw.Widget> widgets = [];
+
+  final zzz = pw.ListView(padding: const pw.EdgeInsets.all(5.0), children: [
+    pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Container(
+              alignment: pw.Alignment.center,
+              padding: const pw.EdgeInsets.only(left: kDefaultPadding * 4.0, right: kDefaultPadding * 3.0),
+              child: pw.Stack(
+                children: [
+                  pw.Image(pw.MemoryImage(appLogoImageBytes), width: 80, height: 95),
+                ],
+              ),
+            ),
+          ],
+        ),
+        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+          pw.Text(
+            "Research and Training Centre",
+            style: pw.TextStyle(font: ttfBold, fontSize: 20, letterSpacing: 0.5),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Patuakhali Science and Technology University",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13, letterSpacing: 0.2),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Dumki, Patuakhali-8602, Bangladesh",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+          pw.Text(
+            "Email: rtc@pstu.ac.bd",
+            style: pw.TextStyle(font: ttfGeneral, fontSize: 13),
+            textAlign: pw.TextAlign.center,
+          ),
+        ]),
+      ],
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 1.5, top: kDefaultPadding),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 0.0),
+      child: pw.Container(
+        width: double.infinity,
+        height: 1.0, // Adjust the height of the line as needed
+        color: const PdfColor.fromInt(0xff000000), // Color of the line
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Text(
+            "Teacher/Researcher Profile",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 11,
+            ),
+            textAlign: pw.TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: 10.0),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+            pw.SizedBox(
+              width: (kDefaultPadding * 8.5),
+              child: pw.Text(
+                "Status : ",
+                style: pw.TextStyle(
+                  font: ttfGeneral,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.right,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding * 3),
+              child: pw.Text(
+                "Approved",
+                style: pw.TextStyle(
+                  font: ttfBold,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding),
+              child: pw.Text(
+                "|",
+                style: pw.TextStyle(
+                  font: ttfBold,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding * 8),
+              child: pw.Text(
+                "Date of PDF Generation : ",
+                style: pw.TextStyle(
+                  font: ttfGeneral,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.right,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding * 4),
+              child: pw.Text(
+                DateTime.now().toString().split(' ')[0],
+                style: pw.TextStyle(
+                  font: ttfBold,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.left,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding),
+              child: pw.Text(
+                "|",
+                style: pw.TextStyle(
+                  font: ttfBold,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding * 4),
+              child: pw.Text(
+                "Profile ID : ",
+                style: pw.TextStyle(
+                  font: ttfGeneral,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.right,
+              ),
+            ),
+            pw.SizedBox(
+              width: (kDefaultPadding * 2),
+              child: pw.Text(
+                formData.userId.toString(),
+                style: pw.TextStyle(
+                  font: ttfBold,
+                  fontSize: 10,
+                ),
+                textAlign: pw.TextAlign.left,
+              ),
+            ),
+          ])
+        ],
+      ),
+    ),
+
+    // RESEARCHER INFORMATION
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 30),
+            child: pw.Text(
+              "RESEARCHER INFORMATION",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                color: const PdfColor.fromInt(0xff007100),
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 32),
+            child: pw.Text(
+              "--------------------------------------------------------------------------------------------------------------------------",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 12,
+              ),
+              textAlign: pw.TextAlign.start,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Name (English)",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.firstName} ${formData.lastName}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Name (Bengali)",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": $fullNameBangla",
+              style: pw.TextStyle(
+                font: ttfSutonnyMJBold,
+                fontSize: 9,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Position (English)",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.positionEnglish}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Position (Bengali)",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": $positionBangla",
+              style: pw.TextStyle(
+                font: ttfSutonnyMJBold,
+                fontSize: 9,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Position Held (since)",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.positionHeldSince}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Gender",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.gender}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Date of Birth",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${DateFormat("MMMM d, yyyy").format(DateTime.parse(formData.dateOfBirth))}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "E-mail",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.email}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Phone Number",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.phone}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "NID No.",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.nid}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    // INSTITUTE INFORMATION
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 30),
+            child: pw.Text(
+              "INSTITUTE INFORMATION",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                color: const PdfColor.fromInt(0xff007100),
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 32),
+            child: pw.Text(
+              "--------------------------------------------------------------------------------------------------------------------------",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 12,
+              ),
+              textAlign: pw.TextAlign.start,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Institute Name",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.instituteName}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Faculty Name",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.facultyName}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Department Name",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.departmentName}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Institute Location",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.instituteLocation}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Institute Email",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.instituteEmail}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Salary Scale",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.salaryScale}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Basic Pay",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.basicPay}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+
+    // PERSONAL INFORMATION
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 30),
+            child: pw.Text(
+              "PERSONAL INFORMATION",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                color: const PdfColor.fromInt(0xff007100),
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 32),
+            child: pw.Text(
+              "--------------------------------------------------------------------------------------------------------------------------",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 12,
+              ),
+              textAlign: pw.TextAlign.start,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Present Address",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.presentAddress}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Permanent Address",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.permanentAddress}",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+    pw.Padding(
+      padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: kDefaultPadding * 3.0),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: (kDefaultPadding * 6),
+            child: pw.Text(
+              "Highest Academic Qualification",
+              style: pw.TextStyle(
+                font: ttfGeneral,
+                fontSize: 8,
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+          pw.SizedBox(
+            width: (kDefaultPadding * 24),
+            child: pw.Text(
+              ": ${formData.highestAcademicQualification} , ${formData.highestAcademicQualificationUniversity}, ${formData.highestAcademicQualificationCountry} (${formData.highestAcademicQualificationYear})",
+              style: pw.TextStyle(
+                font: ttfBold,
+                fontSize: 8,
+                fontFallback: [ttfSymbola],
+              ),
+              textAlign: pw.TextAlign.left,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ]);
+
+  // RESEARCH INFORMATION
+  final zzz2 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: (5.0 + (kDefaultPadding * 3.0)), bottom: kDefaultPadding * 0.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 30),
+          child: pw.Text(
+            "RESEARCH INFORMATION",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              color: const PdfColor.fromInt(0xff007100),
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz3 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.0, left: (5.0 + (kDefaultPadding * 3.0)), bottom: kDefaultPadding * 0.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 32),
+          child: pw.Text(
+            "--------------------------------------------------------------------------------------------------------------------------",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 12,
+            ),
+            textAlign: pw.TextAlign.start,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz4 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Area of Expertise",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.areaOfExpertise}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz5 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Research Experience",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.experienceInResearch} Years",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz6 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Teaching Experience",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.teaching} Years",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz7 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Total Complete Projects",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.totalNumberOfCompleteProjects}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz8 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Total Complete Publications",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.totalNumberOfCompletePublications}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz9 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Ongoing Projects",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.ongoingProjects}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz10 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.2, left: (5.0 + (kDefaultPadding * 3.0))),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 6),
+          child: pw.Text(
+            "Latest Publication Reference",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 8,
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 24),
+          child: pw.Text(
+            ": ${formData.referencesOfLatestPublications}",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              fontFallback: [ttfSymbola],
+            ),
+            textAlign: pw.TextAlign.justify,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  // RESEARCHER PHOTO, SIGNATURE, SEAL & NID
+  final zzz21 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 30),
+          child: pw.Text(
+            "RESEARCHER PHOTO, SIGNATURE, SEAL & NID",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 8,
+              color: const PdfColor.fromInt(0xff007100),
+            ),
+            textAlign: pw.TextAlign.left,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz22 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.0, left: kDefaultPadding * 3.0, bottom: kDefaultPadding * 0.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 32),
+          child: pw.Text(
+            "--------------------------------------------------------------------------------------------------------------------------",
+            style: pw.TextStyle(
+              font: ttfGeneral,
+              fontSize: 12,
+            ),
+            textAlign: pw.TextAlign.start,
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz23 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Text(
+            "Photo",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 10,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Text(
+            "Signature",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 10,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz24 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Image(profilePicimage, width: 60, height: 80, alignment: pw.Alignment.center, fit: pw.BoxFit.fill),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 10.0),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Image(signatureimage, width: 150, height: 30, alignment: pw.Alignment.center, fit: pw.BoxFit.fill),
+        ),
+      ],
+    ),
+  );
+  final zzz25 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Text(
+            "Seal",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 10,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Text(
+            "Nid Photo",
+            style: pw.TextStyle(
+              font: ttfBold,
+              fontSize: 10,
+              lineSpacing: 1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  final zzz26 = pw.Padding(
+    padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Image(sealimage, width: 150, height: 30, alignment: pw.Alignment.center, fit: pw.BoxFit.fill),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 4.5),
+        ),
+        pw.SizedBox(
+          width: (kDefaultPadding * 14.0),
+          child: pw.Image(nidimage, width: 150, height: 70, alignment: pw.Alignment.center, fit: pw.BoxFit.fill),
+        ),
+      ],
+    ),
+  );
+
+  widgets.add(zzz);
+  widgets.add(zzz2);
+  widgets.add(zzz3);
+  widgets.add(zzz4);
+  widgets.add(zzz5);
+  widgets.add(zzz6);
+  widgets.add(zzz7);
+  widgets.add(zzz8);
+  widgets.add(zzz9);
+  widgets.add(zzz10);
+  widgets.add(zzz21);
+  widgets.add(zzz22);
+  widgets.add(zzz23);
+  widgets.add(zzz24);
+  widgets.add(zzz25);
+  widgets.add(zzz26);
+
+  // Add content to the PDF document
+  // USE Paragraph FOR TEXT TO AUTO SPAN TO MULTIPLE LINES & PAGES
+  pdf.addPage(
+    pw.MultiPage(
+        pageTheme: const pw.PageTheme(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.only(top: 13.0, left: 0.0, right: 0.0, bottom: 40.0),
+        ),
+        build: (pw.Context context) => widgets),
+  );
+
+  // Save the PDF document to a file
+  final bytes = await pdf.save();
+  final blob = html.Blob([Uint8List.fromList(bytes)], 'application/pdf');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final fileName = 'Profile_${formData.firstName}_${formData.lastName}.pdf';
+  final anchor = html.AnchorElement(href: url)..setAttribute('download', fileName);
+  html.document.body?.children.add(anchor);
+  anchor.click();
+  html.document.body?.children.remove(anchor);
+  html.Url.revokeObjectUrl(url);
+  print("PDF generated and saved successfully!");
+  // html.window.open(url, '_blank');
 }

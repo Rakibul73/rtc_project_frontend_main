@@ -66,9 +66,9 @@ class DeleteUserScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: kDefaultPadding * 1.5),
-                      child: Text(lang.error404Message),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: kDefaultPadding * 1.5),
+                      child: Text("It's under development. Please come back later."),
                     ),
                     SizedBox(
                       height: 36.0,
