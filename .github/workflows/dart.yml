@@ -34,11 +34,13 @@ jobs:
         with:
           channel: stable
           flutter-version: 3.16.0
-      - run: flutter --version
-      - run: flutter doctor -v
+      
+      - name: flutter version check
+        run: flutter doctor -v
+
       # Build for web
       - name: Install dependencies
-      - run: flutter pub get
+        run: flutter pub get
       
       - name: Build Flutter web
         run: flutter build web --release
