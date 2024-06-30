@@ -1,0 +1,102 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Note: This workflow uses the latest stable version of the Dart SDK.
+      # You can specify other versions if desired, see documentation here:
+      # https://github.com/dart-lang/setup-dart/blob/main/README.md
+      - uses: dart-lang/setup-dart@v1
+      # - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+        with:
+          sdk: "3.2.0"
+
+      # - name: Install dependencies
+      #   run: flutter pub get
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.16.0
+      
+      - name: flutter version check
+        run: flutter doctor -v
+
+      # Build for web
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build Flutter web
+        run: flutter build web --release
+
+      - name: Copy assets to build folder
+        run: cp -r assets/* build/web/assets/
+
+      - name: Comment out <base href="/"> in index.html
+        run: |
+          sed -i '17s|<base href="/">|<!-- <base href="/"> -->|' build/web/index.html
+
+      - name: List files in build/web/assets
+        run: ls -R build/web/assets
+   
+
+      - name: Checkout target repository
+        uses: actions/checkout@v2
+        with:
+          repository: Rakibul73/testing_github_action  # Replace with your target repository
+          token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+          path: target-repo
+
+      - name: Sync build folder with target repository
+        run: |
+          rm -rf target-repo/*
+          cp -r build/web/* target-repo/
+          last_commit_message=$(git log -1 --pretty=%B)
+          cd target-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Updated build for - $last_commit_message"
+          git push origin main  # Change this to the branch you want to push to
+
+      - name: Clean up old builds
+        run: rm -rf build/web
+
+
+      # ======================================
+      # Direct deploy to netlify
+      # Ensure you have already configured your Netlify site 
+      # and have the NETLIFY_AUTH_TOKEN from your Netlify account.
+      # This workflow will trigger on every push to the main branch, 
+      # build your Flutter web project, 
+      # comment out the specified line in index.html,
+      # and deploy the result to Netlify.
+      
+      # - name: Install Netlify CLI
+      #   run: npm install -g netlify-cli
+
+      # - name: Deploy to Netlify
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #   run: netlify deploy --dir=build/web --prod
+      
+      
+        
+
+      
