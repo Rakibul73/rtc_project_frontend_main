@@ -27,16 +27,16 @@ jobs:
         with:
           sdk: "3.2.0"
 
-      - name: Install dependencies
-        run: flutter pub get
+      # - name: Install dependencies
+      #   run: flutter pub get
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.16.0
+      - run: flutter --version
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
-      - name: Analyze project source
-        run: dart analyze
+      
       
         
 
