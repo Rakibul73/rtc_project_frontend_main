@@ -55,8 +55,6 @@ jobs:
       - name: List files in build/web/assets
         run: ls -R build/web/assets
    
-      - name: Copying last commit msg from Rakibul73/rtc_project_frontend
-        run: last_commit_message=$(git log -1 --pretty=%B)
 
       - name: Checkout target repository
         uses: actions/checkout@v2
@@ -69,6 +67,7 @@ jobs:
         run: |
           rm -rf target-repo/*
           cp -r build/web/* target-repo/
+          last_commit_message=$(git log -1 --pretty=%B)
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
