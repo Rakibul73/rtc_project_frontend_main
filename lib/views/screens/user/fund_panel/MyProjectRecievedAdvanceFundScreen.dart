@@ -2,6 +2,7 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
 import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
@@ -51,6 +52,20 @@ class _MyProjectRecievedAdvanceFundScreenState extends State<MyProjectRecievedAd
   void viewAllProjects() async {
     try {
       _initialProjects = await ApiService.fetchMyAdvanceFundedProject();
+      if (_initialProjects[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });

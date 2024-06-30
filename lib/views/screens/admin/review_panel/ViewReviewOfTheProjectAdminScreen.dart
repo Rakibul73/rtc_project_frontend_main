@@ -53,17 +53,17 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
       btnOkOnPress: () async {
         final responseBody = await ApiService.updatePiCanViewOrNot(int.parse(_formData.projectID));
         if (responseBody['statuscode'] == 200) {
-            // Handle success
-            final dialog = AwesomeDialog(
-              context: context,
-              dialogType: DialogType.success,
-              title: "Comments Sent successfully",
-              width: kDialogWidth,
-              btnOkText: 'OK',
-              btnOkOnPress: () {},
-            );
-            dialog.show();
-          } 
+          // Handle success
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            title: "Comments Sent successfully",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {},
+          );
+          dialog.show();
+        }
       },
       btnCancelOnPress: () {},
       btnCancelText: 'No',
@@ -90,17 +90,17 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
         };
         final responseBody = await ApiService.updateProjectStatusAndPoints(int.parse(_formData.projectID), updateProjectStatusAndPoints);
         if (responseBody['statuscode'] == 200) {
-            // Handle success
-            final dialog = AwesomeDialog(
-              context: context,
-              dialogType: DialogType.success,
-              title: "ProjectStatus & Point Updated successfully",
-              width: kDialogWidth,
-              btnOkText: 'OK',
-              btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projectreviewerhasgivenreview),
-            );
-            dialog.show();
-          } 
+          // Handle success
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            title: "ProjectStatus & Point Updated successfully",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () => GoRouter.of(context).go(RouteUri.projectreviewerhasgivenreview),
+          );
+          dialog.show();
+        }
       },
       btnCancelOnPress: () {},
       btnCancelText: 'No',
@@ -119,6 +119,20 @@ class _ViewReviewOfTheProjectAdminScreenState extends State<ViewReviewOfTheProje
         final reviewsDetails = await ApiService.fetchAllReviewForSpecificProject(
           projectID,
         );
+        if (reviewsDetails[0]['statuscode'] == 401) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
+          );
+
+          dialog.show();
+        }
 
         if (reviewsDetails.isNotEmpty) {
           _formData.reviewComment1 = reviewsDetails[0]['Comments'];

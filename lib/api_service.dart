@@ -129,6 +129,12 @@ class ApiService {
         },
       );
 
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['notice'];
@@ -196,7 +202,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['notices'];
@@ -264,7 +275,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['Users'];
@@ -328,7 +344,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects_advance_fund_confirm'];
@@ -516,7 +537,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects_advance_fund_queue'];
@@ -705,7 +731,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -737,7 +768,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -1105,7 +1141,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -1137,7 +1178,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -1169,7 +1215,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -1201,7 +1252,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['ProjectFeedbackList'];
@@ -1233,7 +1289,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -1811,7 +1872,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['ProjectHaveToSetReviewerList'];
@@ -1844,6 +1910,12 @@ class ApiService {
         },
       );
 
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['MonitoringReportNeedToAssignCommitteeList'];
@@ -1875,7 +1947,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['MonitoringReportAssignedCommitteeList'];
@@ -1907,7 +1984,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['ProjectsPiCanViewReview'];
@@ -2099,7 +2181,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['reviews'];
@@ -2131,7 +2218,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['feedback'];
@@ -2163,7 +2255,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['projects'];
@@ -2195,7 +2292,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['feedback_list'];
@@ -2494,7 +2596,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // print(data['ProjectHaveToReviewList']);
@@ -2527,7 +2634,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['ProjectHaveToMonitorList'];
@@ -2559,7 +2671,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['MyProjectMonitoringHistoryList'];
@@ -2891,7 +3008,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['AllNotifications'];
@@ -3020,7 +3142,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // print(data['MyNotifications']);
@@ -3149,7 +3276,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // print(data['TempUsers']);
@@ -3355,7 +3487,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // print(data['projects']);
@@ -3389,7 +3526,12 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return [
+          {'statuscode': 401}
+        ];
+      }
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         // print(data['projects']);
@@ -3453,7 +3595,10 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        return "401";
+      }
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         return responseBody['project']['ProjectTitle'].toString(); // Convert file bytes to base64 string
@@ -3612,7 +3757,11 @@ class ApiService {
           'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
-
+      if (response.statusCode == 401) {
+        print("token expired");
+        List<User> users = [User(userId: 401, username: "401", firstName: "401", lastName: "401", signatureLocation: "401", sealLocation: "401", profilePicLocation: "401")];
+        return users;
+      }
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         List<User> users = [];

@@ -2,7 +2,9 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
+import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
 import 'package:rtc_project_fronend/views/widgets/portal_master_layout/portal_master_layout.dart';
@@ -42,7 +44,6 @@ class _ProjectOverviewScreenState extends State<ProjectOverviewScreen> {
         'total_projects': await totalProjects,
       };
       return summaryData;
-
     } else if (data['statuscode'] == 401) {
       // Handle token expiration
       // ignore: use_build_context_synchronously
@@ -52,7 +53,9 @@ class _ProjectOverviewScreenState extends State<ProjectOverviewScreen> {
         desc: "Token expired. Please login again.",
         width: kDialogWidth,
         btnOkText: 'OK',
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
       );
 
       dialog.show();
@@ -66,7 +69,6 @@ class _ProjectOverviewScreenState extends State<ProjectOverviewScreen> {
         'total_projects': 0,
       };
       return summaryData;
-
     } else {
       // Handle other error cases
       final Map<String, dynamic> summaryData = {

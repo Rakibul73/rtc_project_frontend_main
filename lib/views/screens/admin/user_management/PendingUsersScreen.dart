@@ -50,6 +50,20 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
   void viewAllPendingUsers() async {
     try {
       _initialPendingUsers = await ApiService.fetchAllPendingUsers();
+      if (_initialPendingUsers[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialPendingUsers; // Update the pending users list with fetched data
       });
@@ -59,9 +73,9 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
     }
   }
 
-  Future<void> approvingPendingUser(int userID , String username) async {
+  Future<void> approvingPendingUser(int userID, String username) async {
     try {
-      final responseBody = await ApiService.approvePendingUser(userID , username);
+      final responseBody = await ApiService.approvePendingUser(userID, username);
       print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
@@ -82,7 +96,7 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
       print('Failed to approve pending user: $e');
     }
   }
-  
+
   Future<void> deletingProject(int userID) async {
     try {
       final responseBody = await ApiService.deletePendingUser(userID);
@@ -123,8 +137,9 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
     );
     dialog.show();
   }
+
   // function to approve a pending user with data['UserID']
-  void approvePendingUser(int userID , String username) {
+  void approvePendingUser(int userID, String username) {
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.warning,
@@ -133,7 +148,7 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
       width: kDialogWidth,
       btnOkText: 'Approve User',
       btnOkOnPress: () {
-        approvingPendingUser(userID , username);
+        approvingPendingUser(userID, username);
       },
       btnCancelOnPress: () {},
     );
@@ -149,7 +164,7 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
     _dataSource = DataSource(
       onVerifyButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.verifyuser}?pendinguserid=${data['UserID']}'),
       onApproveButtonPressed: (data) {
-        approvePendingUser(data['UserID'] , data['Username']);
+        approvePendingUser(data['UserID'], data['Username']);
       },
       onDeleteButtonPressed: (data) {
         deleteProject(data['UserID']);
@@ -170,120 +185,120 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
     final appDataTableTheme = themeData.extension<AppDataTableTheme>()!;
 
     return PortalMasterLayout(
-      selectedMenuUri: RouteUri.usermanagementoverview,
+        selectedMenuUri: RouteUri.usermanagementoverview,
         body: ListView(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      children: [
-        Text(
-          'Pending Users',
-          style: themeData.textTheme.headlineMedium,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-          child: Card(
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const CardHeader(
-                  title: 'Need to Approve these users',
-                ),
-                CardBody(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
-                        child: FormBuilder(
-                          key: _formKey,
-                          autovalidateMode: AutovalidateMode.disabled,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              spacing: kDefaultPadding,
-                              runSpacing: kDefaultPadding,
-                              alignment: WrapAlignment.spaceBetween,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 300.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
-                                    child: FormBuilderTextField(
-                                      name: 'search',
-                                      decoration: const InputDecoration(
-                                        labelText: 'Search by Username',
-                                        hintText: 'Enter Username',
-                                        border: OutlineInputBorder(),
-                                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                                        isDense: true,
+          padding: const EdgeInsets.all(kDefaultPadding),
+          children: [
+            Text(
+              'Pending Users',
+              style: themeData.textTheme.headlineMedium,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CardHeader(
+                      title: 'Need to Approve these users',
+                    ),
+                    CardBody(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: kDefaultPadding * 2.0),
+                            child: FormBuilder(
+                              key: _formKey,
+                              autovalidateMode: AutovalidateMode.disabled,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Wrap(
+                                  direction: Axis.horizontal,
+                                  spacing: kDefaultPadding,
+                                  runSpacing: kDefaultPadding,
+                                  alignment: WrapAlignment.spaceBetween,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 300.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: kDefaultPadding * 1.5),
+                                        child: FormBuilderTextField(
+                                          name: 'search',
+                                          decoration: const InputDecoration(
+                                            labelText: 'Search by Username',
+                                            hintText: 'Enter Username',
+                                            border: OutlineInputBorder(),
+                                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                                            isDense: true,
+                                          ),
+                                          onChanged: (value) {
+                                            filterProjects(value!);
+                                          },
+                                        ),
                                       ),
-                                      onChanged: (value) {
-                                        filterProjects(value!);
-                                      },
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
-                            return Scrollbar(
-                              controller: _scrollController,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                controller: _scrollController,
-                                child: SizedBox(
-                                  width: dataTableWidth,
-                                  child: Theme(
-                                    data: themeData.copyWith(
-                                      cardTheme: appDataTableTheme.cardTheme,
-                                      dataTableTheme: appDataTableTheme.dataTableThemeData,
-                                    ),
-                                    child: Builder(
-                                      builder: (context) {
-                                        // Return the PaginatedDataTable with _dataSource
-                                        return PaginatedDataTable(
-                                          key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
-                                          source: _dataSource,
-                                          rowsPerPage: 20,
-                                          showCheckboxColumn: false,
-                                          showFirstLastButtons: true,
-                                          columns: const [
-                                            DataColumn(label: Text('UserID'), numeric: true),
-                                            DataColumn(label: Text('Registered Role')),
-                                            DataColumn(label: Text('UserName')),
-                                            DataColumn(label: Text('Email')),
-                                            DataColumn(label: Text('Actions')),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
+                                  ],
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                final double dataTableWidth = max(kScreenWidthMd, constraints.maxWidth);
+                                return Scrollbar(
+                                  controller: _scrollController,
+                                  thumbVisibility: true,
+                                  trackVisibility: true,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    controller: _scrollController,
+                                    child: SizedBox(
+                                      width: dataTableWidth,
+                                      child: Theme(
+                                        data: themeData.copyWith(
+                                          cardTheme: appDataTableTheme.cardTheme,
+                                          dataTableTheme: appDataTableTheme.dataTableThemeData,
+                                        ),
+                                        child: Builder(
+                                          builder: (context) {
+                                            // Return the PaginatedDataTable with _dataSource
+                                            return PaginatedDataTable(
+                                              key: UniqueKey(), // Use UniqueKey to force rebuild when _dataSource changes
+                                              source: _dataSource,
+                                              rowsPerPage: 20,
+                                              showCheckboxColumn: false,
+                                              showFirstLastButtons: true,
+                                              columns: const [
+                                                DataColumn(label: Text('UserID'), numeric: true),
+                                                DataColumn(label: Text('Registered Role')),
+                                                DataColumn(label: Text('UserName')),
+                                                DataColumn(label: Text('Email')),
+                                                DataColumn(label: Text('Actions')),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 }
 

@@ -54,6 +54,20 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
   void viewAllNotice() async {
     try {
       _initialNotice = await ApiService.fetchAllNotice();
+      if (_initialNotice[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialNotice; // Update the projects list with fetched data
       });

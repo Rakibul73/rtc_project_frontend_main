@@ -139,7 +139,9 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }
@@ -252,7 +254,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
 
     return true;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1292,7 +1293,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
                 ),
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
@@ -1395,7 +1395,6 @@ class FormData {
   int fetchCommitteeUserId2 = 0;
   int fetchCommitteeUserId3 = 0;
 }
-
 
 class CommitteeSelection1 extends StatefulWidget {
   final FormData formData;

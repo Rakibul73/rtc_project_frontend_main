@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/app_router.dart';
@@ -46,6 +47,20 @@ class _ViewReviewOfTheProjectScreenState extends State<ViewReviewOfTheProjectScr
         final reviewsDetails = await ApiService.fetchAllReviewForSpecificProject(
           projectID,
         );
+        if (reviewsDetails[0]['statuscode'] == 401) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
+          );
+
+          dialog.show();
+        }
 
         if (reviewsDetails.isNotEmpty) {
           _formData.reviewComment1 = reviewsDetails[0]['Comments'];

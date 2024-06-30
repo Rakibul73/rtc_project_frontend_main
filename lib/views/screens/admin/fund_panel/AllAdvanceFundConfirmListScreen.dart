@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
@@ -50,6 +51,20 @@ class _AllAdvanceFundConfirmListScreenState extends State<AllAdvanceFundConfirmL
   void viewAllProjects() async {
     try {
       _initialProjects = await ApiService.fetchAdminAdvanceFundConfirmList();
+      if (_initialProjects[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });

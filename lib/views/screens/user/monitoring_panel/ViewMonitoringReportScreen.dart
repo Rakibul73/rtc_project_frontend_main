@@ -54,7 +54,9 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }
@@ -1222,7 +1224,6 @@ class _ViewMonitoringReportScreenState extends State<ViewMonitoringReportScreen>
                 ),
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(

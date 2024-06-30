@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rtc_project_fronend/api_service.dart';
+import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/generated/l10n.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
@@ -297,7 +299,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           desc: "Token expired. Please login again.",
           width: kDialogWidth,
           btnOkText: 'OK',
-          btnOkOnPress: () {},
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
         );
         dialog.show();
       }

@@ -92,6 +92,20 @@ class _AllFundRequestQueueListScreenState extends State<AllFundRequestQueueListS
                 },
               );
               dialog.show();
+            } else if (result['statuscode'] == 401) {
+              // Handle token expiration
+              final dialog = AwesomeDialog(
+                context: context,
+                dialogType: DialogType.error,
+                desc: "Token expired. Please login again.",
+                width: kDialogWidth,
+                btnOkText: 'OK',
+                btnOkOnPress: () {
+                  GoRouter.of(context).go(RouteUri.logout);
+                },
+              );
+
+              dialog.show();
             }
           },
           btnCancelText: 'Cancel',

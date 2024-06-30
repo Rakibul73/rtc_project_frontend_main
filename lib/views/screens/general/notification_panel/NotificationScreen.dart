@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/app_router.dart';
@@ -32,6 +33,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void viewAllSelfNotification() async {
     try {
       _initialSelfNotification = await ApiService.fetchMyNotifications();
+      if (_initialSelfNotification[0]['statuscode'] == 401) {
+        // ignore: use_build_context_synchronously
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialSelfNotification; // Update the self notifications list with fetched data
       });

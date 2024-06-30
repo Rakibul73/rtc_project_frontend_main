@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:rtc_project_fronend/api_service.dart';
+import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_button_theme.dart';
 import 'package:rtc_project_fronend/theme/theme_extensions/app_color_scheme.dart';
@@ -442,6 +444,39 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
   void initState() {
     super.initState();
     _usersFuture = ApiService.getAllUsersExceptStudents();
+    _usersFuture.then((users) {
+      if (users.isNotEmpty) {
+        bool allFieldsAre401 = users.every((user) =>
+            user.userId == 401 &&
+            user.username == "401" &&
+            user.firstName == "401" &&
+            user.lastName == "401" &&
+            user.signatureLocation == "401" &&
+            user.sealLocation == "401" &&
+            user.profilePicLocation == "401");
+
+        if (allFieldsAre401) {
+          // All fields are 401
+          print("User ID and all fields are 401");
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
+          );
+
+          dialog.show();
+        }
+      }
+    }).catchError((error) {
+      // Handle any errors that occur during the API call
+      print('Error: $error');
+    });
+
     _studentUsersFuture = ApiService.getOnlyStudentUser();
   }
 

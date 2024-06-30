@@ -62,7 +62,9 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }

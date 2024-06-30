@@ -2,7 +2,9 @@
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rtc_project_fronend/api_service.dart';
+import 'package:rtc_project_fronend/app_router.dart';
 import 'package:rtc_project_fronend/constants/dimens.dart';
 import 'package:rtc_project_fronend/constants/values.dart';
 import 'package:rtc_project_fronend/generated/l10n.dart';
@@ -62,7 +64,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         desc: "Token expired. Please login again.",
         width: kDialogWidth,
         btnOkText: 'OK',
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
       );
 
       dialog.show();

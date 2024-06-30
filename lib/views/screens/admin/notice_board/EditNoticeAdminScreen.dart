@@ -135,6 +135,20 @@ class _EditNoticeAdminScreenState extends State<EditNoticeAdminScreen> {
         final noticeDetails = await ApiService.fetchANotice(
           noticeID,
         );
+        if (noticeDetails[0]['statuscode'] == 401) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
+          );
+
+          dialog.show();
+        }
 
         print(noticeDetails);
 

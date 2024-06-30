@@ -58,7 +58,9 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }
@@ -199,13 +201,12 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
             // Handle success
             print('Feedback submitted successfully');
             int feedbackId = responseBody['feedback_id'];
-            final zzzz = await generateMonitoringReportWithFeedbackPDF(
-                _formData, context, initialProjectBudgetOriginal, initialProjectBudget, initialProjectGanttsOriginal, initialProjectGantts, feedbackId);
+            final zzzz =
+                await generateMonitoringReportWithFeedbackPDF(_formData, context, initialProjectBudgetOriginal, initialProjectBudget, initialProjectGanttsOriginal, initialProjectGantts, feedbackId);
             print("PDF saved in");
             Uint8List zzzzz = await zzzz;
             print("cccccccccc");
-            final responseBodyuploadPdfFile = await ApiService.uploadPdfFile(
-                "monitoring_report_feedback", "MonitoringFeedbackID_${feedbackId}_PI_Name_${_formData.piName}.pdf", zzzzz, feedbackId);
+            final responseBodyuploadPdfFile = await ApiService.uploadPdfFile("monitoring_report_feedback", "MonitoringFeedbackID_${feedbackId}_PI_Name_${_formData.piName}.pdf", zzzzz, feedbackId);
             print("cccccccccc");
 
             final dialog = AwesomeDialog(

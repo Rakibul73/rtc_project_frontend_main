@@ -115,6 +115,20 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
         final feedbackDetails = await ApiService.fetchAllFeedbackForSpecificMonitoringReport(
           monitoringReportID,
         );
+        if (feedbackDetails[0]['statuscode'] == 401) {
+          final dialog = AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            desc: "Token expired. Please login again.",
+            width: kDialogWidth,
+            btnOkText: 'OK',
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
+          );
+
+          dialog.show();
+        }
 
         if (feedbackDetails.isNotEmpty) {
           _formData.projectID = feedbackDetails[0]['ProjectID'].toString();

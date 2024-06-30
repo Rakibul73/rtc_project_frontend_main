@@ -52,7 +52,9 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
         desc: "Token expired. Please login again.",
         width: kDialogWidth,
         btnOkText: 'OK',
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
       );
 
       dialog.show();
@@ -209,7 +211,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
                           iconColor: Colors.black12,
                           width: summaryCardWidth,
                         ),
-                        
+
                         // SummaryCard(
                         //   title: "Total Students",
                         //   value: snapshot.data!['total_student'].toString(),

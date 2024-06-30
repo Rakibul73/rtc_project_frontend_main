@@ -23,7 +23,6 @@ class ProjectDashboardScreen extends StatefulWidget {
 class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
   final _dataTableHorizontalScrollController = ScrollController();
   late Future<Map<String, dynamic>> _summaryDataFuture;
-  
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getSelfProjectDashboard();
@@ -58,7 +57,9 @@ class _ProjectDashboardScreenState extends State<ProjectDashboardScreen> {
         desc: "Token expired. Please login again.",
         width: kDialogWidth,
         btnOkText: 'OK',
-        btnOkOnPress: () {},
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
       );
 
       dialog.show();

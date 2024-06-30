@@ -32,7 +32,6 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
   final List<Widget> budgetsummaryfields = [];
   Future<bool>? _future;
 
-
   Future<bool> _getDataAsync() async {
     print('notificationID: ${widget.notificationID}');
     if (widget.notificationID.isNotEmpty) {
@@ -53,7 +52,9 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }
@@ -71,15 +72,11 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
         print("receiverUserID: ${_formData.receiverUserID}");
         print("senderUserID: ${_formData.senderUserID}");
         print("timestamp: ${_formData.timestamp}");
-        
-
-        
       });
     }
 
     return true;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +253,6 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
               child: Card(
@@ -370,5 +366,4 @@ class FormData {
   String message = '';
   String timestamp = '';
   String isRead = '';
-
 }

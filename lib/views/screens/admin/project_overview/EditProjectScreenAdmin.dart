@@ -188,7 +188,9 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
             desc: "Token expired. Please login again.",
             width: kDialogWidth,
             btnOkText: 'OK',
-            btnOkOnPress: () {},
+            btnOkOnPress: () {
+              GoRouter.of(context).go(RouteUri.logout);
+            },
           );
           dialog.show();
         }

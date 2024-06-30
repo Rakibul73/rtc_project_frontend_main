@@ -41,6 +41,20 @@ class _ViewMonitoringHistoryScreenState extends State<ViewMonitoringHistoryScree
   void viewAllMonitoringHistoryForSingleProject(int projectID) async {
     try {
       _initialProjects = await ApiService.fetchMonitoringHistoryForSingleProject(projectID);
+      if (_initialProjects[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialProjects; // Update the  list with fetched data
       });
@@ -83,6 +97,20 @@ class _ViewMonitoringHistoryScreenState extends State<ViewMonitoringHistoryScree
 
   Future<String> getProjectTitle(int projectID) async {
     final projectTitle = await ApiService.getProjectTitle(projectID);
+    if (projectTitle == "401") {
+      final dialog = AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        desc: "Token expired. Please login again.",
+        width: kDialogWidth,
+        btnOkText: 'OK',
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
+      );
+
+      dialog.show();
+    }
     return projectTitle;
   }
 

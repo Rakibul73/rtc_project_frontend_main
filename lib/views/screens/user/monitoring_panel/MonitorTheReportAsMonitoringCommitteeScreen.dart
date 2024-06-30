@@ -54,6 +54,20 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
   void viewAllProjectHaveToMonitorList() async {
     try {
       _initialProjectHaveToGiveFeedbackList = await ApiService.fetchAllProjectHaveToMonitorList();
+      if (_initialProjectHaveToGiveFeedbackList[0]['statuscode'] == 401) {
+        final dialog = AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          desc: "Token expired. Please login again.",
+          width: kDialogWidth,
+          btnOkText: 'OK',
+          btnOkOnPress: () {
+            GoRouter.of(context).go(RouteUri.logout);
+          },
+        );
+
+        dialog.show();
+      }
       setState(() {
         _dataSource.data = _initialProjectHaveToGiveFeedbackList;
       });
