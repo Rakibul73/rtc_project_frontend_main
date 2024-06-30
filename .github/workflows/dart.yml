@@ -54,6 +54,9 @@ jobs:
 
       - name: List files in build/web/assets
         run: ls -R build/web/assets
+   
+      - name: Copying last commit msg from Rakibul73/rtc_project_frontend
+        run: last_commit_message=$(git log -1 --pretty=%B)
 
       - name: Checkout target repository
         uses: actions/checkout@v2
@@ -69,7 +72,6 @@ jobs:
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          last_commit_message=$(git log -1 --pretty=%B)
           git add .
           git commit -m "Updated build for - $last_commit_message"
           git push origin main  # Change this to the branch you want to push to
