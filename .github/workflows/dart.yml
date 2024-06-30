@@ -69,12 +69,13 @@ jobs:
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          last_commit_message=$(git log -1 --pretty=%B)
           git add .
-          git commit -m "Update build/web folder"
+          git commit -m "Updated build for - $last_commit_message"
           git push origin main  # Change this to the branch you want to push to
 
-      # - name: Clean up old builds
-      #   run: rm -rf build/web
+      - name: Clean up old builds
+        run: rm -rf build/web
 
 
       # ======================================
