@@ -55,6 +55,24 @@ jobs:
       - name: List files in build/web/assets
         run: ls -R build/web/assets
 
+      - name: Checkout target repository
+        uses: actions/checkout@v2
+        with:
+          repository: Rakibul73/testing_github_action  # Replace with your target repository
+          token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+          path: target-repo
+
+      - name: Sync build folder with target repository
+        run: |
+          rm -rf target-repo/*
+          cp -r build/web/* target-repo/
+          cd target-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update build/web folder"
+          git push origin main  # Change this to the branch you want to push to
+
       # - name: Clean up old builds
       #   run: rm -rf build/web
 
