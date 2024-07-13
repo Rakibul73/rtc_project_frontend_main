@@ -53,10 +53,8 @@ class _ForgotPassState extends State<ForgotPass> {
           onSuccess.call();
         } else if (responseCode == 404) {
           onError.call('Email not found');
-          print("ssssssssssssssssssssssssssssss");
         } else {
           onError.call('Something went wrong');
-          print("ssssssssssssssssssssssssssssss");
         }
 
         setState(() => _isFormLoading = false);
@@ -78,7 +76,6 @@ class _ForgotPassState extends State<ForgotPass> {
     dialog.show();
 
     // Navigator.pushReplacementNamed(context, '/dashboard');
-    print("GoRouter.of(context).go(RouteUri.login);");
   }
 
   void _onLoginError(BuildContext context, String message) {
@@ -122,7 +119,8 @@ class _ForgotPassState extends State<ForgotPass> {
                     Text(
                       "PSTU RTC Project Management",
                       style: themeData.textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 22.0,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 22.0,
                       ),
                     ),
                     const SizedBox(height: 5),

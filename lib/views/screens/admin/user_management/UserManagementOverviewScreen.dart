@@ -23,8 +23,7 @@ class _UserManagementOverviewScreenState extends State<UserManagementOverviewScr
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getUserManagementOverview();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final totalTeacher = await data['total_teacher'];

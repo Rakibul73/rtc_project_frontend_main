@@ -23,8 +23,7 @@ class _FundMonitoringPanelScreenState extends State<FundMonitoringPanelScreen> {
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getAdminFundDashboard();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final fundConfirmationRecieved = await data['fund_confirmation_recieved'];

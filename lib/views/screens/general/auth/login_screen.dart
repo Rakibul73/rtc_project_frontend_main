@@ -69,11 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
           roleID: roleId,
         );
         if (response['statuscode'] != 200) {
-          print('Login failed: ${response['message']}');
           onError.call('Invalid username or password or role.');
         } else {
           // User logged in successfully
-          print('User logged in successfully');
+
           await storage.write(key: 'jwt_token', value: (response['access_token']).toString());
           await storage.write(key: 'user_id', value: (response['user_id']).toString());
           await storage.write(key: 'statuscode', value: response['statuscode'].toString());
@@ -105,7 +104,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
 
           onSuccess.call();
-          print("ssssssssssssssssssssssssssssss");
         }
 
         setState(() => _isFormLoading = false);
@@ -116,11 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onLoginSuccess(BuildContext context, int roleId) {
     if (roleId == 1) {
       GoRouter.of(context).go(RouteUri.home);
-      print("GoRouter.of(context).go(RouteUri.home);");
-    }
-    else {
+    } else {
       GoRouter.of(context).go(RouteUri.projectdashboard);
-      print("GoRouter.of(context).go(RouteUri.projectdashboard);");
     }
   }
 

@@ -33,9 +33,7 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
   Future<bool>? _future;
 
   Future<bool> _getDataAsync() async {
-    print('notificationID: ${widget.notificationID}');
     if (widget.notificationID.isNotEmpty) {
-      print('notificationID: ${widget.notificationID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.notificationID = widget.notificationID;
 
@@ -65,13 +63,6 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
         _formData.receiverUserID = userDetails['Notification']['ReceiverUserID'].toString();
         _formData.senderUserID = userDetails['Notification']['SenderUserID'].toString();
         _formData.timestamp = userDetails['Notification']['Timestamp'];
-
-        print("notificationID: ${_formData.notificationID}");
-        print("isRead: ${_formData.isRead}");
-        print("message: ${_formData.message}");
-        print("receiverUserID: ${_formData.receiverUserID}");
-        print("senderUserID: ${_formData.senderUserID}");
-        print("timestamp: ${_formData.timestamp}");
       });
     }
 

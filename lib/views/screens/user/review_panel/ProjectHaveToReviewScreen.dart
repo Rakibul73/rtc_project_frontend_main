@@ -88,7 +88,6 @@ class _ProjectHaveToReviewScreenState extends State<ProjectHaveToReviewScreen> {
         _dataSource.data = _initialProjectHaveToReviewList;
       });
     } catch (e) {
-      print('Failed to fetch Project Have To Review List: $e');
       // Handle error if needed
     }
   }

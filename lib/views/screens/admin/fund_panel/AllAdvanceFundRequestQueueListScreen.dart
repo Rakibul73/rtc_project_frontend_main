@@ -70,7 +70,6 @@ class _AllAdvanceFundRequestQueueListScreenState extends State<AllAdvanceFundReq
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch projects: $e');
       // Handle error if needed
     }
   }

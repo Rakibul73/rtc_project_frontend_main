@@ -2728,7 +2728,7 @@ Future<void> generateProjectProposalPDFAdmin(admin.FormData formData, BuildConte
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
+
   // html.window.open(url, '_blank');
 }
 
@@ -5434,7 +5434,6 @@ Future<void> generateProjectProposalPDFUser(user.FormData formData, BuildContext
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
 }
 
 Future<void> generateRequestForhonorariumPDF(viewfund.FormData formData, BuildContext context, Uint8List? piSignatureFileBytes, Uint8List? piSealFileBytes, Uint8List? chairmanSignatureFileBytes,
@@ -6150,7 +6149,6 @@ Future<void> generateRequestForhonorariumPDF(viewfund.FormData formData, BuildCo
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
 }
 
 Future<void> generateRequestForAdvancePDF(viewadvancefund.FormData formData, BuildContext context, Uint8List? piSignatureFileBytes, Uint8List? piSealFileBytes, Uint8List? chairmanSignatureFileBytes,
@@ -6812,7 +6810,6 @@ Future<void> generateRequestForAdvancePDF(viewadvancefund.FormData formData, Bui
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
 }
 
 Future<void> viewDOC(Uint8List noticeFileBytes, String datePublished) async {
@@ -6951,7 +6948,6 @@ Future<Uint8List> generateMonitoringReportWithFeedbackPDF(usermonitoringreportwi
   ]);
 
   widgets.add(zzz);
-  print("               ok                   ");
 
   final zzz1 = pw.Padding(
     padding: const pw.EdgeInsets.only(top: kDefaultPadding * 0.5, left: kDefaultPadding * 4.0),
@@ -7197,8 +7193,6 @@ Future<Uint8List> generateMonitoringReportWithFeedbackPDF(usermonitoringreportwi
       ]));
 
   widgets.add(activityplan);
-
-  print("               ok    activity               ");
 
   final zzz4 = pw.Padding(
     padding: const pw.EdgeInsets.only(top: kDefaultPadding * 1.0, left: kDefaultPadding * 4.0),
@@ -7678,7 +7672,7 @@ Future<Uint8List> generateMonitoringReportWithFeedbackPDF(usermonitoringreportwi
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
+
   return bytes;
   // Save the PDF
   // final output = await getTemporaryDirectory();
@@ -8507,7 +8501,7 @@ Future<Uint8List> generateMonitoringReportPDF(usermonitoringreport.FormData form
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
+
   return bytes;
   // Save the PDF
   // final output = await getTemporaryDirectory();
@@ -8536,10 +8530,8 @@ Future<void> generateProfilePDF(
   final ttfSymbola = pw.Font.ttf(fontSymbola);
   final ttfSutonnyMJBold = pw.Font.ttf(fontSutonnyMJBold);
 
-  print(" ============ unicode to Bijoy convertion   ============");
   final fullNameBangla = unicodeToBijoy(formData.fullNameBangla);
   final positionBangla = unicodeToBijoy(formData.positionBangla);
-  print(" ============ unicode to Bijoy convertion  END ============");
 
   final appLogo = await rootBundle.load("images/app_logo_2.png");
   final appLogoImageBytes = appLogo.buffer.asUint8List();
@@ -9902,6 +9894,6 @@ Future<void> generateProfilePDF(
   anchor.click();
   html.document.body?.children.remove(anchor);
   html.Url.revokeObjectUrl(url);
-  print("PDF generated and saved successfully!");
+
   // html.window.open(url, '_blank');
 }

@@ -112,19 +112,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.profilePicLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('profile-pic/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('Profile Pic File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No profile pic files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadSignatureFiles() async {
@@ -134,19 +130,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.signatureLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('Signature File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No Signature files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadSealFiles() async {
@@ -156,19 +148,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.sealLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('Seal File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No Seal files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadNidFiles() async {
@@ -178,19 +166,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.nidLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('nid/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('Nid File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload Nid files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No Nid files selected');
-    }
+    } else {}
   }
 
   // Function to map role name to role ID
@@ -231,9 +215,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('userID: ${widget.userID}');
     if (widget.userID.isNotEmpty) {
-      print('userID: ${widget.userID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.userID = widget.userID;
 
@@ -256,8 +238,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           );
           dialog.show();
         }
-
-        print(userDetails['user']);
 
         _formData.userID = userDetails['user']['UserID'].toString();
         _formData.rolename = getRoleName(userDetails['user']['RoleID']);
@@ -371,7 +351,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           final responseBody = await ApiService.updateUserDetailsAdminMode(int.parse(widget.userID), updatedUserData);
           if (responseBody['statuscode'] == 200) {
             // Handle success
-            print('User updated successfully');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -384,7 +364,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -396,7 +376,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             dialog.show();
           } else {
             // Handle error
-            print('Error updatin user: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -409,7 +389,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           }
         } catch (e) {
           // Handle error
-          print('Error updating user: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

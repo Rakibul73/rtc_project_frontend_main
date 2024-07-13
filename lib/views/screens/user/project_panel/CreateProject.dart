@@ -56,7 +56,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       'formDatas': ganttFormDataList.map((data) => data.toJson()).toList(),
     };
     ganttFormData = consolidatedData;
-    print(ganttFormData);
   }
 
   void _saveBudgetFormData() {
@@ -81,7 +80,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       'formDatas': budgetFormDataList.map((data) => data.toJson()).toList(),
     };
     budgetFormData = consolidatedData;
-    print(budgetFormData);
   }
 
   List<PlatformFile>? _methodologyFiles; // Change to List<PlatformFile>?
@@ -143,20 +141,16 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         methodologyFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('methodology/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
         // Handle success
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No methodology files selected');
-    }
+    } else {}
   }
 
   // Future<void> _uploadCreatorUserSignatureFiles() async {
@@ -210,19 +204,15 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         chairmanOfDepartmentSealFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No seal files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadchairmanOfDepartmentSignatureFiles() async {
@@ -232,28 +222,21 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         chairmanOfDepartmentSignatureFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
       // } catch (e) {
       //   print('Failed to upload seal files: $e');
       //   // Handle error
       // }
-    } else {
-      print('No signature files selected');
-    }
+    } else {}
   }
 
   Future<void> _doSave() async {
     AppFocusHelper.instance.requestUnfocus();
 
-    print('do save start');
-    print(_formKey.currentState?.saveAndValidate());
     // print(_formKey.currentState?.value.toString());
-    print('do save start');
 
     if (_formKey.currentState?.saveAndValidate() == true) {
       _formKey.currentState!.save();
@@ -319,22 +302,14 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
         'ChairmanOfDepartmentSignatureDate': _formData.dateOfChairmanOfTheDepartment,
       };
 
-      print('0000000000000000000000000000');
-      print(_formData.rtcCode);
-      print(createProjectData);
-      print('0000000000000000000000000000');
       // here should make a pi request to create project with the createProjectData
       final responseBody = await ApiService.createProject(createProjectData);
-
-      print('createproject.dart ----- responseBody: $responseBody');
-      print('createproject.dart ----- project_id: ${responseBody['project_id']}');
 
       final responseBodyGantt = await ApiService.createProjectGantt(responseBody['project_id'], ganttFormData);
 
       final responseBodyBudget = await ApiService.createprojectBudget(responseBody['project_id'], budgetFormData);
 
       if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 201 && responseBodyBudget['statuscode'] == 201) {
-        print('do save');
         final dialog = AwesomeDialog(
           context: context,
           dialogType: DialogType.success,
@@ -365,7 +340,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       //     btnOkOnPress: () {},
       //   );
       //   dialog.show();
-      print("Input fields are not valid or empty.");
     }
   }
 
@@ -457,7 +431,7 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
 
         if (allFieldsAre401) {
           // All fields are 401
-          print("User ID and all fields are 401");
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
@@ -474,7 +448,6 @@ class _CreateProjectScreenState extends State<CreateProjectScreen> {
       }
     }).catchError((error) {
       // Handle any errors that occur during the API call
-      print('Error: $error');
     });
 
     _studentUsersFuture = ApiService.getOnlyStudentUser();

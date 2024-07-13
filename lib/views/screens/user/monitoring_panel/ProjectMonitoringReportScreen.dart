@@ -23,8 +23,7 @@ class _ProjectMonitoringReportScreenState extends State<ProjectMonitoringReportS
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getMyMonitoringDashboard();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final feedbackFromCommittee = await data['feedback_from_committee'];

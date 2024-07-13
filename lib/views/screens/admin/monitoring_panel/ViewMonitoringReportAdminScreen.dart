@@ -67,7 +67,7 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
           final responseBody = await ApiService.setMonitoringCommittee(committee1, committee2, committee3);
           if (responseBody['statuscode'] == 201) {
             // Handle success
-            print('Monitoring Committee set successfully');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -79,7 +79,7 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -91,7 +91,7 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
             dialog.show();
           } else {
             // Handle error
-            print('Error seting monitoring committee: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -104,7 +104,7 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
           }
         } catch (e) {
           // Handle error
-          print('Error seting monitoring committee: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
@@ -149,7 +149,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
         _formData.projectID = projectMonitoringReportDetails['monitoring_report_data']['ProjectID'].toString();
 
         _formData.reportDate = projectMonitoringReportDetails['monitoring_report_data']['ReportDate'];
-        print("=========deb=========");
 
         _formData.reportFileLocation = projectMonitoringReportDetails['monitoring_report_data']['ReportFileLocation'] ?? '';
 
@@ -174,7 +173,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final ganttDetails = await ApiService.fetchAllGanttOfAProjectHistory(
           monitoringReportID,
@@ -193,8 +191,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
         final userDetails = await ApiService.getSpecificProjectCreatorUserIDOnly(
           int.parse(_formData.projectID),
         );
-        print("==========**S      T      A      R**===========");
-        print(userDetails);
 
         _formData.piUserID = userDetails['project']['CreatorUserID'].toString();
 
@@ -205,8 +201,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
         _formData.piInstituteName = piDetailForMonitoringReport['user']['InstituteName'] ?? '';
         _formData.piInstituteAddress = piDetailForMonitoringReport['user']['InstituteLocation'] ?? '';
         _formData.piName = piDetailForMonitoringReport['user']['FirstName'] + ' ' + piDetailForMonitoringReport['user']['LastName'] ?? '';
-
-        print("==========**E      N      D*****===========");
 
         final committeeUserId = await ApiService.getMonitoringCommitteeUserId(monitoringReportID);
         if (committeeUserId['statuscode'] == 401) {
@@ -221,9 +215,6 @@ class _ViewMonitoringReportAdminScreenState extends State<ViewMonitoringReportAd
           );
           dialog.show();
         }
-
-        print(committeeUserId);
-        print(committeeUserId['committeeuserid'].length);
 
         if (committeeUserId['committeeuserid'].length != 0) {
           _formData.fetchCommitteeUserId1 = committeeUserId['committeeuserid'][0]['MonitoringCommitteeUserID'];

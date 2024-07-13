@@ -68,7 +68,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
         _formData.projectID = projectMonitoringReportDetails['monitoring_report_data']['ProjectID'].toString();
 
         _formData.reportDate = projectMonitoringReportDetails['monitoring_report_data']['ReportDate'];
-        print("=========deb=========");
 
         _formData.reportFileLocation = projectMonitoringReportDetails['monitoring_report_data']['ReportFileLocation'] ?? '';
 
@@ -93,7 +92,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final ganttDetails = await ApiService.fetchAllGanttOfAProjectHistory(
           monitoringReportID,
@@ -112,8 +110,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
         final userDetails = await ApiService.getSpecificProjectCreatorUserIDOnly(
           int.parse(_formData.projectID),
         );
-        print("==========**START**===========");
-        print(userDetails);
 
         _formData.piUserID = userDetails['project']['CreatorUserID'].toString();
 
@@ -125,8 +121,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
         _formData.piInstituteAddress = piDetailForMonitoringReport['user']['InstituteLocation'] ?? '';
         _formData.piName = piDetailForMonitoringReport['user']['FirstName'] + ' ' + piDetailForMonitoringReport['user']['LastName'] ?? '';
 
-        print("==========**END*****===========");
-
         // read user id
         final userId = await storage.read(key: 'user_id');
         int userid = int.parse(userId!);
@@ -135,12 +129,8 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
           'MonitoringCommitteeUserID': userid,
         };
         final fetchSpecificFeedbackDetail = await ApiService.getfeedbackForSpecificCommitteeAndReport(monitoringReportIdAndCommitteeId);
-        print(fetchSpecificFeedbackDetail);
-        print("==========*************===========");
-        print((fetchSpecificFeedbackDetail['feedback']).length);
 
         if (fetchSpecificFeedbackDetail['statuscode'] == 200 && (fetchSpecificFeedbackDetail['feedback']).length != 0) {
-          print("==========**S      T      A      R      T*****===========");
           _formData.projectMonitoringFeedbackID = fetchSpecificFeedbackDetail['feedback'][0]['ProjectMonitoringFeedbackID'].toString();
           _formData.monitoringReportID = fetchSpecificFeedbackDetail['feedback'][0]['ProjectMonitoringReportID'].toString();
           _formData.monitoringCommitteeUserID = fetchSpecificFeedbackDetail['feedback'][0]['MonitoringCommitteeUserID'].toString();
@@ -153,8 +143,6 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
           _formData.piCanViewOrNot = fetchSpecificFeedbackDetail['feedback'][0]['PiCanViewOrNot'].toString();
           initialFeedbackExist = true;
         }
-
-        print("==========**E      N      D*****===========");
       });
     }
 
@@ -177,13 +165,7 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
         // read user id
         final userId = await storage.read(key: 'user_id');
         int userid = int.parse(userId!);
-        print(userid);
-        print(_formData.monitoringReportID);
-        print(_formData.projectID);
-        print(_formData.recommendation);
-        print(_formData.suggestion);
-        print(_formData.observation);
-        print(_formData.endorsement);
+
         try {
           final feedbackData = {
             'ProjectMonitoringReportID': int.parse(_formData.monitoringReportID),
@@ -195,19 +177,18 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
             'Observation': _formData.observation,
             'Endorsement': _formData.endorsement,
           };
-          print(feedbackData);
+
           final responseBody = await ApiService.createFeedbackSpecificMonitoringReport(feedbackData);
           if (responseBody['statuscode'] == 201) {
             // Handle success
-            print('Feedback submitted successfully');
+
             int feedbackId = responseBody['feedback_id'];
             final zzzz =
                 await generateMonitoringReportWithFeedbackPDF(_formData, context, initialProjectBudgetOriginal, initialProjectBudget, initialProjectGanttsOriginal, initialProjectGantts, feedbackId);
-            print("PDF saved in");
+
             Uint8List zzzzz = await zzzz;
-            print("cccccccccc");
+
             final responseBodyuploadPdfFile = await ApiService.uploadPdfFile("monitoring_report_feedback", "MonitoringFeedbackID_${feedbackId}_PI_Name_${_formData.piName}.pdf", zzzzz, feedbackId);
-            print("cccccccccc");
 
             final dialog = AwesomeDialog(
               context: context,
@@ -220,7 +201,7 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -232,7 +213,7 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
             dialog.show();
           } else {
             // Handle error
-            print('Error submitting Feedback: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -245,7 +226,7 @@ class _FeedbackMonitoringReportScreenState extends State<FeedbackMonitoringRepor
           }
         } catch (e) {
           // Handle error
-          print('Error: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

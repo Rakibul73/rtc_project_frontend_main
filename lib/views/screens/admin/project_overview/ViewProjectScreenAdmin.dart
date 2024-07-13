@@ -78,9 +78,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -103,16 +101,6 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
           );
           dialog.show();
         }
-
-        print("_formData.piUserID = ${userDetails['project']['CreatorUserID']}");
-        print("_formData.coPiUserID = ${userDetails['project']['CoPiUserID']}");
-        print("_formData.studentUserID = ${userDetails['project']['StudentUserID']}");
-        print("_formData.piSealLocation = ${userDetails['project']['CreatorUserSealLocation']}");
-        print("_formData.piSignatureLocation = ${userDetails['project']['CreatorUserSignatureLocation']}");
-        print("_formData.chairmanOfDepartmentSealFileLocation = ${userDetails['project']['ChairmanOfDepartmentSealLocation']}");
-        print("_formData.chairmanOfDepartmentSignatureFileLocation = ${userDetails['project']['ChairmanOfDepartmentSignatureLocation']}");
-        print("_formData.ProjectStatus = ${userDetails['project']['ProjectStatus']}");
-        print("_formData.ProjectSoftCopyLocation = ${userDetails['project']['ProjectSoftCopyLocation']}");
 
         _formData.rtcCode = userDetails['project']['CodeByRTC'];
         _formData.dateOfReceived = userDetails['project']['DateRecieved'];
@@ -219,7 +207,6 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
         if (ganttDetails.isNotEmpty) {
           initialProjectGantts = ganttDetails;
         }
-        print("initialProjectGantts: $initialProjectGantts");
 
         final budgetDetails = await ApiService.fetchAllBudgetOfAProject(
           projectId,
@@ -227,7 +214,6 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         // get student user details
         final studentUserDetails = await ApiService.getSpecificUser(
@@ -339,9 +325,6 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
           dialog.show();
         }
 
-        print(reviewerUserId);
-        print(reviewerUserId['revieweruserid'].length);
-
         if (reviewerUserId['revieweruserid'].length != 0) {
           _formData.fetchReviewerUserId1 = reviewerUserId['revieweruserid'][0]['ReviewerUserID'];
           _formData.fetchReviewerUserId2 = reviewerUserId['revieweruserid'][1]['ReviewerUserID'];
@@ -418,7 +401,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
           final responseBody = await ApiService.setReviewer(reviewer1, reviewer2, reviewer3);
           if (responseBody['statuscode'] == 201) {
             // Handle success
-            print('Reviewer set successfully');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -430,7 +413,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -442,7 +425,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
             dialog.show();
           } else {
             // Handle error
-            print('Error seting reviewer: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -455,7 +438,7 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
           }
         } catch (e) {
           // Handle error
-          print('Error seting reviewer: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

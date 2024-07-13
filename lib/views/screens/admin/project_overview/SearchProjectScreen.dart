@@ -90,7 +90,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch projects: $e');
       // Handle error if needed
     }
   }
@@ -98,7 +97,6 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
   Future<void> deletingProject(int projectID) async {
     try {
       final responseBody = await ApiService.deleteProject(projectID);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -110,13 +108,11 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Project deleted successfully');
+
         // Refresh the initial projects list
         viewAllProjects();
       }
-    } catch (e) {
-      print('Failed to delete project: $e');
-    }
+    } catch (e) {}
   }
 
   // function to delete a project with data['ProjectID']

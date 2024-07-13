@@ -78,9 +78,7 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -103,16 +101,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
           );
           dialog.show();
         }
-
-        print("_formData.piUserID = ${userDetails['project']['CreatorUserID']}");
-        print("_formData.coPiUserID = ${userDetails['project']['CoPiUserID']}");
-        print("_formData.studentUserID = ${userDetails['project']['StudentUserID']}");
-        print("_formData.piSealLocation = ${userDetails['project']['CreatorUserSealLocation']}");
-        print("_formData.piSignatureLocation = ${userDetails['project']['CreatorUserSignatureLocation']}");
-        print("_formData.chairmanOfDepartmentSealFileLocation = ${userDetails['project']['ChairmanOfDepartmentSealLocation']}");
-        print("_formData.chairmanOfDepartmentSignatureFileLocation = ${userDetails['project']['ChairmanOfDepartmentSignatureLocation']}");
-        print("_formData.ProjectStatus = ${userDetails['project']['ProjectStatus']}");
-        print("_formData.ProjectSoftCopyLocation = ${userDetails['project']['ProjectSoftCopyLocation']}");
 
         _formData.rtcCode = userDetails['project']['CodeByRTC'];
         _formData.dateOfReceived = userDetails['project']['DateRecieved'];
@@ -219,7 +207,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         if (ganttDetails.isNotEmpty) {
           initialProjectGantts = ganttDetails;
         }
-        print("initialProjectGantts: $initialProjectGantts");
 
         final budgetDetails = await ApiService.fetchAllBudgetOfAProject(
           projectId,
@@ -227,7 +214,6 @@ class _ViewProjectScreenState extends State<ViewProjectScreen> {
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         // get student user details
         final studentUserDetails = await ApiService.getSpecificUser(

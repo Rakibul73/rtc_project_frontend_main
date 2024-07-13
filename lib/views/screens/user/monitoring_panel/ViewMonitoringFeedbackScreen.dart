@@ -40,9 +40,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
   Future<bool>? _future;
 
   Future<bool> _getDataAsync() async {
-    print('projectMonitoringFeedbackID: ${widget.projectMonitoringFeedbackID}');
     if (widget.projectMonitoringFeedbackID.isNotEmpty) {
-      print('projectMonitoringFeedbackID: ${widget.projectMonitoringFeedbackID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectMonitoringFeedbackID = widget.projectMonitoringFeedbackID;
 
@@ -66,8 +64,6 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
           dialog.show();
         }
 
-        print(projectDetailForFundSelf['project']);
-
         _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
         _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
 
@@ -84,7 +80,6 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final ganttDetails = await ApiService.fetchAllGanttOfAProject(
           int.parse(_formData.projectID),
@@ -110,8 +105,6 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
         _formData.piInstituteName = userDetailsForFundApply['user']['InstituteName'] ?? '';
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
-
-        print("==========**E      N      D*****===========");
       });
     }
 
@@ -142,7 +135,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
             'ProjectID': int.parse(_formData.projectID),
             'ReportDate': datePublished,
           };
-          print(monitoringRequestData);
+
           final responseBody = await ApiService.createMonitoringRequestForSpecificProject(monitoringRequestData);
           int projectMonitoringReportID = 0;
           if (responseBody['statuscode'] == 201) {
@@ -150,7 +143,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
           }
 
           // Iterate through the list of initialProjectGantts and update ganttData
-          print(initialProjectGantts.length);
+
           for (int i = 0; i < initialProjectGantts.length; i++) {
             Map<String, dynamic> ganttData = initialProjectGantts[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -165,16 +158,14 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
               ganttData['StartDate'] = formatter.format(dateRange.start);
               ganttData['EndDate'] = formatter.format(dateRange.end);
             }
-            print('Updated ganttData:');
-            print(ganttData);
+
             ganttFormDataForUpload.add(ganttData);
           }
-          print('ganttFormDataForUpload:');
-          print(ganttFormDataForUpload);
+
           final responseBodyGantt = await ApiService.updateProjectGanttDetailsForMonitoring(ganttFormDataForUpload, projectMonitoringReportID);
 
           // Iterate through the list of initialProjectBudget and update budgetData
-          print(initialProjectBudget.length);
+
           for (int i = 0; i < initialProjectBudget.length; i++) {
             Map<String, dynamic> budgetData = initialProjectBudget[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -187,12 +178,10 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
               budgetData['UnitPrice'] = formState.value['unit_price'];
               budgetData['TotalCost'] = formState.value['total_cost_tk'];
             }
-            print('Updated budgetData:');
-            print(budgetData);
+
             budgetFormDataForUpload.add(budgetData);
           }
-          print('budgetFormDataForUpload:');
-          print(budgetFormDataForUpload);
+
           final responseBodyBudget = await ApiService.updateProjectBudgetDetailsForMonitoring(budgetFormDataForUpload, projectMonitoringReportID);
 
           if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 200 && responseBodyBudget['statuscode'] == 200) {
@@ -208,7 +197,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -220,7 +209,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
             dialog.show();
           } else {
             // Handle error
-            print('Error submitting request: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -233,7 +222,7 @@ class _ViewMonitoringFeedbackScreenState extends State<ViewMonitoringFeedbackScr
           }
         } catch (e) {
           // Handle error
-          print('Error submitting request: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

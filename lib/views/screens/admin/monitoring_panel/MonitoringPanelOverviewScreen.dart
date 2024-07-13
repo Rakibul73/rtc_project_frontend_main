@@ -23,8 +23,7 @@ class _MonitoringPanelOverviewScreenState extends State<MonitoringPanelOverviewS
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getMonitoringPanelOverview();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final committeeGavefeedback = await data['committee_gave_feedback'];

@@ -68,7 +68,6 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
         _dataSource.data = _initialPendingUsers; // Update the pending users list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch pending users: $e');
       // Handle error if needed
     }
   }
@@ -76,7 +75,6 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
   Future<void> approvingPendingUser(int userID, String username) async {
     try {
       final responseBody = await ApiService.approvePendingUser(userID, username);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -88,19 +86,16 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Pending User approved successfully');
+
         // Refresh the initial pending users list
         viewAllPendingUsers();
       }
-    } catch (e) {
-      print('Failed to approve pending user: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> deletingProject(int userID) async {
     try {
       final responseBody = await ApiService.deletePendingUser(userID);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -112,13 +107,11 @@ class _PendingUsersScreenState extends State<PendingUsersScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Pending User deleted successfully');
+
         // Refresh the initial pending users list
         viewAllPendingUsers();
       }
-    } catch (e) {
-      print('Failed to delete pending user: $e');
-    }
+    } catch (e) {}
   }
 
   // function to delete a project with data['ProjectID']

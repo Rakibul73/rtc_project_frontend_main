@@ -35,7 +35,6 @@ class _ViewNoticeScreenState extends State<ViewNoticeScreen> {
   Future<bool>? _future;
 
   void _showNoticeFilePicker() async {
-    print('_showNoticeFilePicker: ');
     viewDOC(_noticeFileBytes!, _formData.datePublished);
   }
 
@@ -44,9 +43,7 @@ class _ViewNoticeScreenState extends State<ViewNoticeScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('noticeID: ${widget.noticeID}');
     if (widget.noticeID.isNotEmpty) {
-      print('noticeID: ${widget.noticeID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.noticeID = widget.noticeID;
 
@@ -68,8 +65,6 @@ class _ViewNoticeScreenState extends State<ViewNoticeScreen> {
 
           dialog.show();
         }
-
-        print(noticeDetails);
 
         if (noticeDetails.isNotEmpty) {
           _formData.noticeID = noticeDetails[0]['NoticeID'].toString();

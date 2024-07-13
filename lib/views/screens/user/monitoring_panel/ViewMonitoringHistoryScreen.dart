@@ -59,7 +59,6 @@ class _ViewMonitoringHistoryScreenState extends State<ViewMonitoringHistoryScree
         _dataSource.data = _initialProjects; // Update the  list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch projects: $e');
       // Handle error if needed
     }
   }

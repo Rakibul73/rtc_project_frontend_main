@@ -23,8 +23,7 @@ class _ProjectFundManagementScreenState extends State<ProjectFundManagementScree
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getMyFundDashboard();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final recievedHonorariumFund = await data['recieved_honorarium_fund'];

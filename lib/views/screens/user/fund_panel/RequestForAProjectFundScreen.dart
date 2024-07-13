@@ -35,9 +35,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
   Future<bool>? _future;
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -64,8 +62,6 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
         final userId = await storage.read(key: 'user_id');
         int userid = int.parse(userId!);
 
-        print(projectDetailForFundSelf['project']);
-
         _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
         _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
         _formData.totalBudget = projectDetailForFundSelf['project']['TotalBudgetOfResearchProposalTK'].toString();
@@ -83,7 +79,6 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final userDetailsForFundApply = await ApiService.getSpecificUserDetailsForFundApply(
           _formData.piUserID,
@@ -95,8 +90,6 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
         _formData.piInstituteName = userDetailsForFundApply['user']['InstituteName'] ?? '';
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
-
-        print("==========**E      N      D*****===========");
       });
     }
 
@@ -131,7 +124,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
             'RequestForFundDone': 1,
             'FundRecievedDone': 0,
           };
-          print(fundRequestData);
+
           final responseBody = await ApiService.createFundRequestForSpecificProject(fundRequestData);
           if (responseBody['statuscode'] == 201) {
             // Handle success
@@ -146,7 +139,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -158,7 +151,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
             dialog.show();
           } else {
             // Handle error
-            print('Error submitting request: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -171,7 +164,7 @@ class _RequestForAProjectFundScreenState extends State<RequestForAProjectFundScr
           }
         } catch (e) {
           // Handle error
-          print('Error submitting request: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

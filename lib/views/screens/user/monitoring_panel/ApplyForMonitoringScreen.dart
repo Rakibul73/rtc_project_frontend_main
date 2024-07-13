@@ -43,9 +43,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
   Future<bool>? _future;
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -69,8 +67,6 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
           dialog.show();
         }
 
-        print(projectDetailForFundSelf['project']);
-
         _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
         _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
 
@@ -87,7 +83,6 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final ganttDetails = await ApiService.fetchAllGanttOfAProject(
           int.parse(_formData.projectID),
@@ -113,8 +108,6 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
         _formData.piInstituteName = userDetailsForFundApply['user']['InstituteName'] ?? '';
         _formData.piInstituteAddress = userDetailsForFundApply['user']['InstituteLocation'] ?? '';
         _formData.piName = userDetailsForFundApply['user']['FirstName'] + ' ' + userDetailsForFundApply['user']['LastName'] ?? '';
-
-        print("==========**E      N      D*****===========");
       });
     }
 
@@ -145,7 +138,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
             'ProjectID': int.parse(_formData.projectID),
             'ReportDate': datePublished,
           };
-          print(monitoringRequestData);
+
           final responseBody = await ApiService.createMonitoringRequestForSpecificProject(monitoringRequestData);
           int projectMonitoringReportID = 0;
           if (responseBody['statuscode'] == 201) {
@@ -153,7 +146,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
           }
 
           // Iterate through the list of initialProjectGantts and update ganttData
-          print(initialProjectGantts.length);
+
           for (int i = 0; i < initialProjectGantts.length; i++) {
             Map<String, dynamic> ganttData = initialProjectGantts[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -168,16 +161,14 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
               ganttData['StartDate'] = formatter.format(dateRange.start);
               ganttData['EndDate'] = formatter.format(dateRange.end);
             }
-            print('Updated ganttData:');
-            print(ganttData);
+
             ganttFormDataForUpload.add(ganttData);
           }
-          print('ganttFormDataForUpload:');
-          print(ganttFormDataForUpload);
+
           final responseBodyGantt = await ApiService.updateProjectGanttDetailsForMonitoring(ganttFormDataForUpload, projectMonitoringReportID);
 
           // Iterate through the list of initialProjectBudget and update budgetData
-          print(initialProjectBudget.length);
+
           for (int i = 0; i < initialProjectBudget.length; i++) {
             Map<String, dynamic> budgetData = initialProjectBudget[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -190,24 +181,19 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
               budgetData['UnitPrice'] = formState.value['unit_price'];
               budgetData['TotalCost'] = formState.value['total_cost_tk'];
             }
-            print('Updated budgetData:');
-            print(budgetData);
+
             budgetFormDataForUpload.add(budgetData);
           }
-          print('budgetFormDataForUpload:');
-          print(budgetFormDataForUpload);
+
           final responseBodyBudget = await ApiService.updateProjectBudgetDetailsForMonitoring(budgetFormDataForUpload, projectMonitoringReportID);
 
           final zzzz =
               generateMonitoringReportPDF(_formData, context, initialProjectBudgetOriginal, budgetFormDataForUpload, initialProjectGanttsOriginal, ganttFormDataForUpload, projectMonitoringReportID);
-          print("PDF saved in");
 
           Uint8List zzzzz = await zzzz;
 
-          print("cccccccccc");
           final responseBodyuploadPdfFile =
               await ApiService.uploadPdfFile("monitoring_report", "MonitoringReportID_${projectMonitoringReportID}_PI_Name_${_formData.piName}.pdf", zzzzz, projectMonitoringReportID);
-          print("cccccccccc");
 
           if (responseBody['statuscode'] == 201 && responseBodyGantt['statuscode'] == 200 && responseBodyBudget['statuscode'] == 200) {
             // Handle successrr
@@ -222,7 +208,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -234,7 +220,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
             dialog.show();
           } else {
             // Handle error
-            print('Error submitting request: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -247,7 +233,7 @@ class _ApplyForMonitoringScreenState extends State<ApplyForMonitoringScreen> {
           }
         } catch (e) {
           // Handle error
-          print('Error submitting request: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

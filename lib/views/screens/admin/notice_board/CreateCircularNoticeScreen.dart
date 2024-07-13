@@ -42,23 +42,15 @@ class _CreateCircularNoticeScreenState extends State<CreateCircularNoticeScreen>
         final fileBytes = file.bytes!;
         final fileName = file.name;
         noticeFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('notice/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
-    } else {
-      print('No notice files selected');
-    }
+    } else {}
   }
 
   Future<void> _doSave() async {
     AppFocusHelper.instance.requestUnfocus();
-
-    print('do save start');
-    print(_formKey.currentState?.saveAndValidate());
-    print('do save start');
 
     if (_formKey.currentState?.saveAndValidate() == true) {
       _formKey.currentState!.save();
@@ -68,7 +60,6 @@ class _CreateCircularNoticeScreenState extends State<CreateCircularNoticeScreen>
       // get current date time
       final DateTime now = DateTime.now();
       final String datePublished = DateFormat('E, dd MMM yyyy hh:mm a').format(now);
-      print(datePublished);
 
       final createNoticeData = {
         'NoticeFileLocation': noticeFileLocation,
@@ -79,7 +70,6 @@ class _CreateCircularNoticeScreenState extends State<CreateCircularNoticeScreen>
       final responseBody = await ApiService.createNotice(createNoticeData);
 
       if (responseBody['statuscode'] == 201) {
-        print('do save');
         final dialog = AwesomeDialog(
           context: context,
           dialogType: DialogType.success,
@@ -110,7 +100,6 @@ class _CreateCircularNoticeScreenState extends State<CreateCircularNoticeScreen>
       //     btnOkOnPress: () {},
       //   );
       //   dialog.show();
-      print("Input fields are not valid or empty.");
     }
   }
 

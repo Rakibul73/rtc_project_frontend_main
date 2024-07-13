@@ -90,7 +90,6 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
         _dataSource.data = _initialProjects; // Update the projects list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch projects: $e');
       // Handle error if needed
     }
   }
@@ -98,7 +97,6 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
   Future<void> deletingProject(int projectID, String reasonForDelete) async {
     try {
       final responseBody = await ApiService.deleteProject(projectID);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -110,7 +108,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Project deleted successfully');
+
         // Refresh the initial projects list
         viewAllProjects();
       } else if (responseBody['statusCode'] == 403) {
@@ -126,7 +124,7 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
           btnOkOnPress: () async {
             // Send a delete request to admin
             final responseBody = await ApiService.requestProjectDeletionToAdmin(projectID, reasonForDelete);
-            print(responseBody);
+
             if (responseBody['statusCode'] == 200) {
               final dialog = AwesomeDialog(
                 context: context,
@@ -137,15 +135,12 @@ class _MyProjectScreenState extends State<MyProjectScreen> {
                 btnOkOnPress: () {},
               );
               dialog.show();
-              print('Project deletion request sent successfully');
             }
           },
         );
         dialog.show();
       }
-    } catch (e) {
-      print('Failed to delete project: $e');
-    }
+    } catch (e) {}
   }
 
   // function to delete a project with data['ProjectID']

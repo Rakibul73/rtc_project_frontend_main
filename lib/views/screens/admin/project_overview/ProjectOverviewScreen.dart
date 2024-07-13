@@ -22,8 +22,7 @@ class _ProjectOverviewScreenState extends State<ProjectOverviewScreen> {
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getAdminProjectDashboard();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final runningProjects = data['running_projects'];

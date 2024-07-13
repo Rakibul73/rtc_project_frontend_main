@@ -77,9 +77,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('pendingUserID: ${widget.pendingUserID}');
     if (widget.pendingUserID.isNotEmpty) {
-      print('pendingUserID: ${widget.pendingUserID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.pendingUserID = widget.pendingUserID;
 
@@ -103,8 +101,6 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
           dialog.show();
         }
 
-        print(userDetails['TempUser']);
-
         _formData.userName = userDetails['TempUser']['Username'];
         _formData.email = userDetails['TempUser']['Email'];
         _formData.firstName = userDetails['TempUser']['FirstName'];
@@ -121,7 +117,6 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
   Future<void> approvingPendingUser(int userID, String username) async {
     try {
       final responseBody = await ApiService.approvePendingUser(userID, username);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -133,13 +128,11 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Pending User approved successfully');
+
         // Go to pending users screen
         GoRouter.of(context).go(RouteUri.pendingusers);
       }
-    } catch (e) {
-      print('Failed to approve pending user: $e');
-    }
+    } catch (e) {}
   }
 
   // function to approve a pending user with data['UserID']
@@ -183,7 +176,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
           final responseBody = await ApiService.updateTempUserDetails(int.parse(widget.pendingUserID), updatedTempUserData);
           if (responseBody['statuscode'] == 200) {
             // Handle success
-            print('User updated successfully');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -196,7 +189,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -208,7 +201,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
             dialog.show();
           } else {
             // Handle error
-            print('Error updating Temp user: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -221,7 +214,7 @@ class _VerifyUserScreenState extends State<VerifyUserScreen> {
           }
         } catch (e) {
           // Handle error
-          print('Error updating temp user: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,

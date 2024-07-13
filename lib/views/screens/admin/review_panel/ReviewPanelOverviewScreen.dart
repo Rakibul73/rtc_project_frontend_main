@@ -23,8 +23,7 @@ class _ReviewPanelOverviewScreenState extends State<ReviewPanelOverviewScreen> {
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getReviewPanelOverview();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final reviewerGaveReview = await data['reviewer_gave_review'];

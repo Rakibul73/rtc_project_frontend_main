@@ -52,7 +52,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
         _dataSource.data = _initialSelfNotification; // Update the self notifications list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch self notifications: $e');
       // Handle error if needed
     }
   }
@@ -62,7 +61,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       await ApiService.markAsUnread(notificationID);
       viewAllSelfNotification();
     } catch (e) {
-      print('Failed to mark notification as unread: $e');
       // Handle error if needed
     }
   }
@@ -72,7 +70,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       await ApiService.markAsRead(notificationID);
       viewAllSelfNotification();
     } catch (e) {
-      print('Failed to mark notification as read: $e');
       // Handle error if needed
     }
   }
@@ -82,7 +79,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       await ApiService.markAllAsRead();
       viewAllSelfNotification();
     } catch (e) {
-      print('Failed to mark notification as read: $e');
       // Handle error if needed
     }
   }
@@ -90,7 +86,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void fetchRoleIdFromLocalStorage() async {
     final sharedPref = await SharedPreferences.getInstance();
     roleID = sharedPref.getInt(StorageKeys.roleId) ?? 0;
-    print(roleID);
   }
 
   @override
@@ -103,12 +98,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     _dataSource = DataSource(
       onViewNotificationButtonPressed: (data) {
-        print('Mark as read button pressed: $data');
         markAsRead(data['NotificationID']);
         GoRouter.of(context).go('${RouteUri.viewindividualnotification}?notification_id=${data['NotificationID']}');
       },
       onMarkUnreadButtonPressed: (data) {
-        print('Mark as unread button pressed: $data');
         markAsUnread(data['NotificationID']);
       },
       data: [],

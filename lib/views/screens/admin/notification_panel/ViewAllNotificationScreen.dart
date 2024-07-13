@@ -52,7 +52,6 @@ class _ViewAllNotificationScreenState extends State<ViewAllNotificationScreen> {
         _dataSource.data = _initialSelfNotification; // Update the self notifications list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch self notifications: $e');
       // Handle error if needed
     }
   }
@@ -62,7 +61,6 @@ class _ViewAllNotificationScreenState extends State<ViewAllNotificationScreen> {
       await ApiService.markAsUnread(notificationID);
       viewAllSelfNotification();
     } catch (e) {
-      print('Failed to mark notification as unread: $e');
       // Handle error if needed
     }
   }
@@ -70,7 +68,6 @@ class _ViewAllNotificationScreenState extends State<ViewAllNotificationScreen> {
   void fetchRoleIdFromLocalStorage() async {
     final sharedPref = await SharedPreferences.getInstance();
     roleID = sharedPref.getInt(StorageKeys.roleId) ?? 0;
-    print(roleID);
   }
 
   @override

@@ -48,9 +48,6 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
 
       String? email = await userDataProvider.getFromSharedPref(StorageKeys.email);
 
-      print(" ResetPassScreen email = $email");
-
-
       Future.delayed(const Duration(seconds: 1), () async {
         final responseCode = await ApiService.resetPassword(_formData.token, _formData.password);
 
@@ -58,13 +55,10 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
           onSuccess.call(email!);
         } else if (responseCode == 400) {
           onError.call('Token already used');
-          print("ssssssssssssssssssssssssssssss");
         } else if (responseCode == 404) {
           onError.call('Invalid token');
-          print("ssssssssssssssssssssssssssssss");
         } else {
           onError.call('Something went wrong');
-          print("ssssssssssssssssssssssssssssss");
         }
 
         setState(() => _isFormLoading = false);
@@ -72,7 +66,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
     }
   }
 
-  void _onPassresetSuccess(BuildContext context , String email) {
+  void _onPassresetSuccess(BuildContext context, String email) {
     final dialog = AwesomeDialog(
       context: context,
       dialogType: DialogType.success,
@@ -86,7 +80,6 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
     dialog.show();
 
     // Navigator.pushReplacementNamed(context, '/dashboard');
-    print("GoRouter.of(context).go(RouteUri.login);");
   }
 
   void _onPassrestError(BuildContext context, String message) {
@@ -136,9 +129,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
                     ),
                     Text(
                       "PSTU RTC Project Management",
-                      style: themeData.textTheme.headlineMedium!.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 22.0
-                      ),
+                      style: themeData.textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w600, fontSize: 22.0),
                     ),
                     const SizedBox(height: 5),
                     Padding(
@@ -250,7 +241,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
                                     ? null
                                     : () => _doPassResetConfirmAsync(
                                           userDataProvider: context.read<UserDataProvider>(),
-                                          onSuccess: (email) => _onPassresetSuccess(context , email),
+                                          onSuccess: (email) => _onPassresetSuccess(context, email),
                                           onError: (message) => _onPassrestError(context, message),
                                         )),
                                 child: const Text(

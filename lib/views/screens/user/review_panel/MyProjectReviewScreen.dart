@@ -88,7 +88,6 @@ class _MyProjectReviewScreenState extends State<MyProjectReviewScreen> {
         _dataSource.data = _initialProjectPiCanViewReview;
       });
     } catch (e) {
-      print('Failed to fetch Project Have To Review List: $e');
       // Handle error if needed
     }
   }

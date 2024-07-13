@@ -31,8 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<Map<String, dynamic>> _fetchSummaryData() async {
     final data = await ApiService.getTotalNumberOfAllDashboard();
-    print("_fetchSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final totalUsers = data['total_users'];

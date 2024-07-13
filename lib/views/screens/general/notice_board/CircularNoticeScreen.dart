@@ -72,7 +72,6 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
         _dataSource.data = _initialNotice; // Update the projects list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch notice: $e');
       // Handle error if needed
     }
   }
@@ -80,7 +79,6 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
   Future<void> deletingNotice(int noticeID) async {
     try {
       final responseBody = await ApiService.deleteNotice(noticeID);
-      print(responseBody);
 
       if (responseBody['statusCode'] == 200) {
         final dialog = AwesomeDialog(
@@ -92,12 +90,10 @@ class _CircularNoticeScreenState extends State<CircularNoticeScreen> {
           btnOkOnPress: () {},
         );
         dialog.show();
-        print('Notices deleted successfully');
+
         viewAllNotice();
       }
-    } catch (e) {
-      print('Failed to delete project: $e');
-    }
+    } catch (e) {}
   }
 
   // function to delete a project with data['ProjectID']
@@ -345,7 +341,7 @@ class DataSource extends DataTableSource {
     // Determine the maximum length of the project title to be displayed without scrolling
     const maxLength = 20; // Adjust this value as needed
     DateTime utcDateTime = DateFormat('E, dd MMM yyyy HH:mm a').parseUTC(data['DatePublished'].toString());
-    print("utcDateTime : , $utcDateTime");
+
     String formattedTime = DateFormat('E, dd MMM yyyy hh:mm a').format(utcDateTime);
 
     return DataRow.byIndex(index: index, cells: [

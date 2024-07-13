@@ -60,9 +60,7 @@ class _ViewRequestForAProjectAdvanceFundScreenState extends State<ViewRequestFor
   }
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -85,8 +83,6 @@ class _ViewRequestForAProjectAdvanceFundScreenState extends State<ViewRequestFor
           );
           dialog.show();
         }
-
-        print(projectDetailForFundSelf['project']);
 
         _formData.rtcCode = projectDetailForFundSelf['project']['CodeByRTC'].toString();
         _formData.projectTitle = projectDetailForFundSelf['project']['ProjectTitle'];
@@ -132,7 +128,6 @@ class _ViewRequestForAProjectAdvanceFundScreenState extends State<ViewRequestFor
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         final userDetailsForFundApply = await ApiService.getSpecificUserDetailsForFundApply(
           _formData.piUserID,
@@ -162,8 +157,6 @@ class _ViewRequestForAProjectAdvanceFundScreenState extends State<ViewRequestFor
         if (_formData.dateOfChairmanOfTheDepartment != null && _formData.dateOfChairmanOfTheDepartment.isNotEmpty) {
           _formData.dateOfChairmanOfTheDepartment = DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfChairmanOfTheDepartment));
         }
-
-        print("==========**E      N      D*****===========");
       });
     }
 

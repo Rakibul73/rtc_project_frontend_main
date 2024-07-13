@@ -36,9 +36,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
   bool initialReviewExist = false;
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
@@ -127,7 +125,6 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
         if (ganttDetails.isNotEmpty) {
           initialProjectGantts = ganttDetails;
         }
-        print("initialProjectGantts: $initialProjectGantts");
 
         final budgetDetails = await ApiService.fetchAllBudgetOfAProjectReview(
           int.parse(_formData.projectID),
@@ -135,7 +132,6 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
 
         // read user id
         final userId = await storage.read(key: 'user_id');
@@ -145,19 +141,12 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
           'ReviewerUserID': userid,
         };
         final fetchSpecificReviewDetail = await ApiService.getAllReviewsForSpecificReviewer(projectIDAndReviewerUserID);
-        print(fetchSpecificReviewDetail);
-        print("==========*************===========");
-        print((fetchSpecificReviewDetail['reviews']).length);
 
         if (fetchSpecificReviewDetail['statuscode'] == 200 && (fetchSpecificReviewDetail['reviews']).length != 0) {
-          print("==========**S      T      A      R      T*****===========");
-          print(fetchSpecificReviewDetail['reviews'][0]['Points'].runtimeType);
           _formData.totalMarks = fetchSpecificReviewDetail['reviews'][0]['Points'];
           _formData.markComment = fetchSpecificReviewDetail['reviews'][0]['Comments'];
           initialReviewExist = true;
         }
-
-        print("==========**E      N      D*****===========");
       });
     }
 
@@ -187,11 +176,11 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
             'Points': _formData.totalMarks,
             'Comments': _formData.markComment,
           };
-          print(reviewData);
+
           final responseBody = await ApiService.createReviewSpecificProject(reviewData);
           if (responseBody['statuscode'] == 201) {
             // Handle success
-            print('Review submitted successfully');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.success,
@@ -203,7 +192,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
             dialog.show();
           } else if (responseBody['msg'] == "Token has expired") {
             // Handle error
-            print('Token has expired');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -215,7 +204,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
             dialog.show();
           } else {
             // Handle error
-            print('Error submitting review: ${responseBody['message']}');
+
             final dialog = AwesomeDialog(
               context: context,
               dialogType: DialogType.error,
@@ -228,7 +217,7 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
           }
         } catch (e) {
           // Handle error
-          print('Error submitting review: $e');
+
           final dialog = AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
@@ -2381,7 +2370,6 @@ class _ReviewIndividualProjectScreenState extends State<ReviewIndividualProjectS
                                       ),
                                       onChanged: (value) {
                                         _formData.markProposal = value ?? '';
-                                        print("markProposal: ${_formData.markProposal}");
                                       },
                                     ),
                                   ),

@@ -23,8 +23,7 @@ class _ProjectReviewTrackingScreenState extends State<ProjectReviewTrackingScree
 
   Future<Map<String, dynamic>> _fetchProjectSummaryData() async {
     final data = await ApiService.getReviewDashboard();
-    print("_fetchProjectSummaryData = data: $data");
-    print(data['statuscode']);
+
     if (data['statuscode'] == 200) {
       // Handle successful response
       final reviewQueue = await data['review_queue'];

@@ -71,9 +71,7 @@ class _MonitorTheReportAsMonitoringCommitteeScreenState extends State<MonitorThe
       setState(() {
         _dataSource.data = _initialProjectHaveToGiveFeedbackList;
       });
-    } catch (e) {
-      print('Failed to fetch Project Have To Monitor List: $e');
-    }
+    } catch (e) {}
   }
 
   void _pdfHandleButtonPress(String fileName) {

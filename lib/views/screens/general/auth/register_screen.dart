@@ -75,15 +75,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         if (response['statuscode'] == 201) {
           // User registered successfully
-          print('User registered successfully');
+
           onSuccess.call('Your account has been successfully created. Admin will review your account soon.');
         } else if (response['statuscode'] == 409) {
           // User or email already exists
-          print('User or email already exists');
+
           onError.call('This User or email is already taken.');
         } else {
           // Handle registration failure
-          print('Registration failed: ${response['message']}');
+
           onError.call('Registration failed: ${response['message']}');
         }
 

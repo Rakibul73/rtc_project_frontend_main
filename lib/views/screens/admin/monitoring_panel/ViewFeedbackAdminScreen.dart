@@ -105,9 +105,7 @@ class _ViewFeedbackAdminScreenState extends State<ViewFeedbackAdminScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('monitoringReportID: ${widget.monitoringReportID}');
     if (widget.monitoringReportID.isNotEmpty) {
-      print('monitoringReportID: ${widget.monitoringReportID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.monitoringReportID = widget.monitoringReportID;
 

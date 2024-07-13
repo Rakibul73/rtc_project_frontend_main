@@ -121,7 +121,6 @@ class _VerifiedUsersScreenState extends State<VerifiedUsersScreen> {
         _dataSource.data = _initialVerifiedUsers; // Update the verified users list with fetched data
       });
     } catch (e) {
-      print('Failed to fetch verified users: $e');
       // Handle error if needed
     }
   }

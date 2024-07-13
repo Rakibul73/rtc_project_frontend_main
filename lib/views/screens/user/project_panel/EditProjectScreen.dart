@@ -91,16 +91,12 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.projectSoftCopyLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('project_softcopy/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
         // Handle success
       }
-    } else {
-      print('No project soft-copy files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadMethodologyFiles() async {
@@ -109,16 +105,12 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.methodologyFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('methodology/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
         // Handle success
       }
-    } else {
-      print('No methodology files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadchairmanOfDepartmentSealFiles() async {
@@ -127,15 +119,11 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.chairmanOfDepartmentSealFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('seal/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
-    } else {
-      print('No seal files selected');
-    }
+    } else {}
   }
 
   Future<void> _uploadchairmanOfDepartmentSignatureFiles() async {
@@ -144,15 +132,11 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         final fileBytes = file.bytes!;
         final fileName = file.name;
         _formData.chairmanOfDepartmentSignatureFileLocation = fileName;
-        print(fileName);
+
         final responseBody = await ApiService.uploadFile('signature/upload', file, fileBytes, fileName);
-        if (responseBody['statuscode'] == 200) {
-          print('File uploaded successfully');
-        }
+        if (responseBody['statuscode'] == 200) {}
       }
-    } else {
-      print('No signature files selected');
-    }
+    } else {}
   }
 
   void _downloadProjectSoftCopy(String fileName) async {
@@ -169,16 +153,13 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   }
 
   Future<bool> _getDataAsync() async {
-    print('projectID: ${widget.projectID}');
     if (widget.projectID.isNotEmpty) {
-      print('projectID: ${widget.projectID}');
       await Future.delayed(const Duration(seconds: 1), () async {
         _formData.projectID = widget.projectID;
 
         // read user id
         final userId = await storage.read(key: 'user_id');
         int userid = int.parse(userId!);
-        print("EditProjectScreen userid: $userid");
 
         int projectId = int.parse(widget.projectID);
         final userDetails = await ApiService.getSpecificProject(
@@ -199,17 +180,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
           );
           dialog.show();
         }
-
-        // print("userDetails: ${userDetails['project']}");
-        print("_formData.piUserID = ${userDetails['project']['CreatorUserID']}");
-        print("_formData.coPiUserID = ${userDetails['project']['CoPiUserID']}");
-        print("_formData.studentUserID = ${userDetails['project']['StudentUserID']}");
-        print("_formData.piSealLocation = ${userDetails['project']['CreatorUserSealLocation']}");
-        print("_formData.piSignatureLocation = ${userDetails['project']['CreatorUserSignatureLocation']}");
-        print("_formData.chairmanOfDepartmentSealFileLocation = ${userDetails['project']['ChairmanOfDepartmentSealLocation']}");
-        print("_formData.chairmanOfDepartmentSignatureFileLocation = ${userDetails['project']['ChairmanOfDepartmentSignatureLocation']}");
-        print("_formData.ProjectStatus = ${userDetails['project']['ProjectStatus']}");
-        print("_formData.ProjectSoftCopyLocation = ${userDetails['project']['ProjectSoftCopyLocation']}");
 
         _formData.rtcCode = userDetails['project']['CodeByRTC'];
         _formData.dateOfReceived = userDetails['project']['DateRecieved'];
@@ -311,7 +281,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         if (ganttDetails.isNotEmpty) {
           initialProjectGantts = ganttDetails;
         }
-        print("initialProjectGantts: $initialProjectGantts");
 
         final budgetDetails = await ApiService.fetchAllBudgetOfAProject(
           projectId,
@@ -319,7 +288,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
         if (budgetDetails.isNotEmpty) {
           initialProjectBudget = budgetDetails;
         }
-        print("initialProjectBudget: $initialProjectBudget");
       });
     }
 
@@ -404,7 +372,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
           final responseBody = await ApiService.updateProjectDetails(int.parse(widget.projectID), updateProjectData);
 
           // Iterate through the list of initialProjectGantts and update ganttData
-          print(initialProjectGantts.length);
+
           for (int i = 0; i < initialProjectGantts.length; i++) {
             Map<String, dynamic> ganttData = initialProjectGantts[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -421,18 +389,14 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
               ganttData['StartDate'] = formatter.format(dateRange.start);
               ganttData['EndDate'] = formatter.format(dateRange.end);
             }
-            print('Updated ganttData:');
-            print(ganttData);
+
             ganttFormDataForUpload.add(ganttData);
           }
-
-          print('ganttFormDataForUpload:');
-          print(ganttFormDataForUpload);
 
           final responseBodyGantt = await ApiService.updateProjectGanttDetails(int.parse(widget.projectID), ganttFormDataForUpload);
 
           // Iterate through the list of initialProjectBudget and update budgetData
-          print(initialProjectBudget.length);
+
           for (int i = 0; i < initialProjectBudget.length; i++) {
             Map<String, dynamic> budgetData = initialProjectBudget[i];
             // Get the corresponding FormBuilderState using GlobalKey
@@ -446,13 +410,9 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
               budgetData['UnitPrice'] = formState.value['unit_price'];
               budgetData['TotalCost'] = formState.value['total_cost_tk'];
             }
-            print('Updated budgetData:');
-            print(budgetData);
+
             budgetFormDataForUpload.add(budgetData);
           }
-
-          print('budgetFormDataForUpload:');
-          print(budgetFormDataForUpload);
 
           final responseBodyBudget = await ApiService.updateProjectBudgetDetails(int.parse(widget.projectID), budgetFormDataForUpload);
 
@@ -544,7 +504,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                         btnOkOnPress: () => GoRouter.of(context).go(RouteUri.myprojects),
                       );
                       dialog.show();
-                      print('Project deleted successfully');
                     } else if (responseBody['statusCode'] == 403) {
                       final dialog = AwesomeDialog(
                         context: context,
@@ -556,7 +515,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                         btnOkOnPress: () async {
                           // Send a delete request to admin
                           final responseBody = await ApiService.requestProjectDeletionToAdmin(int.parse(_formData.projectID), reasonController.text);
-                          print(responseBody);
+
                           if (responseBody['statusCode'] == 200) {
                             final dialog = AwesomeDialog(
                               context: context,
@@ -567,7 +526,6 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                               btnOkOnPress: () {},
                             );
                             dialog.show();
-                            print('Project deletion request sent successfully');
                           }
                         },
                       );
