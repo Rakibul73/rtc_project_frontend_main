@@ -89,13 +89,12 @@ jobs:
 
       - name: Commit and push
         run: |
-          last_commit_msg=$(git log -1 --pretty=%B)
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Updated build for - $last_commit_msg"
-          git push https://github.com/Rakibul73/rtc_project_frontend_build.git main
+          git commit -m "Updated README with commit history"
+          git push https://<YOUR_GITHUB_USERNAME>:${{ secrets.TARGET_REPO_ACCESS_TOKEN }}@github.com/Rakibul73/rtc_project_frontend_build.git main
 
 
       - name: Clean up old builds
