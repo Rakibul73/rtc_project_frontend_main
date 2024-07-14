@@ -68,16 +68,14 @@ jobs:
 
       - name: Clean up old builds, preserve README.md, Copy build files to target repository, Fetch last commit information & Update README in target repository, Commit and push
         run: |
-          find target-repo -type f ! -name 'README.md' -exec rm -f {} +
-          ls -R target-repo
-          cat target-repo/README.md
+          cp target-repo/README.md README_backup.md
+          rm -rf target-repo/*
+          cat README_backup.md
           cp -r build/web/* target-repo/
-          ls -R target-repo
           last_commit_message=$(git log -1 --pretty=%B)
           last_commit_time=$(git log -1 --pretty=%cd)
           new_entry="| $last_commit_message | $last_commit_time |"
-          { echo "| Commit Message | Commit Time |"; echo "| -------------- | ----------- |"; echo "$new_entry"; tail -n +3 target-repo/README.md; } > target-repo/README_new.md
-          mv target-repo/README_new.md target-repo/README.md
+          { echo "| Commit Message | Commit Time |"; echo "| -------------- | ----------- |"; echo "$new_entry"; tail -n +3 README_backup.md; } > target-repo/README.md
           cat target-repo/README.md
           cd target-repo
           git config user.name "github-actions[bot]"
