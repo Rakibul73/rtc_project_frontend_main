@@ -63,22 +63,34 @@ jobs:
           token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
           path: target-repo
 
+      - name: Clean up old builds
+        run: rm -rf target-repo/*
 
-      - name: Sync build folder with target repository
+      - name: Copy build files to target repository
+        run: cp -r build/web/* target-repo/
+
+      - name: Fetch all commit info from main repo & save it in target-repo/commits.log
+        id: fetch_all_commits
         run: |
-          rm -rf target-repo/*
-          cp -r build/web/* target-repo/
-          last_commit_message=$(git log -1 --pretty=%B)
-          last_commit_time=$(git log -1 --pretty=%cd)
-          echo "::set-output name=message::$last_commit_message"
-          echo "::set-output name=time::$last_commit_time"
+          git log --pretty=format:"%s|%cd" > target-repo/commits.log
+
+      - name: Update README in target repository
+        run: |
+          echo "| Commit Message | Commit Time |" > target-repo/README.md
+          echo "| -------------- | ----------- |" >> target-repo/README.md
+          while IFS='|' read -r message time; do
+            echo "| $message | $time |" >> target-repo/README.md
+          done < target-repo/commits.log
+
+      - name: Commit and push
+        run: |
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          echo "| $last_commit_message | $last_commit_time |" >> README.md
           git commit -m "Updated build for - $last_commit_message"
           git push origin main  # Change this to the branch you want to push to
+
 
       - name: Clean up old builds
         run: rm -rf build/web
