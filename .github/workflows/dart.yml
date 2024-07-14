@@ -63,15 +63,22 @@ jobs:
           token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
           path: target-repo
 
+
       - name: Sync build folder with target repository
         run: |
           rm -rf target-repo/*
           cp -r build/web/* target-repo/
           last_commit_message=$(git log -1 --pretty=%B)
+          last_commit_time=$(git log -1 --pretty=%cd)
+          echo "::set-output name=message::$last_commit_message"
+          echo "::set-output name=time::$last_commit_time"
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
+          message="${{ steps.fetch_commit_info.outputs.message }}"
+          time="${{ steps.fetch_commit_info.outputs.time }}"
+          echo "| $message | $time |" >> README.md
           git commit -m "Updated build for - $last_commit_message"
           git push origin main  # Change this to the branch you want to push to
 
