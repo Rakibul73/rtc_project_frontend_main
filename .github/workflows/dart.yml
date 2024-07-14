@@ -76,9 +76,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          message="${{ steps.fetch_commit_info.outputs.message }}"
-          time="${{ steps.fetch_commit_info.outputs.time }}"
-          echo "| $message | $time |" >> README.md
+          echo "| $last_commit_message | $last_commit_time |" >> README.md
           git commit -m "Updated build for - $last_commit_message"
           git push origin main  # Change this to the branch you want to push to
 
