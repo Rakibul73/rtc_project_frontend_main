@@ -66,9 +66,13 @@ jobs:
       - name: Clean up old builds, preserve README.md
         run: |
           find target-repo -type f ! -name 'README.md' -exec rm -f {} +
+          ls -R target-repo
+          cat target-repo/README.md
 
       - name: Copy build files to target repository
-        run: cp -r build/web/* target-repo/
+        run: |
+          cp -r build/web/* target-repo/
+          ls -R target-repo
       
 
       - name: Fetch last commit information & Update README in target repository
@@ -78,15 +82,16 @@ jobs:
           new_entry="| $last_commit_message | $last_commit_time |"
           { echo "| Commit Message | Commit Time |"; echo "| -------------- | ----------- |"; echo "$new_entry"; tail -n +3 target-repo/README.md; } > target-repo/README_new.md
           mv target-repo/README_new.md target-repo/README.md
+          cat target-repo/README.md
 
       - name: Commit and push
         run: |
-          last_commit_message=$(git log -1 --pretty=%B)
+          last_commit_msg=$(git log -1 --pretty=%B)
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Updated build for - $last_commit_message"
+          git commit -m "Updated build for - $last_commit_msg"
           git push origin main  # Change this to the branch you want to push to
 
 
