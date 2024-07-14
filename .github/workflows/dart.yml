@@ -18,9 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-            repository: Rakibul73/rtc_project_frontend_main
-            token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+        # with:
+        #     repository: Rakibul73/rtc_project_frontend_main
+        #     token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
 
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
@@ -95,7 +95,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Updated build for - $last_commit_msg"
-          git push origin main  # Change this to the branch you want to push to
+          git push https://github.com/Rakibul73/rtc_project_frontend_build.git main
 
 
       - name: Clean up old builds
