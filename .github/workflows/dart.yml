@@ -73,28 +73,29 @@ jobs:
         id: fetch_all_commits
         run: |
           git -C target-repo log --pretty=format:"%s|%cd" > target-repo/commits.log
+          cat target-repo/commits.log  # Debugging output to verify contents
 
-      - name: Update README in target repository
-        run: |
-          echo "| Commit Message | Commit Time |" > target-repo/README.md
-          echo "| -------------- | ----------- |" >> target-repo/README.md
-          while IFS='|' read -r message time; do
-            echo "| $message | $time |" >> target-repo/README.md
-          done < target-repo/commits.log
+      # - name: Update README in target repository
+      #   run: |
+      #     echo "| Commit Message | Commit Time |" > target-repo/README.md
+      #     echo "| -------------- | ----------- |" >> target-repo/README.md
+      #     while IFS='|' read -r message time; do
+      #       echo "| $message | $time |" >> target-repo/README.md
+      #     done < target-repo/commits.log
 
-      - name: Commit and push
-        run: |
-          last_commit_message=$(git log -1 --pretty=%B)
-          cd target-repo
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Updated build for - $last_commit_message"
-          git push origin main  # Change this to the branch you want to push to
+      # - name: Commit and push
+      #   run: |
+      #     last_commit_message=$(git log -1 --pretty=%B)
+      #     cd target-repo
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git add .
+      #     git commit -m "Updated build for - $last_commit_message"
+      #     git push origin main  # Change this to the branch you want to push to
 
 
-      - name: Clean up old builds
-        run: rm -rf build/web
+      # - name: Clean up old builds
+      #   run: rm -rf build/web
 
 
       # ======================================
