@@ -18,6 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+            repository: rtc_project_frontend_main
+            token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
 
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
