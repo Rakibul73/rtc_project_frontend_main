@@ -59,7 +59,7 @@ jobs:
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
-          repository: Rakibul73/testing_github_action  # Replace with your target repository
+          repository: Rakibul73/rtc_project_frontend_build  # Replace with your target repository
           token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
           path: target-repo
 
@@ -72,7 +72,7 @@ jobs:
       - name: Fetch all commit info from main repo & save it in target-repo/commits.log
         id: fetch_all_commits
         run: |
-          git log --pretty=format:"%s|%cd" > target-repo/commits.log
+          git -C target-repo log --pretty=format:"%s|%cd" > target-repo/commits.log
 
       - name: Update README in target repository
         run: |
