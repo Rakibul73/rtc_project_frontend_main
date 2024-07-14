@@ -63,39 +63,35 @@ jobs:
           token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
           path: target-repo
 
-      - name: Clean up old builds
-        run: rm -rf target-repo/*
+      - name: Clean up old builds, preserve README.md
+        run: |
+          find target-repo -type f ! -name 'README.md' -exec rm -f {} +
 
       - name: Copy build files to target repository
         run: cp -r build/web/* target-repo/
+      
 
-      - name: Fetch all commit info from main repo & save it in target-repo/commits.log
-        id: fetch_all_commits
+      - name: Fetch last commit information & Update README in target repository
         run: |
-          git -C target-repo log --pretty=format:"%s|%cd" > target-repo/commits.log
-          cat target-repo/commits.log  # Debugging output to verify contents
+          last_commit_message=$(git log -1 --pretty=%B)
+          last_commit_time=$(git log -1 --pretty=%cd)
+          new_entry="| $last_commit_message | $last_commit_time |"
+          { echo "| Commit Message | Commit Time |"; echo "| -------------- | ----------- |"; echo "$new_entry"; tail -n +3 target-repo/README.md; } > target-repo/README_new.md
+          mv target-repo/README_new.md target-repo/README.md
 
-      # - name: Update README in target repository
-      #   run: |
-      #     echo "| Commit Message | Commit Time |" > target-repo/README.md
-      #     echo "| -------------- | ----------- |" >> target-repo/README.md
-      #     while IFS='|' read -r message time; do
-      #       echo "| $message | $time |" >> target-repo/README.md
-      #     done < target-repo/commits.log
-
-      # - name: Commit and push
-      #   run: |
-      #     last_commit_message=$(git log -1 --pretty=%B)
-      #     cd target-repo
-      #     git config user.name "github-actions[bot]"
-      #     git config user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add .
-      #     git commit -m "Updated build for - $last_commit_message"
-      #     git push origin main  # Change this to the branch you want to push to
+      - name: Commit and push
+        run: |
+          last_commit_message=$(git log -1 --pretty=%B)
+          cd target-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Updated build for - $last_commit_message"
+          git push origin main  # Change this to the branch you want to push to
 
 
-      # - name: Clean up old builds
-      #   run: rm -rf build/web
+      - name: Clean up old builds
+        run: rm -rf build/web
 
 
       # ======================================
