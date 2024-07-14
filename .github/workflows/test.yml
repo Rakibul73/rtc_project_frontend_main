@@ -27,16 +27,11 @@ jobs:
         with:
           sdk: "3.2.0"
 
-      - name: Checkout target repository
-        uses: actions/checkout@v2
-        with:
-          repository: Rakibul73/rtc_project_frontend_build  # Replace with your target repository
-          token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
-          path: target-repo
-
 
       - name: Fetch all commit info from main repo & save it in target-repo/commits.log
         id: fetch_all_commits
         run: |
-          git -C target-repo log --pretty=format:"%s|%cd" > target-repo/commits.log
+          mkdir -p target-repo  # Ensure target-repo directory exists
+          git -C target-repo log --all --graph --decorate --pretty=format:"%s|%cd" > target-repo/commits.log
+          ls -l target-repo  # Verify contents of target-repo
           cat target-repo/commits.log  # Debugging output to verify contents
