@@ -94,7 +94,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Updated README with commit history"
-          git push https://<YOUR_GITHUB_USERNAME>:${{ secrets.TARGET_REPO_ACCESS_TOKEN }}@github.com/Rakibul73/rtc_project_frontend_build.git main
+          git push https://Rakibul73:${{ secrets.TARGET_REPO_ACCESS_TOKEN }}@github.com/Rakibul73/rtc_project_frontend_build.git main
 
 
       - name: Clean up old builds
