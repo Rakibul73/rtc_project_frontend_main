@@ -84,6 +84,7 @@ jobs:
 
       - name: Commit and push
         run: |
+          last_commit_message=$(git log -1 --pretty=%B)
           cd target-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
