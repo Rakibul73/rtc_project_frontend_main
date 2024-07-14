@@ -41,7 +41,6 @@ dependencies:
   go_router: ^7.0.1
   google_fonts: ^4.0.4
   pointer_interceptor: ^0.9.3+4
-  # flutter_form_builder: ^9.0.0
   flutter_form_builder: ^9.2.1
   form_builder_validators: ^9.0.0
   form_builder_asset_picker: ^1.1.1
@@ -87,8 +86,8 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/images/app_logo.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    # background_color: "#hexcode"
+    # theme_color: "#hexcode"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
