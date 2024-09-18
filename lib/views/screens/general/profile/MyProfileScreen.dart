@@ -2552,7 +2552,7 @@ class _NidPhotoState extends State<NidPhoto> {
                               FutureBuilder<String>(
                                 future: widget.formData.nidLocation.isNotEmpty
                                     ? ApiService.downloadFile('nid/download', widget.formData.nidLocation)
-                                    : Future.value(""), // Check if value is not empty before making the API call
+                                    : ApiService.downloadFile('nid/download', "defaultnid.png"), // Check if value is not empty before making the API call
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
@@ -6863,7 +6863,7 @@ class _ProPicSigSealState extends State<ProPicSigSeal> {
                               FutureBuilder<String>(
                                 future: widget.formData.profilePicLocation.isNotEmpty
                                     ? ApiService.downloadFile('profile-pic/download', widget.formData.profilePicLocation)
-                                    : Future.value(""), // Check if value is not empty before making the API call
+                                    : ApiService.downloadFile('profile-pic/download', "defaultprofilepic.png"), // Check if value is not empty before making the API call
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
@@ -6893,7 +6893,7 @@ class _ProPicSigSealState extends State<ProPicSigSeal> {
                               FutureBuilder<String>(
                                 future: widget.formData.signatureLocation.isNotEmpty
                                     ? ApiService.downloadFile('signature/download', widget.formData.signatureLocation)
-                                    : Future.value(""), // Check if value is not empty before making the API call
+                                    : ApiService.downloadFile('signature/download', "defaultsignature.png"), // Check if value is not empty before making the API call
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
@@ -6924,7 +6924,7 @@ class _ProPicSigSealState extends State<ProPicSigSeal> {
                               FutureBuilder<String>(
                                 future: widget.formData.sealLocation.isNotEmpty
                                     ? ApiService.downloadFile('seal/download', widget.formData.sealLocation)
-                                    : Future.value(""), // Check if value is not empty before making the API call
+                                    : ApiService.downloadFile('seal/download', "defaultseal.png"), // Check if value is not empty before making the API call
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
