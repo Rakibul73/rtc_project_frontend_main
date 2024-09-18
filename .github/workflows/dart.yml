@@ -45,13 +45,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
-
-      # Create the _redirects file for Netlify
-      - name: Create _redirects file for Netlify
-        run: |
-          mkdir -p build/web
-          echo "/* /index.html 200" > build/web/_redirects
-
       
       - name: Build Flutter web
         run: flutter build web --release
