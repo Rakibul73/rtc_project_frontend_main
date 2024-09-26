@@ -250,6 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         )),
                                 child: Text(
                                   lang.login,
+                                  style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
                               ),
                             ),

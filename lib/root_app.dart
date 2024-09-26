@@ -67,7 +67,7 @@ class _RootAppState extends State<RootApp> {
                         ],
                         // locale: provider.locale,
                         onGenerateTitle: (context) => "PSTU Research & Training Center Project Management",
-                        theme: AppThemeData.instance.light(),
+                        theme: AppThemeData.instance.dark(),
                         darkTheme: AppThemeData.instance.dark(),
                         themeMode: provider.themeMode,
                       );

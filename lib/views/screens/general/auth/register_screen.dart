@@ -360,7 +360,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           onSuccess: (message) => _onRegisterSuccess(context, message),
                                           onError: (message) => _onRegisterError(context, message),
                                         )),
-                                child: Text(lang.register),
+                                child: Text(
+                                  lang.register,
+                                  style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                                ),
                               ),
                             ),
                           ),

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:rtc_project_fronend/home/screens/home/home.dart';
 import 'package:rtc_project_fronend/providers/user_data_provider.dart';
 import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllAdvanceFundConfirmListScreen.dart';
 import 'package:rtc_project_fronend/views/screens/admin/fund_panel/AllAdvanceFundRequestQueueListScreen.dart';
@@ -153,15 +154,17 @@ const List<String> unrestrictedRoutes = [
 ];
 
 const List<String> publicRoutes = [
+  RouteUri.home,
   RouteUri.login,
   RouteUri.register,
   RouteUri.forgotpass,
+  RouteUri.resetpassscreen,
   RouteUri.resetpassscreen,
 ];
 
 GoRouter appRouter(UserDataProvider userDataProvider) {
   return GoRouter(
-    initialLocation: RouteUri.home,
+    initialLocation: RouteUri.dashboard,
     errorPageBuilder: (context, state) => NoTransitionPage<void>(
       key: state.pageKey,
       child: const ErrorScreen(),
@@ -169,7 +172,10 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
     routes: [
       GoRoute(
         path: RouteUri.home,
-        redirect: (context, state) => RouteUri.dashboard,
+        pageBuilder: (context, state) => NoTransitionPage<void>(
+          key: state.pageKey,
+          child: HomeScreen(),
+        ),
       ),
       GoRoute(
         path: RouteUri.dashboard,
@@ -723,16 +729,18 @@ GoRouter appRouter(UserDataProvider userDataProvider) {
       if (unrestrictedRoutes.contains(state.matchedLocation)) {
         return null;
       } else if (publicRoutes.contains(state.matchedLocation)) {
-        // Is public route.
         if (userDataProvider.isUserLoggedIn()) {
-          // User is logged in, redirect to home page.
-          return RouteUri.home;
+          // User is logged in, redirect to dashboard.
+          return RouteUri.dashboard;
+        } else {
+          // User is not logged in, stay on current URL.
+          return null;
         }
       } else {
         // Not public route.
         if (!userDataProvider.isUserLoggedIn()) {
           // User is not logged in, redirect to login page.
-          return RouteUri.login;
+          return RouteUri.home;
         }
       }
 

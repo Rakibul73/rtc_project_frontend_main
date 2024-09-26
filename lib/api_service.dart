@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // const String baseUrl = 'http://192.168.1.188:5000';
-// const String baseUrl = 'http://localhost:5000';
+// const String baseUrl = 'http://127.0.0.1:5000';
 const String baseUrl = 'https://rakib73.pythonanywhere.com';
 const storage = FlutterSecureStorage();
 
@@ -3221,11 +3221,12 @@ class ApiService {
           'Authorization': 'Bearer $accessToken',
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+          // 'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
         },
       );
 
       if (response.statusCode == 200) {
+        print("Downloaded $endpoint/$filename : ${response.bodyBytes.isEmpty ? 'empty' : 'non-empty'}");
         return base64Encode(response.bodyBytes); // Convert file bytes to base64 string
       } else {
         throw Exception('Failed to fetch $endpoint: ${response.statusCode}');
