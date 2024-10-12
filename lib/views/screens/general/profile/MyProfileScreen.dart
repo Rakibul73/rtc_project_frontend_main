@@ -5811,7 +5811,7 @@ class _DateOfBirthState extends State<DateOfBirth> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CardHeader(
-                            title: DateFormat("MMMM d, yyyy").format(DateTime.parse(widget.formData.dateOfBirth)),
+                            title: widget.formData.dateOfBirth != null && widget.formData.dateOfBirth!.isNotEmpty ? DateFormat("MMMM d, yyyy").format(DateTime.parse(widget.formData.dateOfBirth)) : '',
                             backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                             titleColor: const Color.fromARGB(255, 238, 216, 221),
                             showDivider: false,

@@ -1227,7 +1227,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               CardHeader(
-                                                title: DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfBirth)),
+                                                title:
+                                                    _formData.dateOfBirth != null && _formData.dateOfBirth!.isNotEmpty ? DateFormat("MMMM d, yyyy").format(DateTime.parse(_formData.dateOfBirth)) : '',
                                                 backgroundColor: const Color.fromARGB(255, 51, 55, 56),
                                                 titleColor: const Color.fromARGB(255, 238, 216, 221),
                                                 showDivider: false,
