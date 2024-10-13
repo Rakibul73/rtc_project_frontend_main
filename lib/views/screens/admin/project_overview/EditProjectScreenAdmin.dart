@@ -223,8 +223,8 @@ class _EditProjectScreenAdminState extends State<EditProjectScreenAdmin> {
         _formData.othersRequired = userDetails['project']['OtherRequired'];
         // // Signature
         _formData.piUserID = userDetails['project']['CreatorUserID'];
-        _formData.coPiUserID = userDetails['project']['CoPiUserID'];
-        _formData.studentUserID = userDetails['project']['StudentUserID'];
+        _formData.coPiUserID = userDetails['project']['CoPiUserID'] ?? 0;
+        _formData.studentUserID = userDetails['project']['StudentUserID'] ?? 0;
 
         _formData.piSealLocation = userDetails['project']['CreatorUserSealLocation'];
         String piSealfilePath = _formData.piSealLocation.isNotEmpty
@@ -2468,7 +2468,7 @@ class FormData {
   // String studentId = '';
   // String studentRegNo = '';
   // String studentName = '';
-  int studentUserID = 0;
+  int? studentUserID;
   // String coPiReferencesOfLatestPublications = '';
   // String coPiExperienceInTeaching = '';
   // String coPiExperienceInResearch = '';
@@ -2483,7 +2483,7 @@ class FormData {
   // String coPiAddress = '';
   // String coPiPhone = '';
   // String coPiName = '';
-  int coPiUserID = 0;
+  int? coPiUserID;
   // String piReferencesOfLatestPublications = '';
   // int piExperienceInTeaching = 0;
   // int piExperienceInResearch = 0;
@@ -2578,10 +2578,11 @@ class _CoPiState extends State<CoPi> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
-                        User? selectedUser = snapshot.data?.firstWhere(
-                          (user) => user.userId == widget.formData.coPiUserID,
-                          orElse: () => snapshot.data!.first,
-                        );
+                        User? selectedUser = widget.formData.coPiUserID != 0
+                            ? snapshot.data?.firstWhere(
+                                (user) => user.userId == widget.formData.coPiUserID,
+                              )
+                            : null;
                         return FormBuilderDropdown<User>(
                           name: 'co_pi_name',
                           initialValue: selectedUser,
@@ -2591,8 +2592,8 @@ class _CoPiState extends State<CoPi> {
                             border: OutlineInputBorder(),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
-                          validator: FormBuilderValidators.required(),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          // validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.disabled,
                           items: snapshot.data!
                               .map((user) => DropdownMenuItem<User>(
                                     value: user,
@@ -2602,7 +2603,7 @@ class _CoPiState extends State<CoPi> {
                           onChanged: (User? user) {
                             if (user != null) {
                               setState(() {
-                                widget.formData.coPiUserID = user.userId;
+                                widget.formData.coPiUserID = user?.userId;
                               });
                             }
                           },
@@ -2655,10 +2656,11 @@ class _StudentState extends State<Student> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
-                        User? selectedUser = snapshot.data?.firstWhere(
-                          (user) => user.userId == widget.formData.studentUserID,
-                          orElse: () => snapshot.data!.first,
-                        );
+                        User? selectedUser = widget.formData.studentUserID != 0
+                            ? snapshot.data?.firstWhere(
+                                (user) => user.userId == widget.formData.studentUserID,
+                              )
+                            : null;
                         return FormBuilderDropdown<User>(
                           name: 'student_name',
                           initialValue: selectedUser,
@@ -2668,8 +2670,8 @@ class _StudentState extends State<Student> {
                             border: OutlineInputBorder(),
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                           ),
-                          validator: FormBuilderValidators.required(),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          // validator: FormBuilderValidators.required(),
+                          autovalidateMode: AutovalidateMode.disabled,
                           items: snapshot.data!
                               .map((user) => DropdownMenuItem<User>(
                                     value: user,
@@ -2679,7 +2681,7 @@ class _StudentState extends State<Student> {
                           onChanged: (User? user) {
                             if (user != null) {
                               setState(() {
-                                widget.formData.studentUserID = user.userId;
+                                widget.formData.studentUserID = user?.userId;
                               });
                             }
                           },

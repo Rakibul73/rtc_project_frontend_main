@@ -152,8 +152,8 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
         _formData.othersRequired = userDetails['project']['OtherRequired'];
         // // Signature
         _formData.piUserID = userDetails['project']['CreatorUserID'];
-        _formData.coPiUserID = userDetails['project']['CoPiUserID'];
-        _formData.studentUserID = userDetails['project']['StudentUserID'];
+        _formData.coPiUserID = userDetails['project']['CoPiUserID'] ?? 0;
+        _formData.studentUserID = userDetails['project']['StudentUserID'] ?? 0;
 
         _formData.piSealLocation = userDetails['project']['CreatorUserSealLocation'];
         String piSealfilePath = _formData.piSealLocation.isNotEmpty
@@ -216,26 +216,36 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
         }
 
         // get student user details
-        final studentUserDetails = await ApiService.getSpecificUser(
-          _formData.studentUserID,
-        );
-        if (studentUserDetails['statuscode'] == 401) {
-          // Handle token expiration
-          final dialog = AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            desc: "Token expired. Please login again.",
-            width: kDialogWidth,
-            btnOkText: 'OK',
-            btnOkOnPress: () {},
+        if (_formData.studentUserID != null && _formData.studentUserID != 0) {
+          final studentUserDetails = await ApiService.getSpecificUser(
+            _formData.studentUserID,
           );
-          dialog.show();
+          if (studentUserDetails['statuscode'] == 401) {
+            // Handle token expiration
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              desc: "Token expired. Please login again.",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          } else {
+            _formData.studentName = studentUserDetails['user']['FirstName'] + ' ' + studentUserDetails['user']['LastName'];
+            _formData.studentId = studentUserDetails['user']['StudentID'].toString();
+            _formData.studentRegNo = studentUserDetails['user']['StudentRegNo'] ?? '';
+            _formData.firstEnrollmentSemester = studentUserDetails['user']['FirstEnrollmentSemester'] ?? '';
+            _formData.cgpaUndergraduateLevel = studentUserDetails['user']['UndergraduateCGPALevel'] ?? '';
+          }
+        } else {
+          // Reset student related fields if studentUserID is null or 0
+          _formData.studentName = '';
+          _formData.studentId = '';
+          _formData.studentRegNo = '';
+          _formData.firstEnrollmentSemester = '';
+          _formData.cgpaUndergraduateLevel = '';
         }
-        _formData.studentName = studentUserDetails['user']['FirstName'] + ' ' + studentUserDetails['user']['LastName'];
-        _formData.studentId = studentUserDetails['user']['StudentID'].toString();
-        _formData.studentRegNo = studentUserDetails['user']['StudentRegNo'] ?? '';
-        _formData.firstEnrollmentSemester = studentUserDetails['user']['FirstEnrollmentSemester'] ?? '';
-        _formData.cgpaUndergraduateLevel = studentUserDetails['user']['UndergraduateCGPALevel'] ?? '';
 
         // get PI user details
         final piUserDetails = await ApiService.getSpecificUser(
@@ -275,41 +285,66 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
         _formData.piReferencesOfLatestPublications = piUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
 
         // get CO-PI user details
-        final coPiUserDetails = await ApiService.getSpecificUser(
-          _formData.coPiUserID,
-        );
-        if (coPiUserDetails['statuscode'] == 401) {
-          // Handle token expiration
-          final dialog = AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            desc: "Token expired. Please login again.",
-            width: kDialogWidth,
-            btnOkText: 'OK',
-            btnOkOnPress: () {},
+        if (_formData.coPiUserID != null && _formData.coPiUserID != 0) {
+          final coPiUserDetails = await ApiService.getSpecificUser(
+            _formData.coPiUserID,
           );
-          dialog.show();
+          if (coPiUserDetails['statuscode'] == 401) {
+            // Handle token expiration
+            final dialog = AwesomeDialog(
+              context: context,
+              dialogType: DialogType.error,
+              desc: "Token expired. Please login again.",
+              width: kDialogWidth,
+              btnOkText: 'OK',
+              btnOkOnPress: () {},
+            );
+            dialog.show();
+          } else {
+            _formData.coPiName = coPiUserDetails['user']['FirstName'] + ' ' + coPiUserDetails['user']['LastName'];
+            _formData.coPiPresentAddress = coPiUserDetails['user']['PresentAddress'] ?? '';
+            _formData.coPiPermanentAddress = coPiUserDetails['user']['PermanentAddress'] ?? '';
+            _formData.coPiPositionEnglish = coPiUserDetails['user']['PositionEnglish'] ?? '';
+            _formData.coPiDepartmentName = coPiUserDetails['user']['DepartmentName'] ?? '';
+            _formData.coPiFacultyName = coPiUserDetails['user']['FacultyName'] ?? '';
+            _formData.coPiBasicPay = coPiUserDetails['user']['BasicPay'].toString();
+            _formData.coPiInstituteLocation = coPiUserDetails['user']['InstituteLocation'] ?? '';
+            _formData.coPiInstituteName = coPiUserDetails['user']['InstituteName'] ?? '';
+            _formData.coPiEmail = coPiUserDetails['user']['Email'] ?? '';
+            _formData.coPiPhone = coPiUserDetails['user']['Phone'] ?? '';
+            _formData.coPiSalaryScale = coPiUserDetails['user']['SalaryScale'] ?? '';
+            _formData.coPiHighestAcademicQualification = coPiUserDetails['user']['HighestAcademicQualification'] ?? '';
+            _formData.coPiHighestAcademicQualificationUniversity = coPiUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
+            _formData.coPiHighestAcademicQualificationCountry = coPiUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
+            _formData.coPiHighestAcademicQualificationYear = coPiUserDetails['user']['HighestAcademicQualificationYear'].toString();
+            _formData.coPiAreaOfExpertise = coPiUserDetails['user']['AreaOfExpertise'] ?? '';
+            _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
+            _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
+            _formData.coPiReferencesOfLatestPublications = coPiUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
+          }
+        } else {
+          // Reset CO-PI related fields if coPiUserID is null or 0
+          _formData.coPiName = '';
+          _formData.coPiPresentAddress = '';
+          _formData.coPiPermanentAddress = '';
+          _formData.coPiPositionEnglish = '';
+          _formData.coPiDepartmentName = '';
+          _formData.coPiFacultyName = '';
+          _formData.coPiBasicPay = '';
+          _formData.coPiInstituteLocation = '';
+          _formData.coPiInstituteName = '';
+          _formData.coPiEmail = '';
+          _formData.coPiPhone = '';
+          _formData.coPiSalaryScale = '';
+          _formData.coPiHighestAcademicQualification = '';
+          _formData.coPiHighestAcademicQualificationUniversity = '';
+          _formData.coPiHighestAcademicQualificationCountry = '';
+          _formData.coPiHighestAcademicQualificationYear = '';
+          _formData.coPiAreaOfExpertise = '';
+          _formData.coPiExperienceInResearch = '';
+          _formData.coPiExperienceInTeaching = '';
+          _formData.coPiReferencesOfLatestPublications = '';
         }
-        _formData.coPiName = coPiUserDetails['user']['FirstName'] + ' ' + coPiUserDetails['user']['LastName'];
-        _formData.coPiPresentAddress = coPiUserDetails['user']['PresentAddress'] ?? '';
-        _formData.coPiPermanentAddress = coPiUserDetails['user']['PermanentAddress'] ?? '';
-        _formData.coPiPositionEnglish = coPiUserDetails['user']['PositionEnglish'] ?? '';
-        _formData.coPiDepartmentName = coPiUserDetails['user']['DepartmentName'] ?? '';
-        _formData.coPiFacultyName = coPiUserDetails['user']['FacultyName'] ?? '';
-        _formData.coPiBasicPay = coPiUserDetails['user']['BasicPay'].toString();
-        _formData.coPiInstituteLocation = coPiUserDetails['user']['InstituteLocation'] ?? '';
-        _formData.coPiInstituteName = coPiUserDetails['user']['InstituteName'] ?? '';
-        _formData.coPiEmail = coPiUserDetails['user']['Email'] ?? '';
-        _formData.coPiPhone = coPiUserDetails['user']['Phone'] ?? '';
-        _formData.coPiSalaryScale = coPiUserDetails['user']['SalaryScale'] ?? '';
-        _formData.coPiHighestAcademicQualification = coPiUserDetails['user']['HighestAcademicQualification'] ?? '';
-        _formData.coPiHighestAcademicQualificationUniversity = coPiUserDetails['user']['HighestAcademicQualificationUniversity'] ?? '';
-        _formData.coPiHighestAcademicQualificationCountry = coPiUserDetails['user']['HighestAcademicQualificationCountry'] ?? '';
-        _formData.coPiHighestAcademicQualificationYear = coPiUserDetails['user']['HighestAcademicQualificationYear'].toString();
-        _formData.coPiAreaOfExpertise = coPiUserDetails['user']['AreaOfExpertise'] ?? '';
-        _formData.coPiExperienceInResearch = coPiUserDetails['user']['ExperienceInResearch'].toString();
-        _formData.coPiExperienceInTeaching = coPiUserDetails['user']['Teaching'].toString();
-        _formData.coPiReferencesOfLatestPublications = coPiUserDetails['user']['ReferencesOfLatestPublications'] ?? '';
 
         final reviewerUserId = await ApiService.getReviewerUserId(projectId);
         if (reviewerUserId['statuscode'] == 401) {
