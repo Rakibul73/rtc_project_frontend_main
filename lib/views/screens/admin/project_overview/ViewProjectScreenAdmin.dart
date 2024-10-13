@@ -3068,33 +3068,33 @@ class _ViewProjectScreenAdminState extends State<ViewProjectScreenAdmin> {
                                   ),
                                 ),
                               ),
-                              Visibility(
-                                visible: widget.projectID.isNotEmpty,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: kDefaultPadding),
-                                  child: SizedBox(
-                                    height: 40.0,
-                                    child: ElevatedButton(
-                                      style: themeData.extension<AppButtonTheme>()!.infoOutlined,
-                                      onPressed: () => _goEditPage(context),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                                            child: Icon(
-                                              Icons.mode_edit_outline_outlined,
-                                              size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                                            ),
-                                          ),
-                                          const Text("Edit Project"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
+                              // Visibility(
+                              //   visible: widget.projectID.isNotEmpty,
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.only(right: kDefaultPadding),
+                              //     child: SizedBox(
+                              //       height: 40.0,
+                              //       child: ElevatedButton(
+                              //         style: themeData.extension<AppButtonTheme>()!.infoOutlined,
+                              //         onPressed: () => _goEditPage(context),
+                              //         child: Row(
+                              //           mainAxisSize: MainAxisSize.min,
+                              //           crossAxisAlignment: CrossAxisAlignment.center,
+                              //           children: [
+                              //             Padding(
+                              //               padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                              //               child: Icon(
+                              //                 Icons.mode_edit_outline_outlined,
+                              //                 size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                              //               ),
+                              //             ),
+                              //             const Text("Edit Project"),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // )
                             ],
                           ),
                         ],

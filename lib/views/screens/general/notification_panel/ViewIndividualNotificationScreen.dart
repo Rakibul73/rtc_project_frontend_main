@@ -63,10 +63,76 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
         _formData.receiverUserID = userDetails['Notification']['ReceiverUserID'].toString();
         _formData.senderUserID = userDetails['Notification']['SenderUserID'].toString();
         _formData.timestamp = userDetails['Notification']['Timestamp'];
+        // if IsDeleted = 0 , then this project deletion request is not yet done
+        _formData.isDeleted = userDetails['Notification']['IsDeleted'] ?? 0;
       });
     }
 
     return true;
+  }
+
+  Future<void> _handleProjectDeletionRequest(BuildContext context) async {
+    // Extract project ID from the message
+    int notificationId = int.parse(widget.notificationID);
+
+    // Call the API service to handle the project deletion request
+    final result = await ApiService.handleProjectDeletionRequest(notificationId);
+
+    if (result['statuscode'] == 401) {
+      // Handle token expiration
+      final dialog = AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        desc: "Token expired. Please login again.",
+        width: kDialogWidth,
+        btnOkText: 'OK',
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.logout);
+        },
+      );
+      dialog.show();
+    }
+    if (result['statuscode'] == 404) {
+      // Handle token expiration
+      final dialog = AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        desc: result['error'],
+        width: kDialogWidth,
+        btnOkText: 'OK',
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.viewallnotifications);
+        },
+      );
+      dialog.show();
+    }
+    if (result['statuscode'] == 500) {
+      // Handle token expiration
+      final dialog = AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        desc: result['error'],
+        width: kDialogWidth,
+        btnOkText: 'OK',
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.viewallnotifications);
+        },
+      );
+      dialog.show();
+    }
+    if (result['statuscode'] == 200) {
+      final dialog = AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        desc: result['message'],
+        width: kDialogWidth,
+        btnOkText: 'OK',
+        btnOkOnPress: () {
+          GoRouter.of(context).go(RouteUri.viewallnotifications);
+        },
+      );
+      dialog.show();
+    }
   }
 
   @override
@@ -279,34 +345,65 @@ class _ViewIndividualNotificationScreenState extends State<ViewIndividualNotific
                                   ),
                                 ),
                               ),
-                              // const Spacer(),
-                              // Visibility(
-                              //   visible: initialPendingUserDataChange,
-                              //   child: Padding(
-                              //     padding: const EdgeInsets.only(right: kDefaultPadding),
-                              //     child: SizedBox(
-                              //       height: 40.0,
-                              //       child: ElevatedButton(
-                              //         style: themeData.extension<AppButtonTheme>()!.successOutlined,
-                              //         onPressed: () => _goSaveChanges(context),
-                              //         child: Row(
-                              //           mainAxisSize: MainAxisSize.min,
-                              //           crossAxisAlignment: CrossAxisAlignment.center,
-                              //           children: [
-                              //             Padding(
-                              //               padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
-                              //               child: Icon(
-                              //                 Icons.save_outlined,
-                              //                 size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
-                              //               ),
-                              //             ),
-                              //             const Text("Save Changes"),
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+                              const Spacer(),
+                              Visibility(
+                                // if IsDeleted = 0 , then this project deletion request is not yet done
+                                visible: _formData.message.startsWith('ProjectDeletionRequest') && _formData.isDeleted == 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                                  child: SizedBox(
+                                      height: 40.0,
+                                      child: Tooltip(
+                                        message: 'Already Deleted',
+                                        child: ElevatedButton(
+                                          style: themeData.extension<AppButtonTheme>()!.errorOutlined,
+                                          onPressed: null,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                                child: Icon(
+                                                  Icons.delete_outline_outlined,
+                                                  size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                                ),
+                                              ),
+                                              const Text("Delete Requested Project"),
+                                            ],
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                              Visibility(
+                                // if IsDeleted = 0 , then this project deletion request is not yet done
+                                visible: _formData.message.startsWith('ProjectDeletionRequest') && _formData.isDeleted == 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                                  child: SizedBox(
+                                    height: 40.0,
+                                    child: ElevatedButton(
+                                      style: themeData.extension<AppButtonTheme>()!.errorOutlined,
+                                      onPressed: () => _handleProjectDeletionRequest(context),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: kDefaultPadding * 0.5),
+                                            child: Icon(
+                                              Icons.delete_outline_outlined,
+                                              size: (themeData.textTheme.labelLarge!.fontSize! + 4.0),
+                                            ),
+                                          ),
+                                          const Text("Delete Requested Project"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               // Visibility(
                               //   visible: widget.notificationID.isNotEmpty,
                               //   child: Padding(
@@ -357,4 +454,5 @@ class FormData {
   String message = '';
   String timestamp = '';
   String isRead = '';
+  int isDeleted = 0;
 }

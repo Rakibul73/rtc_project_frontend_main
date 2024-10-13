@@ -141,9 +141,9 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
     _dataSource = DataSource(
       onViewButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.viewprojectadmin}?projectid=${data['ProjectID']}'),
       onEditButtonPressed: (data) => GoRouter.of(context).go('${RouteUri.editprojectadmin}?projectid=${data['ProjectID']}'),
-      onDeleteButtonPressed: (data) {
-        deleteProject(data['ProjectID']);
-      },
+      // onDeleteButtonPressed: (data) {
+      //   deleteProject(data['ProjectID']);
+      // },
       data: [],
     );
   }
@@ -345,13 +345,13 @@ class _SearchProjectScreenState extends State<SearchProjectScreen> {
 class DataSource extends DataTableSource {
   final void Function(Map<String, dynamic> data) onEditButtonPressed;
   final void Function(Map<String, dynamic> data) onViewButtonPressed;
-  final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
+  // final void Function(Map<String, dynamic> data) onDeleteButtonPressed;
   List<dynamic> data;
 
   DataSource({
     required this.onEditButtonPressed,
     required this.onViewButtonPressed,
-    required this.onDeleteButtonPressed,
+    // required this.onDeleteButtonPressed,
     required this.data,
   });
 
@@ -390,11 +390,11 @@ class DataSource extends DataTableSource {
                   child: const Text("Edit"),
                 ),
               ),
-              OutlinedButton(
-                onPressed: () => onDeleteButtonPressed.call(data),
-                style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
-                child: const Text("Delete"),
-              ),
+              // OutlinedButton(
+              //   onPressed: () => onDeleteButtonPressed.call(data),
+              //   style: Theme.of(context).extension<AppButtonTheme>()!.errorOutlined,
+              //   child: const Text("Delete"),
+              // ),
             ],
           );
         },

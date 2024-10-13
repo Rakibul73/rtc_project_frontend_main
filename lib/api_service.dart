@@ -64,6 +64,32 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> handleProjectDeletionRequest(int notificationId) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      throw Exception('JWT token not found');
+    }
+
+    final Uri url = Uri.parse('$baseUrl/delete_project_request/$notificationId');
+
+    try {
+      final http.Response response = await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Accept-Encoding': 'gzip, deflate, br', // Specify the supported compression types
+          'Content-Type': 'application/json', // Specify the content type as JSON
+        },
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      return responseBody;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<Map<String, dynamic>> updateNotice(Map<String, dynamic> updateNoticeData, int noticeID) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
